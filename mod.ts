@@ -20,9 +20,11 @@ export async function readBody(reqBody?: Deno.Reader) {
  * [Deno] Load Environment Variables
  * @param path environment file
  */
-export function loadENV(path = './.env'): [Error | null, Record<string, string>] {
+export function loadENV(
+  path = './.env',
+): [Error | null, Record<string, string>] {
   let error: Error | null = null;
-  let res: Record<string, string> = {};
+  const res: Record<string, string> = {};
   try {
     Deno.readTextFileSync(path)
       .split('\n')
@@ -39,7 +41,7 @@ export function loadENV(path = './.env'): [Error | null, Record<string, string>]
   } catch (err) {
     error = err;
   }
-  return [Error | null, res];
+  return [error, res];
 }
 
 /**
