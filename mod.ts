@@ -17,10 +17,12 @@ export async function readBody(reqBody?: Deno.Reader) {
 }
 
 /**
- * [Deno] 加载 环境变量文件
- * @param path 环境变量文件路径
+ * [Deno] Load Environment Variables
+ * @param path environment file
  */
-export function loadENV(path = './.env'): void {
+export function loadENV(path = './.env'): [Error | null, Record<string, string>] {
+  let error: Error | null = null;
+  let res: Record<string, string> = {};
   try {
     Deno.readTextFileSync(path)
       .split('\n')
@@ -29,12 +31,15 @@ export function loadENV(path = './.env'): void {
         if (i === -1) {
           return;
         }
-        Deno.env.set(v.slice(0, i), v.slice(i + 1));
+        const k = v.slice(0, i);
+        const val = v.slice(i + 1);
+        res[k] = val;
+        Deno.env.set(k, val);
       });
   } catch (err) {
-    // 可能为文件不存在
-    console.warn('loadENV', err);
+    error = err;
   }
+  return [Error | null, res];
 }
 
 /**
@@ -42,7 +47,7 @@ export function loadENV(path = './.env'): void {
  * @param command 需要执行的命令
  * @returns 命令执行结果
  */
- export async function getRunData(command: string[]) {
+export async function getRunData(command: string[]) {
   /** 进程 */
   const run = Deno.run({
     cmd: command,
