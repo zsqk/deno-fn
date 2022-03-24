@@ -32,10 +32,10 @@ export function csv2array(
 /**
  * 为数据指定的 CSV header
  */
-export function appendHeader(
+export function appendHeader<K extends string>(
   o: string[][],
-  h: string[],
-): Record<string, string>[] {
+  h: K[],
+): Record<K, string>[] {
   return o.map((o) => {
     const obj: Record<string, string> = {};
     for (let i = 0; i < o.length; i++) {
