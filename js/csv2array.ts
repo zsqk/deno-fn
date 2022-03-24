@@ -12,16 +12,11 @@
 export function csv2array(
   csv: string,
   opt: {
-    /** 为数据指定的 CSV header */
-    header?: string[];
     /** CSV 是否包含 header */
     hasHeader?: boolean;
   } = {},
 ): string[][] {
-  const { header, hasHeader = false } = opt;
-  if (header) {
-    throw new Error('TODO');
-  }
+  const { hasHeader = false } = opt;
   if (hasHeader) {
     throw new Error('TODO');
   }
@@ -31,5 +26,22 @@ export function csv2array(
       `
 `,
     )
-    .map((v) => v.split(',').map((v) => v.trim()));
+    .map((vArr) => vArr.split(',').map((v) => v.trim()));
+}
+
+/**
+ * 为数据指定的 CSV header
+ */
+export function appendHeader(
+  o: string[][],
+  h: string[],
+): Record<string, string>[] {
+  return o.map((o) => {
+    const obj: Record<string, string> = {};
+    for (let i = 0; i < o.length; i++) {
+      const v = o[i];
+      obj[h[i]] = v;
+    }
+    return obj;
+  });
 }
