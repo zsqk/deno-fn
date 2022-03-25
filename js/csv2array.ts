@@ -42,7 +42,10 @@ export function appendHeader<K extends string>(
     const obj: Record<string, string> = {};
     for (let i = 0; i < o.length; i++) {
       const v = o[i];
-      obj[h[i]] = v;
+      const k = h[i];
+      if (k) {
+        obj[k] = v;
+      }
     }
     return obj;
   });
