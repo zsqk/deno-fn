@@ -8,6 +8,7 @@
  * 3. TODO 识别双引号.
  * 4. TODO 支持 CSV header.
  * 5. 去除额外的空格.
+ * 6. 去除空行.
  */
 export function csv2array(
   csv: string,
@@ -26,7 +27,8 @@ export function csv2array(
       `
 `,
     )
-    .map((vArr) => vArr.split(',').map((v) => v.trim()));
+    .map((vArr) => vArr.split(',').map((v) => v.trim()))
+    .filter((v) => v.length);
 }
 
 /**
