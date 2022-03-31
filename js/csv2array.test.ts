@@ -10,3 +10,41 @@ Deno.test('csv2array', () => {
   assertEquals(arr[0][1], 'b');
   assertEquals(arr[1][0], '1');
 });
+
+// https://datatracker.ietf.org/doc/html/rfc4180
+
+Deno.test('csv2array-double-quotes-5', () => {
+  const arr = csv2array(`"aaa","bbb","ccc"
+zzz,yyy,xxx`);
+  assertEquals(
+    JSON.stringify(arr),
+    JSON.stringify([['aaa', 'bbb', 'ccc'], ['zzz', 'yyy', 'xxx']]),
+  );
+});
+
+Deno.test('csv2array-double-quotes-6', () => {
+  const arr = csv2array(`"aaa","b
+bb","ccc"
+zzz,yyy,xxx`);
+  assertEquals(
+    JSON.stringify(arr),
+    JSON.stringify([[
+      'aaa',
+      `b
+bb`,
+      'ccc',
+    ], ['zzz', 'yyy', 'xxx']]),
+  );
+});
+
+Deno.test('csv2array-double-quotes-7', () => {
+  const arr = csv2array(`"aaa","b""bb","ccc"`);
+  assertEquals(
+    JSON.stringify(arr),
+    JSON.stringify([[
+      'aaa',
+      `b"bb`,
+      'ccc',
+    ], ['zzz', 'yyy', 'xxx']]),
+  );
+});

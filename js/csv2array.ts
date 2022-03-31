@@ -27,8 +27,21 @@ export function csv2array(
       `
 `,
     )
-    .map((vArr) => vArr.split(',').map((v) => v.trim()))
+    .map(strToArr)
     .filter((v) => v.length);
+}
+
+/**
+ * 将 CSV 中一行的字符串整理为字符串数组
+ */
+function strToArr(str: string): string[] {
+  return str.split(',').map((v) => {
+    const res = v.trim();
+    if (res[0] === '"' && res[res.length - 1] === '"') {
+      return res.slice(1, res.length - 1);
+    }
+    return res;
+  });
 }
 
 /**
