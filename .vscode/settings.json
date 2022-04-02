@@ -2,6 +2,7 @@
   "deno.codeLens.implementations": true,
   "deno.codeLens.referencesAllFunctions": true,
   "deno.codeLens.references": true,
+  "deno.codeLens.test": true,
   "deno.enable": true,
   "deno.config": "./deno.json",
   "deno.lint": true,
