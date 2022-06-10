@@ -1,5 +1,5 @@
 import { assertEquals } from 'https://deno.land/std@0.131.0/testing/asserts.ts';
-import { hashString } from './hash.ts';
+import { hashString, hexString, hmac } from './hash.ts';
 
 Deno.test('hash', async () => {
   {
@@ -15,6 +15,24 @@ Deno.test('hash', async () => {
     assertEquals(
       res,
       '4c4c3eadf45e524bb7243e3b4e4953361eb650a3',
+    );
+  }
+});
+
+Deno.test('hmac', async () => {
+  {
+    const res = await hmac('SHA-256', 'zsqk', 'hi');
+    assertEquals(
+      hexString(res),
+      '7de51598b2a4519966ada19d9ee34c8f5ed161649c044645689453466f733c35',
+    );
+  }
+
+  {
+    const res = await hmac('SHA-512', 'zsqk', 'hi');
+    assertEquals(
+      hexString(res),
+      '55f289fd45d9a766b028e2c35fc8965b989e47965cf97b9aeec67d535d1880cea8c972e33b9e682d4efc4849c3847a7a9acab3892414c1a4c2c78abd09272569',
     );
   }
 });
