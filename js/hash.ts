@@ -2,12 +2,13 @@ import { encode } from 'https://deno.land/std@0.143.0/encoding/hex.ts';
 
 export async function hashString(
   algorithm: 'SHA-1' | 'SHA-256' | 'SHA-512',
-  data: string,
+  d: string | Uint8Array,
 ): Promise<string> {
+  const data = typeof d === 'string' ? new TextEncoder().encode(d) : d;
   const hashRes = new Uint8Array(
     await crypto.subtle.digest(
       algorithm,
-      new TextEncoder().encode(data),
+      data,
     ),
   );
   return hexString(hashRes);
