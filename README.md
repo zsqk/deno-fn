@@ -14,3 +14,8 @@ some functions for deno
   - SHA256
   - SHA512
 - Uint8Array to hex string tools
+
+说明:
+
+- csv2array 使用 Deno 标准库
+  <https://github.com/denoland/deno_std/blob/0.144.0/encoding/csv.ts>
