@@ -1,9 +1,9 @@
 // 依赖 Deno 的常用函数
 
-import { readAll } from 'https://deno.land/std@0.118.0/streams/conversion.ts';
+import { readAll } from 'https://deno.land/std@0.144.0/streams/conversion.ts';
 
 /**
- * [Deno] 解析 JSON 格式的 body
+ * [Deno] 解析 JSON 格式的 Deno.Reader 为 JS 对象
  * @param reqBody
  * @returns
  */
