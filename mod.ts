@@ -1,6 +1,7 @@
 // 依赖 Deno 的常用函数
 
 import { readAll } from 'https://deno.land/std@0.144.0/streams/conversion.ts';
+import { parseEnv } from './js/parse-env.ts';
 
 /**
  * [Deno] 解析 JSON 格式的 Deno.Reader 为 JS 对象
@@ -120,8 +121,18 @@ export async function getComputeInfo(
       cmd: ['cat', '/etc/os-release'],
       stdout: 'piped',
     });
-    const release = new TextDecoder().decode(await p.output()).split('\n');
-    console.log('release', release);
+    // cat /etc/os-release demo
+    // PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
+    // NAME="Debian GNU/Linux"
+    // VERSION_ID="9"
+    // VERSION="9 (stretch)"
+    // ID=debian
+    // HOME_URL="https://www.debian.org/"
+    // SUPPORT_URL="https://www.debian.org/support"
+    // BUG_REPORT_URL="https://bugs.debian.org/"
+    const osRelease = parseEnv(new TextDecoder().decode(await p.output()));
+    version = (osRelease.get('ID') ?? 'linux') +
+      (osRelease.get('VERSION_ID') ?? '');
     p.close();
   }
 
