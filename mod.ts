@@ -76,3 +76,62 @@ export async function getRunData(command: string[]) {
     run.close();
   }
 }
+
+type ComputeInfo = {
+  hostname: string;
+  os: string;
+  version: string;
+};
+
+/**
+ * [Deno] 获取计算机信息
+ * @returns
+ */
+export async function getComputeInfo(
+  all = false,
+): Promise<string | ComputeInfo> {
+  let hostname = 'unknown';
+  let os = '';
+  let version = '';
+
+  // get hostname
+  if (Deno.build.os === 'darwin' || Deno.build.os === 'linux') {
+    const p = Deno.run({ cmd: ['hostname'], stdout: 'piped' });
+    hostname = new TextDecoder().decode(await p.output()).replace('\n', '');
+    p.close();
+  }
+
+  // get os
+  if (Deno.build.os === 'darwin') {
+    os = 'mac';
+  }
+
+  // get version
+  if (Deno.build.os === 'darwin') {
+    const p = Deno.run({
+      cmd: ['sw_vers', '-productVersion'],
+      stdout: 'piped',
+    });
+    version = new TextDecoder().decode(await p.output()).replace('\n', '');
+    p.close();
+  }
+  if (Deno.build.os === 'linux') {
+    const p = Deno.run({
+      cmd: ['cat', '/etc/os-release'],
+      stdout: 'piped',
+    });
+    const release = new TextDecoder().decode(await p.output()).split('\n');
+    console.log('release', release);
+    p.close();
+  }
+
+  if (all) {
+    return { hostname, os, version };
+  }
+  return ''.concat(
+    os,
+    hostname,
+    '-',
+    Deno.env.get('USER') ?? 'unknown',
+  );
+}
