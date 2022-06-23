@@ -86,11 +86,8 @@ type ComputeInfo = {
 
 /**
  * [Deno] 获取计算机信息
- * @returns
  */
-export async function getComputeInfo(
-  all = false,
-): Promise<string | ComputeInfo> {
+export async function getComputeInfo(): Promise<ComputeInfo> {
   let hostname = 'unknown';
   let os = '';
   let version = '';
@@ -136,9 +133,14 @@ export async function getComputeInfo(
     p.close();
   }
 
-  if (all) {
-    return { hostname, os, version };
-  }
+  return { hostname, os, version };
+}
+
+/**
+ * [Deno] 根据计算机信息自动生成名称
+ */
+export async function getComputeKey() {
+  const { hostname, os } = await getComputeInfo();
   return ''.concat(
     os,
     hostname,

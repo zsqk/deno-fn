@@ -1,6 +1,21 @@
-import { getComputeInfo } from '../mod.ts';
+import {
+  assert,
+  assertEquals,
+} from 'https://deno.land/std@0.144.0/testing/asserts.ts';
+
+import { getComputeInfo, getComputeKey } from '../mod.ts';
 
 Deno.test('getComputeInfo', async () => {
-  const res = await getComputeInfo(true);
+  const res = await getComputeInfo();
   console.log('res', res);
+  assert(res.hostname);
+  assert(res.os);
+  assert(res.version);
+});
+
+Deno.test('getComputeKey', async () => {
+  const res = await getComputeKey();
+  console.log('res', res);
+  assert(res);
+  assertEquals(typeof res, 'string');
 });
