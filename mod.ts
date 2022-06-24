@@ -89,7 +89,7 @@ type ComputeInfo = {
  */
 export async function getComputeInfo(): Promise<ComputeInfo> {
   let hostname = 'unknown';
-  let os = '';
+  let os: string = Deno.build.os;
   let version = '';
 
   // get hostname
