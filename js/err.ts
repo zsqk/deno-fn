@@ -7,7 +7,9 @@ export function isNetworkError(err: Error): boolean {
   if (
     err.name === 'ConnectionError' ||
     err.name === 'ConnectionReset' ||
+    err.name === 'ConnectionRefused' ||
     err.name === 'TimedOut' ||
+    err.message.includes('failed to lookup address information') ||
     err.message.includes('Could not check if server accepts SSL connections')
   ) {
     return true;
