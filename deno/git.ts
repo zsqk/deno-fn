@@ -1,3 +1,5 @@
+import { getRunData } from '../mod.ts';
+
 /**
  * 拉取 Git 仓库最新内容
  *
@@ -31,14 +33,11 @@ export async function pullGitRepo(repo: string, opt: {
     ...branchParam,
   ];
 
-  const r = Deno.run({
-    cmd: command,
-    cwd: tempPath,
-  });
-  const rs = await r.status();
-  r.close();
-  if (!rs.success) {
-    throw new Error(`git 拉取失败, code ${rs.code}`);
+  try {
+    await getRunData(command, tempPath);
+  } catch (err) {
+    console.error(`git 拉取失败`);
+    throw err;
   }
 
   return tempPath;

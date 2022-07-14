@@ -50,10 +50,11 @@ export function loadENV(
  * @param command 需要执行的命令
  * @returns 命令执行结果
  */
-export async function getRunData(command: string[]) {
+export async function getRunData(command: string[], path?: string) {
   /** 进程 */
   const run = Deno.run({
     cmd: command,
+    cwd: path,
     stdout: 'piped',
     stderr: 'piped',
   });
@@ -66,11 +67,10 @@ export async function getRunData(command: string[]) {
     const stderr = await run.stderrOutput();
     if (!s1.success) {
       const r1err = new TextDecoder().decode(stderr);
-      throw new Error(r1err);
+      throw new Error(`${s1.code} ${r1err}`);
     }
 
     const res = new TextDecoder().decode(await run.output());
-    console.log('run', res);
 
     return res;
   } finally {
