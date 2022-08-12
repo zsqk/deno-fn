@@ -44,10 +44,13 @@ export function genSafeString(len: number): string {
 }
 
 /**
- * gen a ramdom string
- * @param len should less than 65536
- * @param map better is 256 % map.length = 0
- * @returns a ramdom string
+ * Generate a new random string
+ *
+ * @param len Should less than 65536
+ * @param map Better is 256 % map.length = 0
+ * - `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-=` (all)
+ * - `abcdefghijkmnpqrstuvwxyz23456789` (lite)
+ * @returns A ramdom string
  */
 export function genRandomString(
   len: number,
