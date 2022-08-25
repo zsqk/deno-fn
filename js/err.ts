@@ -9,6 +9,7 @@ export function isNetworkError(err: Error): boolean {
     err.name === 'ConnectionReset' ||
     err.name === 'ConnectionRefused' ||
     err.name === 'TimedOut' ||
+    err.message.includes('tls handshake eof') ||
     err.message.includes('failed to lookup address information') ||
     err.message.includes('Could not check if server accepts SSL connections')
   ) {
