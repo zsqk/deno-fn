@@ -25,12 +25,12 @@ export function isNetworkError(err: Error): boolean {
  */
 export function autoRetry<T extends Array<any>, R>(
   fn: (...rest: T) => Promise<R>,
-  { retry, isRetryable = isNetworkError }: {
-    /** 可重试次数 */
-    retry: number;
+  { retry = 3, isRetryable = isNetworkError }: {
+    /** 可重试次数, 默认为 3 */
+    retry?: number;
     /** 判断发生错误后是否可以重试 */
     isRetryable?: (err: Error) => boolean;
-  },
+  } = {},
 ) {
   let left = retry;
   let timeoutError: Error;
