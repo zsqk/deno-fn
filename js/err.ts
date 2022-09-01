@@ -23,6 +23,7 @@ export function isNetworkError(err: Error): boolean {
  * @param fn 函数本身, 需要为异步
  * @param opt 参数
  */
+// deno-lint-ignore no-explicit-any
 export function autoRetry<T extends Array<any>, R>(
   fn: (...rest: T) => Promise<R>,
   { retry = 3, isRetryable = isNetworkError }: {
