@@ -49,3 +49,32 @@ Deno.test('gitChanges-modified', async () => {
     notStagedFiles: [],
   });
 });
+
+Deno.test('gitChanges-rename', async () => {
+  const path = await pullGitRepo('https://github.com/zsqk/deno-fn.git');
+  console.log(path);
+
+  Deno.rename(path + '/deno-fn/README.md', path + '/deno-fn/README1.md');
+  const res1 = await gitChanges(path + '/deno-fn');
+  assertEquals(res1, {
+    stagedFiles: [],
+    notStagedFiles: [
+      { type: 'deleted', fileName: 'README.md' },
+      { type: 'newfile', fileName: 'README1.md' },
+    ],
+  });
+
+  const p2 = Deno.run({ cmd: ['git', 'add', '.'], cwd: path + '/deno-fn' });
+  await p2.status();
+  p2.close();
+
+  const res2 = await gitChanges(path + '/deno-fn');
+  assertEquals(res2, {
+    stagedFiles: [{
+      type: 'renamed',
+      fileNameOld: 'README.md',
+      fileNameNew: 'README1.md',
+    }],
+    notStagedFiles: [],
+  });
+});
