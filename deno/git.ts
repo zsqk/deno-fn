@@ -62,13 +62,13 @@ export async function gitChanges(repoPath: string) {
     throw new Error(`${status.code} ${errMsg}`);
   }
 
-  const changesReg = /(modified|deleted|renamed):(.+)/g;
+  const changesReg = /(modified|deleted|renamed|new file):(.+)/g;
 
   type Changes =
     | { type: 'modified'; fileName: string }
     | { type: 'deleted'; fileName: string }
     | { type: 'renamed'; fileNameOld: string; fileNameNew: string }
-    | { type: 'untracked'; fileName: string };
+    | { type: 'newfile'; fileName: string };
 
   const stagedFiles: Changes[] = [];
   const nochangesBI = output.indexOf('Changes to be committed');
@@ -92,6 +92,9 @@ export async function gitChanges(repoPath: string) {
       }
       if (t === 'deleted') {
         stagedFiles.push({ type: 'deleted', fileName });
+      }
+      if (t === 'new file') {
+        stagedFiles.push({ type: 'newfile', fileName });
       }
     }
   }
@@ -118,6 +121,9 @@ export async function gitChanges(repoPath: string) {
       if (t === 'deleted') {
         notStagedFiles.push({ type: 'deleted', fileName });
       }
+      if (t === 'new file') {
+        notStagedFiles.push({ type: 'newfile', fileName });
+      }
     }
   }
 
@@ -130,7 +136,7 @@ export async function gitChanges(repoPath: string) {
     iter.next();
     iter.next();
     for (const [_, v] of iter) {
-      untrackedFiles.push({ type: 'untracked', fileName: v.trim() });
+      untrackedFiles.push({ type: 'newfile', fileName: v.trim() });
     }
   }
 
