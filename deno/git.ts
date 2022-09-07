@@ -45,6 +45,7 @@ export async function pullGitRepo(repo: string, opt: {
 
 /**
  * 查看本地 Git 仓库的变动
+ * [参考文档](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)
  * @param repoPath repo 在本地的 path
  */
 export async function gitChanges(repoPath: string) {
