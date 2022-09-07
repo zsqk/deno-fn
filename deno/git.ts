@@ -121,13 +121,9 @@ export async function gitChanges(repoPath: string) {
       if (t === 'deleted') {
         notStagedFiles.push({ type: 'deleted', fileName });
       }
-      if (t === 'new file') {
-        notStagedFiles.push({ type: 'newfile', fileName });
-      }
     }
   }
 
-  const untrackedFiles: Changes[] = [];
   const untrackedBI = output.indexOf(`Untracked files`);
   if (untrackedBI !== -1) {
     const untrackedEI = output.slice(untrackedBI).indexOf(`\n\n`) + untrackedBI;
@@ -136,7 +132,7 @@ export async function gitChanges(repoPath: string) {
     iter.next();
     iter.next();
     for (const [_, v] of iter) {
-      untrackedFiles.push({ type: 'newfile', fileName: v.trim() });
+      notStagedFiles.push({ type: 'newfile', fileName: v.trim() });
     }
   }
 
@@ -145,5 +141,5 @@ export async function gitChanges(repoPath: string) {
   // `Changes to be committed` 存在需要 commit 的数据
   // `Changes not staged for commit` 存在未暂存的数据
   // Untracked files
-  return { stagedFiles, notStagedFiles, untrackedFiles };
+  return { stagedFiles, notStagedFiles };
 }
