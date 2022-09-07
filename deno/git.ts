@@ -49,7 +49,7 @@ export async function pullGitRepo(repo: string, opt: {
  */
 export async function gitChanges(repoPath: string) {
   const res = Deno.run({
-    cmd: ['git', 'status'],
+    cmd: ['git', 'status', '--short'],
     stdout: 'piped',
     stderr: 'piped',
     cwd: repoPath,
@@ -62,8 +62,6 @@ export async function gitChanges(repoPath: string) {
     throw new Error(`${status.code} ${errMsg}`);
   }
 
-  const changesReg = /(modified|deleted|renamed|new file):(.+)/g;
-
   type Changes =
     | { type: 'modified'; fileName: string }
     | { type: 'deleted'; fileName: string }
@@ -71,68 +69,49 @@ export async function gitChanges(repoPath: string) {
     | { type: 'newfile'; fileName: string };
 
   const stagedFiles: Changes[] = [];
-  const nochangesBI = output.indexOf('Changes to be committed');
-  if (nochangesBI !== -1) {
-    const nochangesEI = output.slice(nochangesBI).indexOf(`\n\n`) + nochangesBI;
-    const staged = output.slice(nochangesBI, nochangesEI);
-    for (
-      const [_, t, v] of staged.matchAll(changesReg)
-    ) {
-      if (t === 'renamed') {
-        const [fileNameOld, fileNameNew] = v.trim().split(' -> ');
+  const notStagedFiles: Changes[] = [];
+  for (const change of output.split('\n')) {
+    const type = change.slice(0, 2);
+    const fileName = change.slice(3);
+    switch (type) {
+      case '??':
+        notStagedFiles.push({ type: 'newfile', fileName });
+        break;
+
+      case 'A ':
+        stagedFiles.push({ type: 'newfile', fileName });
+        break;
+
+      case 'M ':
+        stagedFiles.push({ type: 'modified', fileName });
+        break;
+
+      case ' M':
+        notStagedFiles.push({ type: 'modified', fileName });
+        break;
+
+      case 'MM':
+        stagedFiles.push({ type: 'modified', fileName });
+        notStagedFiles.push({ type: 'modified', fileName });
+        break;
+
+      case ' D':
+        notStagedFiles.push({ type: 'deleted', fileName });
+        break;
+
+      case 'R ': {
+        const [fileNameOld, fileNameNew] = fileName.trim().split(' -> ');
         stagedFiles.push({
           type: 'renamed',
           fileNameNew,
           fileNameOld,
         });
+        break;
       }
-      const fileName = v.trim();
-      if (t === 'modified') {
-        stagedFiles.push({ type: 'modified', fileName });
-      }
-      if (t === 'deleted') {
-        stagedFiles.push({ type: 'deleted', fileName });
-      }
-      if (t === 'new file') {
-        stagedFiles.push({ type: 'newfile', fileName });
-      }
-    }
-  }
 
-  const notStagedFiles: Changes[] = [];
-  const notStagedBI = output.indexOf(`Changes not staged for commit`);
-  if (notStagedBI !== -1) {
-    const notStagedEI = output.slice(notStagedBI).indexOf(`\n\n`) + notStagedBI;
-    const notStaged = output.slice(notStagedBI, notStagedEI);
-    for (
-      const [_, t, v] of notStaged.matchAll(changesReg)
-    ) {
-      if (t === 'renamed') {
-        notStagedFiles.push({
-          type: 'renamed',
-          fileNameNew: v.trim(),
-          fileNameOld: v.trim(),
-        });
-      }
-      const fileName = v.trim();
-      if (t === 'modified') {
-        notStagedFiles.push({ type: 'modified', fileName });
-      }
-      if (t === 'deleted') {
-        notStagedFiles.push({ type: 'deleted', fileName });
-      }
-    }
-  }
-
-  const untrackedBI = output.indexOf(`Untracked files`);
-  if (untrackedBI !== -1) {
-    const untrackedEI = output.slice(untrackedBI).indexOf(`\n\n`) + untrackedBI;
-    const untracked = output.slice(untrackedBI, untrackedEI);
-    const iter = untracked.matchAll(/(.+)/g);
-    iter.next();
-    iter.next();
-    for (const [_, v] of iter) {
-      notStagedFiles.push({ type: 'newfile', fileName: v.trim() });
+      default:
+        console.warn('未知 git 状态', { type });
+        break;
     }
   }
 
