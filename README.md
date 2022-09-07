@@ -4,7 +4,7 @@
 
 some functions for deno
 
-功能:
+通用 JS 功能 (浏览器环境兼容):
 
 - hash
   - SHA1
@@ -14,6 +14,10 @@ some functions for deno
   - SHA256
   - SHA512
 - Uint8Array to hex string tools
+
+依赖 Deno 运行时的功能:
+
+- `gitChanges` 查看 Git 变动.
 
 说明:
 
