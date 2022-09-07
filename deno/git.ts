@@ -123,10 +123,5 @@ export async function gitChanges(repoPath: string) {
     }
   }
 
-  // TODO: 判断是否存在 commits 没有 push
-  // TODO: 判断远端是否存在 commits 需要 pull
-  // `Changes to be committed` 存在需要 commit 的数据
-  // `Changes not staged for commit` 存在未暂存的数据
-  // Untracked files
   return { stagedFiles, notStagedFiles };
 }
