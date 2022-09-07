@@ -73,33 +73,27 @@ export async function gitChanges(repoPath: string) {
   for (const change of output.split('\n')) {
     const type = change.slice(0, 2);
     const fileName = change.slice(3);
-    switch (type) {
-      case '??':
-        notStagedFiles.push({ type: 'newfile', fileName });
-        break;
-
-      case 'A ':
+    if (type === '??') {
+      notStagedFiles.push({ type: 'newfile', fileName });
+      continue;
+    }
+    if (type === '!!') {
+      continue;
+    }
+    switch (type[0]) {
+      case 'A':
         stagedFiles.push({ type: 'newfile', fileName });
         break;
 
-      case 'M ':
+      case 'M':
         stagedFiles.push({ type: 'modified', fileName });
         break;
 
-      case ' M':
-        notStagedFiles.push({ type: 'modified', fileName });
+      case 'D':
+        stagedFiles.push({ type: 'deleted', fileName });
         break;
 
-      case 'MM':
-        stagedFiles.push({ type: 'modified', fileName });
-        notStagedFiles.push({ type: 'modified', fileName });
-        break;
-
-      case ' D':
-        notStagedFiles.push({ type: 'deleted', fileName });
-        break;
-
-      case 'R ': {
+      case 'R': {
         const [fileNameOld, fileNameNew] = fileName.trim().split(' -> ');
         stagedFiles.push({
           type: 'renamed',
@@ -110,7 +104,21 @@ export async function gitChanges(repoPath: string) {
       }
 
       default:
-        console.warn('未知 git 状态', { type });
+        // TODO: C, U
+        break;
+    }
+
+    switch (type[1]) {
+      case 'M':
+        notStagedFiles.push({ type: 'modified', fileName });
+        break;
+
+      case 'D':
+        notStagedFiles.push({ type: 'deleted', fileName });
+        break;
+
+      default:
+        // TODO: A, R, C, U
         break;
     }
   }
