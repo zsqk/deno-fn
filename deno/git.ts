@@ -6,9 +6,13 @@ import { getRunData } from '../mod.ts';
  * 需要 git 支持.
  */
 export async function pullGitRepo(repo: string, opt: {
+  /** SSH 密钥文件地址 */
   keyPath?: string;
+  /** 指定特定分支 */
   branch?: string;
+  /** clone 深度. 默认 1. */
   depth?: string;
+  /** 存放 Git 仓库文件的目录. 默认创建临时目录. */
   dirPath?: string;
 } = {}) {
   // 根据需求创建临时目录
