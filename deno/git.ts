@@ -53,19 +53,7 @@ export async function pullGitRepo(repo: string, opt: {
  * @param repoPath repo 在本地的 path
  */
 export async function gitChanges(repoPath: string) {
-  const res = Deno.run({
-    cmd: ['git', 'status', '--short'],
-    stdout: 'piped',
-    stderr: 'piped',
-    cwd: repoPath,
-  });
-  const output = new TextDecoder('utf-8').decode(await res.output());
-  const errMsg = new TextDecoder('utf-8').decode(await res.stderrOutput());
-  const status = await res.status();
-  res.close();
-  if (!status.success) {
-    throw new Error(`${status.code} ${errMsg}`);
-  }
+  const output = await getRunData(['git', 'status', '--short'], repoPath);
 
   type Changes =
     | { type: 'modified'; fileName: string }
