@@ -96,6 +96,10 @@ export async function onlyRun(
   command: string[] | string,
   opt?: Omit<Parameters<typeof Deno.run>[0], 'cmd' | 'stdout' | 'stderr'>,
 ) {
-  const { code } = await run(command, opt);
+  const { code } = await run(command, {
+    ...opt,
+    stderr: 'inherit',
+    stdout: 'inherit',
+  });
   return code;
 }
