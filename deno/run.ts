@@ -73,9 +73,12 @@ export async function run(
     }
 
     // 错误信息
-    if (!s.success && opt.stderr === 'piped') {
+    if (opt.stderr === 'piped') {
       const stderr = await p.stderrOutput();
-      errMsg = `${code} ${new TextDecoder().decode(stderr)}`;
+      if (s.success) {
+        errMsg += `no error.`;
+      }
+      errMsg += new TextDecoder().decode(stderr);
     }
   } finally {
     p.close();
@@ -91,8 +94,12 @@ export async function run(
  */
 export async function onlyRun(
   command: string[] | string,
-  opt: Omit<Parameters<typeof Deno.run>[0], 'cmd' | 'stdout' | 'stderr'>,
+  opt?: Omit<Parameters<typeof Deno.run>[0], 'cmd' | 'stdout' | 'stderr'>,
 ) {
-  const { code } = await run(command, opt);
+  const { code } = await run(command, {
+    ...opt,
+    stderr: 'inherit',
+    stdout: 'inherit',
+  });
   return code;
 }
