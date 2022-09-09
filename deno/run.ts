@@ -1,5 +1,6 @@
 /**
  * [Deno] 执行命令
+ * @deprecated 使用 `run` 替代以支持更多参数
  * @param command 需要执行的命令
  * @returns 命令执行结果
  */
@@ -38,7 +39,7 @@ export async function getRunData(command: string[], path?: string) {
  * @returns
  */
 export async function run(
-  command: string[],
+  command: string[] | string,
   opt: Omit<Parameters<typeof Deno.run>[0], 'cmd'> = {
     stdout: 'piped',
     stderr: 'piped',
@@ -54,7 +55,7 @@ export async function run(
   /** 进程 */
   const p = Deno.run({
     ...opt,
-    cmd: command,
+    cmd: typeof command === 'string' ? command.split(' ') : command,
   });
 
   let res = '';
@@ -80,4 +81,18 @@ export async function run(
     p.close();
   }
   return { res, errMsg, code };
+}
+
+/**
+ * [Deno] 执行命令 (不需要获取返回数据)
+ * @param command 需要运行的命令
+ * @param opt 参数
+ * @returns
+ */
+export async function onlyRun(
+  command: string[] | string,
+  opt: Omit<Parameters<typeof Deno.run>[0], 'cmd' | 'stdout' | 'stderr'>,
+) {
+  const { code } = await run(command, opt);
+  return code;
 }
