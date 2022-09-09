@@ -30,3 +30,54 @@ export async function getRunData(command: string[], path?: string) {
     run.close();
   }
 }
+
+/**
+ * [Deno] 执行命令
+ * @param command 需要运行的命令
+ * @param opt 参数
+ * @returns
+ */
+export async function run(
+  command: string[],
+  opt: Omit<Parameters<typeof Deno.run>[0], 'cmd'> = {
+    stdout: 'piped',
+    stderr: 'piped',
+  },
+): Promise<{
+  /** 返回结果 */
+  res: string;
+  /** 错误信息 */
+  errMsg: string;
+  /** 结果错误码, 无错为 0 */
+  code: number;
+}> {
+  /** 进程 */
+  const p = Deno.run({
+    ...opt,
+    cmd: command,
+  });
+
+  let res = '';
+  let errMsg = '';
+  let code = 0;
+
+  try {
+    /** 执行状态 */
+    const s = await p.status();
+    code = s.code;
+
+    // 返回信息
+    if (opt.stdout === 'piped') {
+      res = new TextDecoder().decode(await p.output());
+    }
+
+    // 错误信息
+    if (!s.success && opt.stderr === 'piped') {
+      const stderr = await p.stderrOutput();
+      errMsg = `${code} ${new TextDecoder().decode(stderr)}`;
+    }
+  } finally {
+    p.close();
+  }
+  return { res, errMsg, code };
+}
