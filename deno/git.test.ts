@@ -7,9 +7,13 @@ Deno.test('pullGitRepo-https', async () => {
 });
 
 Deno.test('pullGitRepo-ssh', async () => {
+  const keyString = Deno.env.get('TEST_SSH_KEY') ?? '';
+  if (keyString.length < 1) {
+    throw new Error('缺乏有效 SSH KEY, 无法进一步测试');
+  }
   const res = await pullGitRepo(
     'git@github.com:zsqk/deno-fn.git',
-    { skipHostKeyCheck: true, keyString: Deno.env.get('TEST_SSH_KEY') },
+    { skipHostKeyCheck: true, keyString },
   );
   console.log(res);
 });
