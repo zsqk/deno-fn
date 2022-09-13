@@ -18,6 +18,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    environment: test
+
     steps:
       - name: Setup repo
         uses: actions/checkout@v2
