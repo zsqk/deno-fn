@@ -1,4 +1,5 @@
 import { getRunData } from '../mod.ts';
+import { onlyRun } from './run.ts';
 
 /**
  * 拉取 Git 仓库最新内容
@@ -8,6 +9,8 @@ import { getRunData } from '../mod.ts';
 export async function pullGitRepo(repo: string, opt: {
   /** SSH 密钥文件地址 */
   keyPath?: string;
+  /** SSH 密钥 */
+  keyString?: string;
   /** 指定特定分支 */
   branch?: string;
   /** clone 深度. 默认 1. */
@@ -30,6 +33,12 @@ export async function pullGitRepo(repo: string, opt: {
   const sshCommand: string[] = [];
   if (opt.keyPath) {
     sshCommand.push(`-i ${opt.keyPath}`);
+  }
+  if (opt.keyString) {
+    const keyPath = Deno.makeTempDirSync() + '/key';
+    Deno.writeTextFileSync(keyPath, opt.keyString);
+    await onlyRun(`chmod 400 ${keyPath}`);
+    sshCommand.push(`-i ${keyPath}`);
   }
   if (opt.skipHostKeyCheck) {
     sshCommand.push(`-o UserKnownHostsFile=/dev/null`);
