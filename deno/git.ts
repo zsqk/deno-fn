@@ -26,8 +26,8 @@ export async function pullGitRepo(repo: string, opt: {
     branchParam = ['-b', opt.branch];
   }
 
+  let sshParam: Array<string> = [];
   const sshCommand: string[] = [];
-  let keyParam: Array<string> = [];
   if (opt.keyPath) {
     sshCommand.push(`-i ${opt.keyPath}`);
   }
@@ -36,13 +36,13 @@ export async function pullGitRepo(repo: string, opt: {
     sshCommand.push(`-o StrictHostKeyChecking=no`);
   }
   if (sshCommand.length) {
-    keyParam = ['-c', `core.sshCommand=ssh ${sshCommand.join(' ')}`];
+    sshParam = ['-c', `core.sshCommand=ssh ${sshCommand.join(' ')}`];
   }
   const depthParam: Array<string> = ['--depth', opt.depth ?? '1'];
   const command: Array<string> = [
     'git',
     'clone',
-    ...keyParam,
+    ...sshParam,
     repo,
     ...depthParam,
     ...branchParam,
