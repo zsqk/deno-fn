@@ -1,5 +1,4 @@
-import { getRunData } from '../mod.ts';
-import { onlyRun } from './run.ts';
+import { onlyRun, run } from './run.ts';
 
 /**
  * 拉取 Git 仓库最新内容
@@ -22,7 +21,6 @@ export async function pullGitRepo(repo: string, opt: {
 } = {}) {
   // 根据需求创建临时目录
   const tempPath = opt.dirPath ?? Deno.makeTempDirSync();
-  Deno.chdir(tempPath);
 
   let branchParam: Array<string> = [];
   if (opt.branch) {
@@ -58,7 +56,7 @@ export async function pullGitRepo(repo: string, opt: {
   ];
 
   try {
-    await getRunData(command, tempPath);
+    await onlyRun(command, { cwd: tempPath });
   } catch (err) {
     console.error(`git 拉取失败`);
     throw err;
@@ -73,7 +71,10 @@ export async function pullGitRepo(repo: string, opt: {
  * @param repoPath repo 在本地的 path
  */
 export async function gitChanges(repoPath: string) {
-  const output = await getRunData(['git', 'status', '--short'], repoPath);
+  const { res: output } = await run(
+    ['git', 'status', '--short'],
+    { cwd: repoPath },
+  );
 
   type Changes =
     | { type: 'modified'; fileName: string }
