@@ -1,4 +1,5 @@
 import { getRunData } from '../mod.ts';
+import { onlyRun } from './run.ts';
 
 /**
  * 拉取 Git 仓库最新内容
@@ -8,12 +9,16 @@ import { getRunData } from '../mod.ts';
 export async function pullGitRepo(repo: string, opt: {
   /** SSH 密钥文件地址 */
   keyPath?: string;
+  /** SSH 密钥 */
+  keyString?: string;
   /** 指定特定分支 */
   branch?: string;
   /** clone 深度. 默认 1. */
   depth?: string;
   /** 存放 Git 仓库文件的目录. 默认创建临时目录. */
   dirPath?: string;
+  /** 是否要跳过 SSH HOST 检查 (仅在特殊情况下使用) */
+  skipHostKeyCheck?: boolean;
 } = {}) {
   // 根据需求创建临时目录
   const tempPath = opt.dirPath ?? Deno.makeTempDirSync();
@@ -23,15 +28,30 @@ export async function pullGitRepo(repo: string, opt: {
   if (opt.branch) {
     branchParam = ['-b', opt.branch];
   }
-  let keyParam: Array<string> = [];
+
+  let sshParam: Array<string> = [];
+  const sshCommand: string[] = [];
   if (opt.keyPath) {
-    keyParam = ['-c', `core.sshCommand=ssh -i ${opt.keyPath}`];
+    sshCommand.push(`-i ${opt.keyPath}`);
+  }
+  if (opt.keyString) {
+    const keyPath = Deno.makeTempDirSync() + '/key';
+    Deno.writeTextFileSync(keyPath, opt.keyString);
+    await onlyRun(`chmod 400 ${keyPath}`);
+    sshCommand.push(`-i ${keyPath}`);
+  }
+  if (opt.skipHostKeyCheck) {
+    sshCommand.push(`-o UserKnownHostsFile=/dev/null`);
+    sshCommand.push(`-o StrictHostKeyChecking=no`);
+  }
+  if (sshCommand.length) {
+    sshParam = ['-c', `core.sshCommand=ssh ${sshCommand.join(' ')}`];
   }
   const depthParam: Array<string> = ['--depth', opt.depth ?? '1'];
   const command: Array<string> = [
     'git',
     'clone',
-    ...keyParam,
+    ...sshParam,
     repo,
     ...depthParam,
     ...branchParam,

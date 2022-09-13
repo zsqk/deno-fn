@@ -18,6 +18,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    environment: test
+
     steps:
       - name: Setup repo
         uses: actions/checkout@v2
@@ -37,3 +39,5 @@ jobs:
 
       - name: Run tests
         run: deno test -A --unstable
+        env:
+          TEST_SSH_KEY: ${{ secrets.TEST_SSH_KEY }}
