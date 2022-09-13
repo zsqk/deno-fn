@@ -40,10 +40,11 @@ export async function getRunData(command: string[], path?: string) {
  */
 export async function run(
   command: string[] | string,
-  opt: Omit<Parameters<typeof Deno.run>[0], 'cmd'> = {
-    stdout: 'piped',
-    stderr: 'piped',
-  },
+  {
+    stdout = 'piped',
+    stderr = 'piped',
+    ...opt
+  }: Omit<Parameters<typeof Deno.run>[0], 'cmd'> = {},
 ): Promise<{
   /** 返回结果 */
   res: string;
@@ -54,6 +55,8 @@ export async function run(
 }> {
   /** 进程 */
   const p = Deno.run({
+    stdout,
+    stderr,
     ...opt,
     cmd: typeof command === 'string' ? command.split(' ') : command,
   });
@@ -68,12 +71,12 @@ export async function run(
     code = s.code;
 
     // 返回信息
-    if (opt.stdout === 'piped') {
+    if (stdout === 'piped') {
       res = new TextDecoder().decode(await p.output());
     }
 
     // 错误信息
-    if (opt.stderr === 'piped') {
+    if (stderr === 'piped') {
       const stderr = await p.stderrOutput();
       if (s.success) {
         errMsg += `no error.`;
