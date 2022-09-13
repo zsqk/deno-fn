@@ -39,3 +39,5 @@ jobs:
 
       - name: Run tests
         run: deno test -A --unstable
+        env:
+          TEST_SSH_KEY: ${{ secrets.TEST_SSH_KEY }}
