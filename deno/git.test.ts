@@ -1,12 +1,12 @@
 import { assertEquals } from 'https://deno.land/std@0.154.0/testing/asserts.ts';
 import { gitChanges, pullGitRepo } from './git.ts';
 
-Deno.test('pullGitRepo', async () => {
+Deno.test('pullGitRepo-https', async () => {
   const res = await pullGitRepo('https://github.com/zsqk/deno-fn.git');
   console.log(res);
 });
 
-Deno.test('pullGitRepo', async () => {
+Deno.test('pullGitRepo-ssh', async () => {
   const res = await pullGitRepo(
     'git@github.com:zsqk/deno-fn.git',
     { skipHostKeyCheck: true },
