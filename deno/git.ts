@@ -14,6 +14,8 @@ export async function pullGitRepo(repo: string, opt: {
   depth?: string;
   /** 存放 Git 仓库文件的目录. 默认创建临时目录. */
   dirPath?: string;
+  /** 是否要跳过 SSH HOST 检查 (仅在特殊情况下使用) */
+  skipHostKeyCheck?: boolean;
 } = {}) {
   // 根据需求创建临时目录
   const tempPath = opt.dirPath ?? Deno.makeTempDirSync();
@@ -23,9 +25,17 @@ export async function pullGitRepo(repo: string, opt: {
   if (opt.branch) {
     branchParam = ['-b', opt.branch];
   }
+
+  const sshCommand: string[] = [];
   let keyParam: Array<string> = [];
   if (opt.keyPath) {
-    keyParam = ['-c', `core.sshCommand=ssh -i ${opt.keyPath}`];
+    sshCommand.push(`-i ${opt.keyPath}`);
+  }
+  if (opt.skipHostKeyCheck) {
+    sshCommand.push(`-o StrictHostKeyChecking=no`);
+  }
+  if (sshCommand.length) {
+    keyParam = ['-c', `core.sshCommand=ssh ${sshCommand.join(' ')}`];
   }
   const depthParam: Array<string> = ['--depth', opt.depth ?? '1'];
   const command: Array<string> = [

@@ -6,6 +6,14 @@ Deno.test('pullGitRepo', async () => {
   console.log(res);
 });
 
+Deno.test('pullGitRepo', async () => {
+  const res = await pullGitRepo(
+    'git@github.com:zsqk/deno-fn.git',
+    { skipHostKeyCheck: true },
+  );
+  console.log(res);
+});
+
 Deno.test('gitChanges-newfile', async () => {
   const path = await pullGitRepo('https://github.com/zsqk/deno-fn.git');
   console.log(path);
