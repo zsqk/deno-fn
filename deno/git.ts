@@ -32,6 +32,7 @@ export async function pullGitRepo(repo: string, opt: {
     sshCommand.push(`-i ${opt.keyPath}`);
   }
   if (opt.skipHostKeyCheck) {
+    sshCommand.push(`-o UserKnownHostsFile=/dev/null`);
     sshCommand.push(`-o StrictHostKeyChecking=no`);
   }
   if (sshCommand.length) {
