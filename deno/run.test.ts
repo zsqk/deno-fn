@@ -1,10 +1,21 @@
-import { assertEquals } from 'https://deno.land/std@0.154.0/testing/asserts.ts';
+import {
+  assertEquals,
+  assertRejects,
+} from 'https://deno.land/std@0.154.0/testing/asserts.ts';
 
 import { onlyRun, run } from './run.ts';
 
-Deno.test('run', async () => {
+Deno.test('run-base', async () => {
   const { res } = await run('pwd', { cwd: '/' });
   assertEquals(res, '/\n');
+});
+
+Deno.test('run-null', async () => {
+  await assertRejects(
+    () => run('somenull'),
+    Error,
+    'command or file not found: somenull',
+  );
 });
 
 Deno.test('onlyRun', async () => {
