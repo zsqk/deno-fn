@@ -53,17 +53,30 @@ export async function run(
   /** 结果错误码, 无错为 0 */
   code: number;
 }> {
-  /** 进程 */
-  const p = Deno.run({
-    stdout,
-    stderr,
-    ...opt,
-    cmd: typeof command === 'string' ? command.split(' ') : command,
-  });
-
   let res = '';
   let errMsg = '';
   let code = 0;
+
+  /** 进程 */
+  let p: Deno.Process;
+  const cmd = typeof command === 'string' ? command.split(' ') : command;
+  try {
+    p = Deno.run({
+      stdout,
+      stderr,
+      ...opt,
+      cmd,
+    });
+  } catch (err) {
+    if (!(err instanceof Error)) {
+      throw new Error(`${err}`);
+    }
+    if (err.name === 'NotFound') {
+      console.error(err);
+      err.message = `command or file not found: ${cmd[0]}`;
+    }
+    throw err;
+  }
 
   try {
     /** 执行状态 */
