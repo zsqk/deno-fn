@@ -14,6 +14,11 @@ export async function hashString(
   return hexString(hashRes);
 }
 
+/**
+ * 将二进制数据储存为 HEX (16 进制字符串)
+ * @param data 二进制数据
+ * @returns HEX (16 进制字符串)
+ */
 export function hexString(data: Uint8Array): string {
   let s = '';
   for (const d of encode(data)) {
