@@ -23,7 +23,7 @@ export function hexString(data: Uint8Array): string {
 }
 
 export async function hmac(
-  hash: 'SHA-256' | 'SHA-512',
+  hash: 'SHA-1' | 'SHA-256' | 'SHA-512',
   /** secret key */
   s: string | Uint8Array,
   /** data */
