@@ -23,27 +23,37 @@ export function hexString(data: Uint8Array): string {
 }
 
 export async function hmac(
-  hash: 'SHA-1' | 'SHA-256' | 'SHA-512',
-  /** secret key */
-  s: string | Uint8Array,
+  key: {
+    hash: 'SHA-1' | 'SHA-256' | 'SHA-512';
+    /** secret key */
+    s: string | Uint8Array;
+  } | CryptoKey,
   /** data */
   d: string | Uint8Array,
 ) {
-  const keyData = typeof s === 'string' ? new TextEncoder().encode(s) : s;
-  const key = await crypto.subtle.importKey(
-    'raw',
-    keyData,
-    { name: 'HMAC', hash },
-    true,
-    ['sign', 'verify'],
-  );
+  const textEncoder = new TextEncoder();
 
-  const data = typeof d === 'string' ? new TextEncoder().encode(d) : d;
+  let cryptoKey: CryptoKey;
+  if (key instanceof CryptoKey) {
+    cryptoKey = key;
+  } else {
+    const { s, hash } = key;
+    const keyData = typeof s === 'string' ? textEncoder.encode(s) : s;
+    cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      keyData,
+      { name: 'HMAC', hash },
+      true,
+      ['sign', 'verify'],
+    );
+  }
+
+  const data = typeof d === 'string' ? textEncoder.encode(d) : d;
 
   const res = new Uint8Array(
     await crypto.subtle.sign(
       'HMAC',
-      key,
+      cryptoKey,
       data,
     ),
   );
