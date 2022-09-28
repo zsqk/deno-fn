@@ -20,3 +20,14 @@ Deno.test('lz-string-c', () => {
   const d2 = decompress(d1, dict);
   assertEquals(d2, '中文');
 });
+
+Deno.test('lz-string-decompress-error', () => {
+  const d2 = decompress('test');
+  assertEquals(d2, null);
+
+  {
+    const d1 = compress('中文', genKeyStr());
+    const d2 = decompress(d1);
+    assertNotEquals(d2, '中文');
+  }
+});

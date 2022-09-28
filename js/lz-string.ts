@@ -277,7 +277,7 @@ function _decompress(length: number, resetValue: number, getNextValue: any) {
     entry: any = '',
     result = [],
     i,
-    w: any,
+    w: string,
     bits,
     resb,
     maxpower,
@@ -341,6 +341,9 @@ function _decompress(length: number, resetValue: number, getNextValue: any) {
       return '';
   }
   dictionary[3] = c;
+  if (c === undefined) {
+    return null;
+  }
   w = c;
   result.push(c);
   while (data.index <= length) {
@@ -453,7 +456,6 @@ export function decompress(
   input: string,
   dict = keyStrUriSafe,
 ) {
-  if (input == null) return '';
   if (input == '') return null;
   input = input.replace(/ /g, '+');
   return _decompress(input.length, 32, function (index: number) {
