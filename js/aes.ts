@@ -70,7 +70,7 @@ export function genIV(
  *             允许普通字符串 (并非 base64 字符串) 或者二进制数据
  * @returns 加密后的 base64 编码的结果
  */
-export async function encryptBase(
+export async function encrypt(
   cryptoKey: CryptoKey,
   iv: Uint8Array,
   data: Uint8Array | string,
@@ -91,7 +91,7 @@ export async function encryptBase(
  * @param encrypted 需要解密的的二进制数据, 允许 base64 编码的字符串和普通
  * @returns
  */
-export async function decryptBase(
+export async function decrypt(
   cryptoKey: CryptoKey,
   iv: Uint8Array,
   encrypted: string | Uint8Array,
