@@ -112,6 +112,13 @@ export async function decrypt(
   return textDecoder.decode(decrypted);
 }
 
+/**
+ * 加密
+ * @param cryptoKey 用于加密的 key
+ * @param iv 随机向量
+ * @param dataStr 需要加密的字符串数据
+ * @returns 加密后的 base64 编码的结果
+ */
 export async function encryptBase(
   cryptoKey: CryptoKey,
   iv: Uint8Array,
@@ -126,6 +133,13 @@ export async function encryptBase(
   return encode(encrypted);
 }
 
+/**
+ * 解密
+ * @param cryptoKey 用于解密的 key
+ * @param iv 随机向量
+ * @param dataStr 需要解密的 base64 编码的数据
+ * @returns
+ */
 export async function decryptBase(
   cryptoKey: CryptoKey,
   iv: Uint8Array,
