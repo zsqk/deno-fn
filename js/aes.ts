@@ -46,20 +46,23 @@ export async function genAesKey(
 /**
  * 生成 随机的初始向量
  * @param l 字节长度 (不是位长度)
- * @param method Math.random (默认值) 更快且兼容性更强, getRandomValues 更随机
+ * @param method Math.random 更快且兼容性更强, getRandomValues 更随机
+ * 经测试, Math.random 速度会快 50% 左右, 但基于安全考虑, 如果不指定, 则优先使用
+ * getRandomValues, 如果无法使用 getRandomValues, 再回退到 Math.random.
  * @returns 随机的初始向量
  */
 export function genIV(
   l: number,
-  method: 'Math.random' | 'getRandomValues' = 'Math.random',
+  method?: 'Math.random' | 'getRandomValues',
 ): Uint8Array {
-  if (method === 'Math.random') {
-    return new Uint8Array(l).map(() => Math.trunc(256 * Math.random()));
-  }
-  if (method === 'getRandomValues') {
+  if (
+    method === 'getRandomValues' ||
+    (method === undefined &&
+      typeof window.crypto?.getRandomValues === 'function')
+  ) {
     return window.crypto.getRandomValues(new Uint8Array(l));
   }
-  throw new Error(`invalid method`);
+  return new Uint8Array(l).map(() => Math.trunc(256 * Math.random()));
 }
 
 /**
