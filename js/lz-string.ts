@@ -1,3 +1,4 @@
+// deno-lint-ignore-file prefer-const no-explicit-any
 // Copyright (c) 2013 Pieroxy <pieroxy@pieroxy.net>
 // This work is free. You can redistribute it and/or modify it
 // under the terms of the WTFPL, Version 2
@@ -12,7 +13,7 @@
 const f = String.fromCharCode;
 const keyStrUriSafe =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-!';
-const baseReverseDic: any = {};
+const baseReverseDic: Record<string, { [key: string]: number }> = {};
 
 /**
  * 乱序字符串
@@ -44,7 +45,7 @@ function getBaseValue(alphabet: string, character: string) {
 function _compress(
   uncompressed: string | null,
   bitsPerChar: number,
-  getCharFromInt: any,
+  getCharFromInt: (v: number) => string,
 ) {
   if (uncompressed == null) return '';
   let i,
@@ -270,6 +271,7 @@ function _compress(
 
 function _decompress(length: number, resetValue: number, getNextValue: any) {
   let dictionary = [],
+    // deno-lint-ignore no-unused-vars
     next,
     enlargeIn = 4,
     dictSize = 4,
