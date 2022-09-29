@@ -66,18 +66,19 @@ export function genIV(
  * 加密
  * @param cryptoKey 用于加密的 key
  * @param iv 随机向量
- * @param dataStr 需要加密的字符串数据
+ * @param data 需要加密的数据.
+ *             允许普通字符串 (并非 base64 字符串) 或者二进制数据
  * @returns 加密后的 base64 编码的结果
  */
 export async function encryptBase(
   cryptoKey: CryptoKey,
   iv: Uint8Array,
-  dataStr: string,
+  data: Uint8Array | string,
 ) {
   const encrypted = await crypto.subtle.encrypt(
     { name: cryptoKey.algorithm.name, iv },
     cryptoKey,
-    textEncoder.encode(dataStr),
+    typeof data === 'string' ? textEncoder.encode(data) : data,
   );
 
   return encode(encrypted);
@@ -87,18 +88,18 @@ export async function encryptBase(
  * 解密
  * @param cryptoKey 用于解密的 key
  * @param iv 随机向量
- * @param dataStr 需要解密的 base64 编码的数据
+ * @param encrypted 需要解密的的二进制数据, 允许 base64 编码的字符串和普通
  * @returns
  */
 export async function decryptBase(
   cryptoKey: CryptoKey,
   iv: Uint8Array,
-  dataStr: string,
+  encrypted: string | Uint8Array,
 ) {
   const decrypted = await crypto.subtle.decrypt(
     { name: cryptoKey.algorithm.name, iv },
     cryptoKey,
-    decode(dataStr),
+    typeof encrypted === 'string' ? decode(encrypted) : encrypted,
   );
 
   return textDecoder.decode(decrypted);
