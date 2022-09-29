@@ -12,8 +12,8 @@ const textDecoder = new TextDecoder();
  * 功能点:
  *
  * 1. 随机生成 key.
- * 2. 生成后的 key 进行 base64 编码.
- * 3. 根据 base64 字符串生成 key.
+ * 2. 支持传入的 base64 编码 key.
+ * 3. 支持传入的二进制 key.
  */
 export async function genAesKey(
   type: 'AES-CBC' | 'AES-GCM',
@@ -26,7 +26,7 @@ export async function genAesKey(
   if (typeof k === 'string') {
     u8aKey = decode(k);
   } else if (typeof k === 'number') {
-    u8aKey = new Uint8Array(k / 8).map(() => Math.trunc(256 * Math.random()));
+    u8aKey = genIV(k / 8);
   } else {
     u8aKey = k;
   }
