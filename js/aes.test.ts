@@ -1,19 +1,17 @@
-import {
-  decrypt,
-  decryptBase,
-  encrypt,
-  encryptBase,
-  genAesKey,
-  genIV,
-} from './aes.ts';
+import { decryptBase, encryptBase, genAesKey, genIV } from './aes.ts';
 import { assertEquals } from 'https://deno.land/std@0.131.0/testing/asserts.ts';
 
 Deno.test('encrypt-decrypt-1', async () => {
-  const d1 = await encrypt(
+  const [k, u] = await genAesKey(
+    'AES-CBC',
     'aaabWe22zMdfpVVF6kFsZ9E4ODL1wjjykB5ifzjLzzz',
+  );
+  const d1 = await encryptBase(
+    k,
+    u.slice(16),
     '中文',
   );
-  const d2 = await decrypt('aaabWe22zMdfpVVF6kFsZ9E4ODL1wjjykB5ifzjLzzz', d1);
+  const d2 = await decryptBase(k, u.slice(16), d1);
   assertEquals(d2, '中文');
 });
 

@@ -6,31 +6,6 @@ import {
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
-export async function encrypt(
-  keyStr: string,
-  dataStr: string,
-) {
-  const u8aKey = decode(keyStr);
-
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    u8aKey,
-    {
-      name: 'AES-CBC',
-    },
-    false,
-    ['encrypt', 'decrypt'],
-  );
-
-  const encrypted = await crypto.subtle.encrypt(
-    { name: 'AES-CBC', iv: u8aKey.slice(16) },
-    cryptoKey,
-    textEncoder.encode(dataStr),
-  );
-
-  return encode(encrypted);
-}
-
 /**
  * 生成 key 功能
  *
@@ -87,31 +62,6 @@ export function genIV(
   throw new Error(`invalid method`);
 }
 
-export async function decrypt(
-  keyStr: string,
-  dataStr: string,
-) {
-  const u8aKey = decode(keyStr);
-
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    u8aKey,
-    {
-      name: 'AES-CBC',
-    },
-    false,
-    ['encrypt', 'decrypt'],
-  );
-
-  const decrypted = await crypto.subtle.decrypt(
-    { name: 'AES-CBC', iv: u8aKey.slice(16) },
-    cryptoKey,
-    decode(dataStr),
-  );
-
-  return textDecoder.decode(decrypted);
-}
-
 /**
  * 加密
  * @param cryptoKey 用于加密的 key
@@ -153,7 +103,3 @@ export async function decryptBase(
 
   return textDecoder.decode(decrypted);
 }
-
-// 加密功能:
-// 1. 随机生成 key.
-// 2. 根据字符串生成 key.
