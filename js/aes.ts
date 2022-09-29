@@ -68,6 +68,25 @@ export async function genAesKey(
   return [cryptoKey, u8aKey];
 }
 
+/**
+ * 生成 随机的初始向量
+ * @param l 字节长度 (不是位长度)
+ * @param method Math.random (默认值) 更快且兼容性更强, getRandomValues 更随机
+ * @returns 随机的初始向量
+ */
+export function genIV(
+  l: number,
+  method: 'Math.random' | 'getRandomValues' = 'Math.random',
+): Uint8Array {
+  if (method === 'Math.random') {
+    return new Uint8Array(l).map(() => Math.trunc(256 * Math.random()));
+  }
+  if (method === 'getRandomValues') {
+    return window.crypto.getRandomValues(new Uint8Array(l));
+  }
+  throw new Error(`invalid method`);
+}
+
 export async function decrypt(
   keyStr: string,
   dataStr: string,

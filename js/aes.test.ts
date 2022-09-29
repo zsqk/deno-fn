@@ -4,6 +4,7 @@ import {
   encrypt,
   encryptBase,
   genAesKey,
+  genIV,
 } from './aes.ts';
 import { assertEquals } from 'https://deno.land/std@0.131.0/testing/asserts.ts';
 
@@ -53,7 +54,7 @@ Deno.test('encrypt-decrypt-cbc128', async () => {
     'AES-CBC',
     128,
   );
-  const iv = new Uint8Array(16).map(() => Math.trunc(256 * Math.random()));
+  const iv = genIV(16, 'Math.random');
   const d1 = await encryptBase(
     k,
     iv,
@@ -68,7 +69,7 @@ Deno.test('encrypt-decrypt-cbc256', async () => {
     'AES-CBC',
     256,
   );
-  const iv = new Uint8Array(16).map(() => Math.trunc(256 * Math.random()));
+  const iv = genIV(16, 'getRandomValues');
   const d1 = await encryptBase(
     k,
     iv,
@@ -83,7 +84,7 @@ Deno.test('encrypt-decrypt-gcm256', async () => {
     'AES-GCM',
     256,
   );
-  const iv = new Uint8Array(12).map(() => Math.trunc(256 * Math.random()));
+  const iv = genIV(12, 'getRandomValues');
   const d1 = await encryptBase(
     k,
     iv,
@@ -97,7 +98,7 @@ Deno.test('encrypt-decrypt-gcm192', async () => {
   const [k] = await genAesKey(
     'AES-GCM',
   );
-  const iv = new Uint8Array(12).map(() => Math.trunc(256 * Math.random()));
+  const iv = genIV(12, 'Math.random');
   const d1 = await encryptBase(
     k,
     iv,
