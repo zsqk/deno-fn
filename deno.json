@@ -6,6 +6,7 @@
     "files": {
       "include": [
         "js/",
+        "ts/",
         "deno/",
         "test/",
         "mod.ts"
