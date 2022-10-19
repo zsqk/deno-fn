@@ -18,9 +18,12 @@ const baseReverseDic: Record<string, { [key: string]: number }> = {};
 
 /**
  * 乱序字符串
+ * @param str 基础字符串
+ * @returns 经过乱序的字符串
+ *
  * @author Lian Zheren <lzr@go0356.com>
  */
-export function genKeyStr(str = keyStrUriSafe) {
+export function genKeyStr(str = keyStrUriSafe): string {
   const arr = [...str];
   const maxI = arr.length - 1;
   for (let i = 0; i < arr.length; i++) {

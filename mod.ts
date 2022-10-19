@@ -6,10 +6,11 @@ import { getRunData } from './deno/run.ts';
 
 /**
  * [Deno] 解析 JSON 格式的 Deno.Reader 为 JS 对象
+ * @deprecated 因为 Deno 支持 Request 所以不再需要该功能.
  * @param reqBody
  * @returns
  */
-export async function readBody(reqBody?: Deno.Reader) {
+export async function readBody(reqBody?: Deno.Reader): Promise<unknown> {
   if (reqBody === undefined) {
     return {};
   }
@@ -109,7 +110,7 @@ export async function getComputeInfo(): Promise<ComputeInfo> {
 /**
  * [Deno] 根据计算机信息自动生成名称
  */
-export async function getComputeKey() {
+export async function getComputeKey(): Promise<string> {
   const { hostname, os } = await getComputeInfo();
   return ''.concat(
     os,

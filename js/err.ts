@@ -38,7 +38,7 @@ export function autoRetry<T extends Array<any>, R>(
     /** 超时时间, 毫秒, 默认不限 */
     timeout?: number;
   } = {},
-) {
+): (...rest: T) => Promise<R> {
   let left = retry;
   let timeoutError: Error;
   const max = Date.now() + timeout;

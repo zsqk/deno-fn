@@ -35,7 +35,7 @@ export async function hmac(
   } | CryptoKey,
   /** data */
   d: string | Uint8Array,
-) {
+): Promise<Uint8Array> {
   const textEncoder = new TextEncoder();
 
   let cryptoKey: CryptoKey;

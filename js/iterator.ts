@@ -5,7 +5,7 @@ export function every<T>(
   it: IterableIterator<T>,
   size: number,
   fn: (v: T) => boolean,
-) {
+): boolean {
   for (let i = 0; i < size; i++) {
     if (!fn(it.next().value)) {
       return false;
@@ -21,7 +21,7 @@ export function some<T>(
   it: IterableIterator<T>,
   size: number,
   fn: (v: T) => boolean,
-) {
+): boolean {
   for (let i = 0; i < size; i++) {
     if (fn(it.next().value)) {
       return true;

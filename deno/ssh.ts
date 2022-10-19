@@ -1,6 +1,9 @@
 import { onlyRun } from './run.ts';
 
-export async function genKey({ email = 'test@ssh.org' } = {}) {
+export async function genKey({ email = 'test@ssh.org' } = {}): Promise<{
+  keyPath: string;
+  pubPath: string;
+}> {
   const path = Deno.makeTempDirSync();
   const c = [
     'ssh-keygen',
