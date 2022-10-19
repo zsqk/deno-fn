@@ -1,4 +1,4 @@
-import { every } from './iterator.ts';
+import { every } from "./iterator";
 
 /**
  * 判断对象是否为空对象
@@ -7,9 +7,7 @@ import { every } from './iterator.ts';
  *
  * @returns 是否为空对象, true 为 空, false 为非空
  */
-export function isEmptyObj(
-  obj: Record<string, unknown>,
-): boolean {
+export function isEmptyObj(obj: Record<string, unknown>): boolean {
   const arr = Object.values(obj);
   return arr.every((v) => v === undefined);
 }
@@ -30,10 +28,11 @@ export function isEmpty(obj: unknown): boolean {
   if (obj === null) {
     return false;
   }
-  if (typeof obj === 'object') {
+  if (typeof obj === "object") {
     if (obj instanceof Map || obj instanceof Set) {
-      return obj.size === 0 ||
-        every(obj.values(), obj.size, (v) => v === undefined);
+      return (
+        obj.size === 0 || every(obj.values(), obj.size, (v) => v === undefined)
+      );
     }
     return isEmptyObj(obj as Record<string, unknown>);
   }

@@ -1,17 +1,5 @@
 {
-  "deno.codeLens.implementations": true,
-  "deno.codeLens.referencesAllFunctions": true,
-  "deno.codeLens.references": true,
-  "deno.codeLens.test": true,
-  "deno.enable": true,
-  "deno.config": "./deno.json",
-  "deno.lint": true,
+  "deno.enable": false,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[typescript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
-  },
-  "editor.formatOnSave": true,
-  "[sql]": {
-    "editor.formatOnSave": false
-  }
+  "editor.formatOnSave": true
 }

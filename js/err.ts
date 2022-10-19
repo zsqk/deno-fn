@@ -1,4 +1,4 @@
-import { delay } from 'https://deno.land/std@0.153.0/async/delay.ts';
+import { delay } from "../lib/delay";
 
 /**
  * 判断一个错误是否是网络错误, 如果是网络错误, 一般可以重试
@@ -7,13 +7,13 @@ import { delay } from 'https://deno.land/std@0.153.0/async/delay.ts';
  */
 export function isNetworkError(err: Error): boolean {
   if (
-    err.name === 'ConnectionError' ||
-    err.name === 'ConnectionReset' ||
-    err.name === 'ConnectionRefused' ||
-    err.name === 'TimedOut' ||
-    err.message.includes('tls handshake eof') ||
-    err.message.includes('failed to lookup address information') ||
-    err.message.includes('Could not check if server accepts SSL connections')
+    err.name === "ConnectionError" ||
+    err.name === "ConnectionReset" ||
+    err.name === "ConnectionRefused" ||
+    err.name === "TimedOut" ||
+    err.message.includes("tls handshake eof") ||
+    err.message.includes("failed to lookup address information") ||
+    err.message.includes("Could not check if server accepts SSL connections")
   ) {
     return true;
   }
@@ -28,7 +28,12 @@ export function isNetworkError(err: Error): boolean {
 // deno-lint-ignore no-explicit-any
 export function autoRetry<T extends Array<any>, R>(
   fn: (...rest: T) => Promise<R>,
-  { retry = 3, isRetryable = isNetworkError, delayms = 0, timeout = 0 }: {
+  {
+    retry = 3,
+    isRetryable = isNetworkError,
+    delayms = 0,
+    timeout = 0,
+  }: {
     /** 可重试次数, 默认为 3 */
     retry?: number;
     /** 判断发生错误后是否可以重试 */
@@ -37,7 +42,7 @@ export function autoRetry<T extends Array<any>, R>(
     delayms?: number;
     /** 超时时间, 毫秒, 默认不限 */
     timeout?: number;
-  } = {},
+  } = {}
 ): (...rest: T) => Promise<R> {
   let left = retry;
   let timeoutError: Error;
@@ -58,7 +63,7 @@ export function autoRetry<T extends Array<any>, R>(
         }
         if (isRetryable(err)) {
           timeoutError = err;
-          delayms && await delay(delayms);
+          delayms && (await delay(delayms));
           continue;
         }
         throw err;

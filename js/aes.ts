@@ -1,7 +1,4 @@
-import {
-  decode,
-  encode,
-} from 'https://deno.land/std@0.151.0/encoding/base64.ts';
+import { decode, encode } from "../lib/base64";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -16,29 +13,29 @@ const textDecoder = new TextDecoder();
  * 3. 支持传入的二进制 key.
  */
 export async function genAesKey(
-  type: 'AES-CBC' | 'AES-GCM',
+  type: "AES-CBC" | "AES-GCM",
   /**
    * base64 string 或者二进制数据, 或者选择密钥长度
    */
-  k: string | Uint8Array | 128 | 192 | 256 = 192,
+  k: string | Uint8Array | 128 | 192 | 256 = 192
 ): Promise<[CryptoKey, Uint8Array]> {
   let u8aKey: Uint8Array;
-  if (typeof k === 'string') {
+  if (typeof k === "string") {
     u8aKey = decode(k);
-  } else if (typeof k === 'number') {
+  } else if (typeof k === "number") {
     u8aKey = genIV(k / 8);
   } else {
     u8aKey = k;
   }
 
   const cryptoKey = await crypto.subtle.importKey(
-    'raw',
+    "raw",
     u8aKey,
     {
       name: type,
     },
     false,
-    ['encrypt', 'decrypt'],
+    ["encrypt", "decrypt"]
   );
   return [cryptoKey, u8aKey];
 }
@@ -53,12 +50,12 @@ export async function genAesKey(
  */
 export function genIV(
   l: number,
-  method?: 'Math.random' | 'getRandomValues',
+  method?: "Math.random" | "getRandomValues"
 ): Uint8Array {
   if (
-    method === 'getRandomValues' ||
+    method === "getRandomValues" ||
     (method === undefined &&
-      typeof window.crypto?.getRandomValues === 'function')
+      typeof window.crypto?.getRandomValues === "function")
   ) {
     return window.crypto.getRandomValues(new Uint8Array(l));
   }
@@ -76,12 +73,12 @@ export function genIV(
 export async function encrypt(
   cryptoKey: CryptoKey,
   iv: Uint8Array,
-  data: Uint8Array | string,
+  data: Uint8Array | string
 ): Promise<string> {
   const encrypted = await crypto.subtle.encrypt(
     { name: cryptoKey.algorithm.name, iv },
     cryptoKey,
-    typeof data === 'string' ? textEncoder.encode(data) : data,
+    typeof data === "string" ? textEncoder.encode(data) : data
   );
 
   return encode(encrypted);
@@ -97,12 +94,12 @@ export async function encrypt(
 export async function decrypt(
   cryptoKey: CryptoKey,
   iv: Uint8Array,
-  encrypted: string | Uint8Array,
+  encrypted: string | Uint8Array
 ): Promise<string> {
   const decrypted = await crypto.subtle.decrypt(
     { name: cryptoKey.algorithm.name, iv },
     cryptoKey,
-    typeof encrypted === 'string' ? decode(encrypted) : encrypted,
+    typeof encrypted === "string" ? decode(encrypted) : encrypted
   );
 
   return textDecoder.decode(decrypted);

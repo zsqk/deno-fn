@@ -1,0 +1,30 @@
+{
+  "name": "@zsqk/some-fn",
+  "version": "0.0.1",
+  "description": "some functions for browser",
+  "main": "build/index.js",
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "prepare": "tsc",
+    "test": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zsqk/browser-fn.git"
+  },
+  "author": "zsqk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zsqk/browser-fn/issues"
+  },
+  "homepage": "https://github.com/zsqk/browser-fn#readme",
+  "contributors": [
+    "iugo <npm@iugo.dev> (https://iugo.dev/)"
+  ],
+  "devDependencies": {
+    "jest": "^29.2.1",
+    "typescript": "^4.8.4"
+  }
+}
