@@ -1,3 +1,4 @@
+/* eslint-disable */
 // deno-lint-ignore-file prefer-const no-explicit-any
 // Copyright (c) 2013 Pieroxy <pieroxy@pieroxy.net>
 // This work is free. You can redistribute it and/or modify it
@@ -270,14 +271,14 @@ function _compress(
 }
 
 function _decompress(length: number, resetValue: number, getNextValue: any) {
-  let dictionary = [],
+  let dictionary: any[] = [],
     // deno-lint-ignore no-unused-vars
     next,
     enlargeIn = 4,
     dictSize = 4,
     numBits = 3,
     entry: any = '',
-    result = [],
+    result: any[] = [],
     i,
     w: string,
     bits,
