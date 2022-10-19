@@ -4,10 +4,12 @@ import { every } from './iterator.ts';
  * 判断对象是否为空对象
  *
  * 与 `JSON.stringify(obj) === '{}'` 效果一致.
+ *
+ * @returns 是否为空对象, true 为 空, false 为非空
  */
 export function isEmptyObj(
   obj: Record<string, unknown>,
-) {
+): boolean {
   const arr = Object.values(obj);
   return arr.every((v) => v === undefined);
 }
@@ -18,8 +20,10 @@ export function isEmptyObj(
  * 1. `undefined`, `{}`, `{a:undefined}`, `[]`, `[undefined]` is empty.
  * 2. `null`, `0`, `''`, `0n`, `false`, `{a:null}`, `[null]` is not empty.
  * 3. 支持 Map 和 Set.
+ *
+ * @returns 是否为空, true 为 空, false 为非空
  */
-export function isEmpty(obj: unknown) {
+export function isEmpty(obj: unknown): boolean {
   if (obj === undefined) {
     return true;
   }

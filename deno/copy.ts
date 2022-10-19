@@ -17,7 +17,7 @@ export function copyMapSync(
     /** 过滤函数 */
     filter?: (name: string, dir: string) => boolean;
   },
-) {
+): void {
   function map(path: string) {
     for (const dirEntry of Deno.readDirSync(src + path)) {
       if (dirEntry.isDirectory) {

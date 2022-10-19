@@ -4,7 +4,10 @@
  * @param command 需要执行的命令
  * @returns 命令执行结果
  */
-export async function getRunData(command: string[], path?: string) {
+export async function getRunData(
+  command: string[],
+  path?: string,
+): Promise<string> {
   /** 进程 */
   const run = Deno.run({
     cmd: command,
@@ -111,7 +114,7 @@ export async function run(
 export async function onlyRun(
   command: string[] | string,
   opt?: Omit<Parameters<typeof Deno.run>[0], 'cmd' | 'stdout' | 'stderr'>,
-) {
+): Promise<number> {
   const { code } = await run(command, {
     ...opt,
     stderr: 'inherit',

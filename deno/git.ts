@@ -5,20 +5,23 @@ import { onlyRun, run } from './run.ts';
  *
  * 需要 git 支持.
  */
-export async function pullGitRepo(repo: string, opt: {
-  /** SSH 密钥文件地址 */
-  keyPath?: string;
-  /** SSH 密钥 */
-  keyString?: string;
-  /** 指定特定分支 */
-  branch?: string;
-  /** clone 深度. 默认 1. */
-  depth?: string;
-  /** 存放 Git 仓库文件的目录. 默认创建临时目录. */
-  dirPath?: string;
-  /** 是否要跳过 SSH HOST 检查 (仅在特殊情况下使用) */
-  skipHostKeyCheck?: boolean;
-} = {}) {
+export async function pullGitRepo(
+  repo: string,
+  opt: {
+    /** SSH 密钥文件地址 */
+    keyPath?: string;
+    /** SSH 密钥 */
+    keyString?: string;
+    /** 指定特定分支 */
+    branch?: string;
+    /** clone 深度. 默认 1. */
+    depth?: string;
+    /** 存放 Git 仓库文件的目录. 默认创建临时目录. */
+    dirPath?: string;
+    /** 是否要跳过 SSH HOST 检查 (仅在特殊情况下使用) */
+    skipHostKeyCheck?: boolean;
+  } = {},
+): Promise<string> {
   // 根据需求创建临时目录
   const tempPath = opt.dirPath ?? Deno.makeTempDirSync();
 
@@ -65,22 +68,25 @@ export async function pullGitRepo(repo: string, opt: {
   return tempPath;
 }
 
+type Changes =
+  | { type: 'modified'; fileName: string }
+  | { type: 'deleted'; fileName: string }
+  | { type: 'renamed'; fileNameOld: string; fileNameNew: string }
+  | { type: 'newfile'; fileName: string };
+
 /**
  * 查看本地 Git 仓库的变动
  * [参考文档](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)
  * @param repoPath repo 在本地的 path
  */
-export async function gitChanges(repoPath: string) {
+export async function gitChanges(repoPath: string): Promise<{
+  stagedFiles: Changes[];
+  notStagedFiles: Changes[];
+}> {
   const { res: output } = await run(
     ['git', 'status', '--short'],
     { cwd: repoPath },
   );
-
-  type Changes =
-    | { type: 'modified'; fileName: string }
-    | { type: 'deleted'; fileName: string }
-    | { type: 'renamed'; fileNameOld: string; fileNameNew: string }
-    | { type: 'newfile'; fileName: string };
 
   const stagedFiles: Changes[] = [];
   const notStagedFiles: Changes[] = [];

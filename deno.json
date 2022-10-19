@@ -2,6 +2,30 @@
   "compilerOptions": {
     "strict": true
   },
+  "lint": {
+    "files": {
+      "include": [
+        "js/",
+        "ts/",
+        "deno/",
+        "test/",
+        "mod.ts"
+      ]
+    },
+    "rules": {
+      "tags": [
+        "recommended"
+      ],
+      "include": [
+        "eqeqeq",
+        "explicit-module-boundary-types",
+        "no-throw-literal"
+      ],
+      "exclude": [
+        "ban-unused-ignore"
+      ]
+    }
+  },
   "fmt": {
     "files": {
       "include": [

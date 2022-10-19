@@ -10,7 +10,7 @@
  * @param ms
  * @returns
  */
-export function msRender(ms: number) {
+export function msRender(ms: number): string {
   const { y, w, d, h, m, s, ms: msLeft } = timeAnalyze({ ms });
   if (y) {
     return `${y}年${w}周`;
@@ -30,6 +30,7 @@ export function msRender(ms: number) {
   if (s) {
     return `${s}.${msLeft.toString().padStart(3, '0')}秒`;
   }
+  return `${msLeft}毫秒`;
 }
 
 /**
@@ -45,7 +46,15 @@ export function msRender(ms: number) {
 export function timeAnalyze(
   time: { ms: number },
   opt: { leapyear?: boolean } = {},
-) {
+): {
+  y: number;
+  w: number;
+  d: number;
+  h: number;
+  m: number;
+  s: number;
+  ms: number;
+} {
   // 总 ms 数
   const { ms } = time;
 
@@ -102,20 +111,23 @@ export function timeAnalyze(
  * @param opt
  * @returns
  */
-export function timeSummarize(time: {
-  y: number;
-  w: number;
-  d: number;
-  h: number;
-  m: number;
-  s: number;
-  ms: number;
-}, opt: {
-  /** 是否考虑闰年 */
-  leapyear?: boolean;
-  /** 要返回时间的类型, 默认为 ms */
-  type?: 'ms' | 's' | 'm' | 'h' | 'd';
-} = {}) {
+export function timeSummarize(
+  time: {
+    y: number;
+    w: number;
+    d: number;
+    h: number;
+    m: number;
+    s: number;
+    ms: number;
+  },
+  opt: {
+    /** 是否考虑闰年 */
+    leapyear?: boolean;
+    /** 要返回时间的类型, 默认为 ms */
+    type?: 'ms' | 's' | 'm' | 'h' | 'd';
+  } = {},
+): number {
   const { y, w, d, h, m, s, ms } = time;
 
   /** days by year */

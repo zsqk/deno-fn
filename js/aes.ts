@@ -77,7 +77,7 @@ export async function encrypt(
   cryptoKey: CryptoKey,
   iv: Uint8Array,
   data: Uint8Array | string,
-) {
+): Promise<string> {
   const encrypted = await crypto.subtle.encrypt(
     { name: cryptoKey.algorithm.name, iv },
     cryptoKey,
@@ -98,7 +98,7 @@ export async function decrypt(
   cryptoKey: CryptoKey,
   iv: Uint8Array,
   encrypted: string | Uint8Array,
-) {
+): Promise<string> {
   const decrypted = await crypto.subtle.decrypt(
     { name: cryptoKey.algorithm.name, iv },
     cryptoKey,

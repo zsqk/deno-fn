@@ -1,5 +1,5 @@
 /* eslint-disable */
-// deno-lint-ignore-file prefer-const no-explicit-any
+// deno-lint-ignore-file prefer-const no-explicit-any eqeqeq
 // Copyright (c) 2013 Pieroxy <pieroxy@pieroxy.net>
 // This work is free. You can redistribute it and/or modify it
 // under the terms of the WTFPL, Version 2
@@ -18,9 +18,12 @@ const baseReverseDic: Record<string, { [key: string]: number }> = {};
 
 /**
  * 乱序字符串
+ * @param str 基础字符串
+ * @returns 经过乱序的字符串
+ *
  * @author Lian Zheren <lzr@go0356.com>
  */
-export function genKeyStr(str = keyStrUriSafe) {
+export function genKeyStr(str = keyStrUriSafe): string {
   const arr = [...str];
   const maxI = arr.length - 1;
   for (let i = 0; i < arr.length; i++) {
@@ -443,7 +446,7 @@ export function compress(
   /** 需要压缩的内容 */
   input: string,
   dict = keyStrUriSafe,
-) {
+): string {
   if (input == null) return '';
   return _compress(input, 6, function (a: number) {
     return dict.charAt(a);
@@ -458,7 +461,7 @@ export function decompress(
   /** 需要解压的内容 */
   input: string,
   dict = keyStrUriSafe,
-) {
+): string | null {
   if (input == '') return null;
   input = input.replace(/ /g, '+');
   return _decompress(input.length, 32, function (index: number) {
