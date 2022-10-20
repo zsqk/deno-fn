@@ -2,7 +2,6 @@
   "name": "@zsqk/some-fn",
   "version": "0.0.1",
   "description": "some functions for browser",
-  "main": "build/index.js",
   "engines": {
     "node": ">=16"
   },
@@ -15,7 +14,7 @@
     "url": "git+https://github.com/zsqk/browser-fn.git"
   },
   "author": "zsqk",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/zsqk/browser-fn/issues"
   },
@@ -24,6 +23,8 @@
     "iugo <npm@iugo.dev> (https://iugo.dev/)"
   ],
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
     "jest": "^29.2.1",
     "typescript": "^4.8.4"
   }

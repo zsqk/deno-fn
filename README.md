@@ -1,6 +1,4 @@
-# browser-fn / somefn
-
-<a href="https://deno.land/x/somefn"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fdeno-visualizer.danopia.net%2Fshields%2Flatest-version%2Fx%2Fsomefn%2Fmod.ts" alt="somefn latest /x/ version" /></a>
+# somefn [![npm version](https://img.shields.io/npm/v/@zsqk/somefn.svg?style=flat)](https://www.npmjs.com/package/@zsqk/somefn) ![node version](https://img.shields.io/node/v/@zsqk/somefn.svg?style=flat)
 
 some functions for browser
 
@@ -14,3 +12,7 @@ some functions for browser
   - SHA256
   - SHA512
 - Uint8Array to hex string tools
+
+## dev
+
+publish: `npm publish --access public`
