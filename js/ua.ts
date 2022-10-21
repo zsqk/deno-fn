@@ -4,11 +4,13 @@ export function parserUA(ua: string): {
   isHmos: boolean;
   hmosVersion: string | null;
 } {
-  const base = parserUACommon(ua);
+  const base = Object.fromEntries(
+    parserUACommon(ua).map(({ key, ...rest }) => [key, rest]),
+  );
   let isDingtalk = false;
   let dingtalkVersion: string | null = null;
   {
-    const aliapp = base.find((v) => v.key === 'AliApp');
+    const aliapp = base['AliApp'];
     if (aliapp && aliapp.info.length === 1) {
       // 根据真实 UA 猜测, 如果阿里将来 UA 变动, 可能导致出错
       const [{ key, version }] = parserUACommon(aliapp.info[0]);
@@ -22,7 +24,7 @@ export function parserUA(ua: string): {
   let isHmos = false;
   let hmosVersion: string | null = null;
   {
-    const hmos = base.find((v) => v.key === 'Hmos');
+    const hmos = base['Hmos'];
     if (hmos) {
       isHmos = true;
       hmosVersion = hmos.version!;
