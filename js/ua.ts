@@ -8,7 +8,14 @@ type OSName =
   | 'Chrome OS'
   | 'unknown';
 
-type SoftwareName = '钉钉' | '支付宝' | '微信' | '企业微信' | '飞书' | 'Lark' | 'unknown';
+type SoftwareName =
+  | '钉钉'
+  | '支付宝'
+  | '微信'
+  | '企业微信'
+  | '飞书'
+  | 'Lark'
+  | 'unknown';
 
 export function parserUA(ua: string): {
   isDingtalk: boolean;
@@ -127,7 +134,7 @@ export function parserUACommon(
     } else if (s === ')') {
       // 结束附加信息写入
       isBlock = false;
-      arr[arr.length - 1].info.push(...temp.split(';').map((v) => v.trim()));
+      arr[arr.length - 1].info.push(...temp.split(';').map(v => v.trim()));
       temp = '';
     } else if (s === ' ' && !isBlock) {
       // 结束一段信息
