@@ -33,7 +33,7 @@ export function parserUA(ua: string): {
     }
   }
 
-  // 简单判断 OS 信息
+  // 简单识别 OS 信息
   for (const info of base['Mozilla'].info) {
     // TODO: 从 13 开始, 改名为 iPadOS
     if (info === 'iPad') {
@@ -62,9 +62,7 @@ export function parserUA(ua: string): {
     }
   }
 
-  // TODO: 判断是否为 Android
-  //       (注意, 一定要在判断 hmos 之前, 否则会因兼容导致误判)
-
+  // 鸿蒙 OS 识别
   let hmosVersion: string | null = null;
   const hmos = base['Hmos'];
   if (hmos) {
