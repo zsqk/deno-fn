@@ -15,4 +15,9 @@ some functions for browser
 
 ## dev
 
-publish: `npm publish --access public`
+publish:
+
+```sh
+npm run tsc && cp package*.json build && cp README.md build
+npm publish ./build --access public
+```
