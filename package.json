@@ -1,6 +1,6 @@
 {
   "name": "@zsqk/somefn",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "some functions for browser",
   "engines": {
     "node": ">=16"
