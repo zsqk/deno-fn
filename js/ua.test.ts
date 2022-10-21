@@ -25,8 +25,11 @@ const workweixinUA =
 const alipayUA =
   `Mozilla/5.0 (Linux; U; Android 10; zh-CN; H9493 Build/52.1.A.3.49) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/69.0.3497.100 UWS/3.21.0.169 Mobile Safari/537.36 AlipayChannelId/5136 UCBS/3.21.0.169_200731162109 NebulaSDK/1.8.100112 Nebula AlipayDefined(nt:WIFI,ws:411|0|3.5,ac:sp) AliApp(AP/10.2.0.8026) AlipayClient/10.2.0.8026 Language/zh-Hans useStatusBar/true isConcaveScreen/false Region/CN NebulaX/1.0.0 Ariver/1.0.0`;
 const alipayRes = parserUA(alipayUA);
+const feishuUA =
+  `Mozilla/5.0 (iPhone; CPU iPhone OS 15_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.6 Mobile/15E148 Safari/604.1 Lark/5.21.3 LarkLocale/zh_CN ChannelName/Feishu LKBrowserIdentifier/3CDCC4D9-6106-40EF-97E2-F39C858C6E03`;
+const feishuRes = parserUA(feishuUA);
 
-Deno.test('ua-dingtalk', () => {
+Deno.test('ua-sw', () => {
   const iPadRes = parserUA(iPadUA);
   assertObjectMatch(iPadRes, {
     isDingtalk: true,
@@ -39,19 +42,19 @@ Deno.test('ua-dingtalk', () => {
     dingtalkVersion: '6.5.45',
     softwareName: '钉钉',
   });
-});
 
-Deno.test('ua-alipay', () => {
   assertObjectMatch(alipayRes, { softwareName: '支付宝' });
-});
 
-Deno.test('ua-weixin', () => {
   const weixinRes = parserUA(weixinUA);
   assertObjectMatch(weixinRes, { softwareName: '微信' });
 
   const workweixinRes = parserUA(workweixinUA);
   assertObjectMatch(workweixinRes, {
     softwareName: '企业微信',
+  });
+
+  assertObjectMatch(feishuRes, {
+    softwareName: '飞书',
   });
 });
 

@@ -8,7 +8,7 @@ type OSName =
   | 'Chrome OS'
   | 'unknown';
 
-type SoftwareName = '钉钉' | '支付宝' | '微信' | '企业微信' | 'unknown';
+type SoftwareName = '钉钉' | '支付宝' | '微信' | '企业微信' | '飞书' | 'Lark' | 'unknown';
 
 export function parserUA(ua: string): {
   isDingtalk: boolean;
@@ -83,6 +83,13 @@ export function parserUA(ua: string): {
   }
   if (base['wxwork']) {
     softwareName = '企业微信';
+  }
+
+  if (base['Lark']) {
+    softwareName = 'Lark';
+    if (base['ChannelName'].version === 'Feishu') {
+      softwareName = '飞书';
+    }
   }
 
   return {
