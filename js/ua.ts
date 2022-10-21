@@ -8,20 +8,22 @@ type OSName =
   | 'Chrome OS'
   | 'unknown';
 
+type SoftwareName = '钉钉' | '支付宝' | '微信' | '企业微信' | 'unknown';
+
 export function parserUA(ua: string): {
   isDingtalk: boolean;
   dingtalkVersion: string | null;
   hmosVersion: string | null;
   isMobile: boolean;
   os: OSName;
-  isWeixin: boolean;
-  isWorkWeixin: boolean;
+  softwareName: SoftwareName;
 } {
   const base = Object.fromEntries(
     parserUACommon(ua).map(({ key, ...rest }) => [key, rest]),
   );
 
   let os: OSName = 'unknown';
+  let softwareName: SoftwareName = 'unknown';
 
   let isDingtalk = false;
   let dingtalkVersion: string | null = null;
@@ -32,6 +34,10 @@ export function parserUA(ua: string): {
     if (key === 'DingTalk') {
       isDingtalk = true;
       dingtalkVersion = version!;
+      softwareName = '钉钉';
+    }
+    if (key === 'AP') {
+      softwareName = '支付宝';
     }
   }
 
@@ -72,14 +78,11 @@ export function parserUA(ua: string): {
     hmosVersion = hmos.version!;
   }
 
-  let isWeixin = false;
   if (base['MicroMessenger']) {
-    isWeixin = true;
+    softwareName = '微信';
   }
-  let isWorkWeixin = false;
   if (base['wxwork']) {
-    isWeixin = false;
-    isWorkWeixin = true;
+    softwareName = '企业微信';
   }
 
   return {
@@ -88,8 +91,7 @@ export function parserUA(ua: string): {
     hmosVersion,
     isMobile: base['Mobile'] !== undefined,
     os,
-    isWeixin,
-    isWorkWeixin,
+    softwareName,
   };
 }
 
