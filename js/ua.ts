@@ -14,6 +14,8 @@ export function parserUA(ua: string): {
   hmosVersion: string | null;
   isMobile: boolean;
   os: OSName;
+  isWeixin: boolean;
+  isWorkWeixin: boolean;
 } {
   const base = Object.fromEntries(
     parserUACommon(ua).map(({ key, ...rest }) => [key, rest]),
@@ -70,12 +72,24 @@ export function parserUA(ua: string): {
     hmosVersion = hmos.version!;
   }
 
+  let isWeixin = false;
+  if (base['MicroMessenger']) {
+    isWeixin = true;
+  }
+  let isWorkWeixin = false;
+  if (base['wxwork']) {
+    isWeixin = false;
+    isWorkWeixin = true;
+  }
+
   return {
     isDingtalk,
     dingtalkVersion,
     hmosVersion,
     isMobile: base['Mobile'] !== undefined,
     os,
+    isWeixin,
+    isWorkWeixin,
   };
 }
 
