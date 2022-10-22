@@ -12,6 +12,22 @@ some functions for browser
   - SHA256
   - SHA512
 - Uint8Array to hex string tools
+- UA 解析
+  - UA 结构整理
+  - OS 识别
+  - 软件识别
+- lz 压缩
+
+## 使用说明
+
+### UA 识别
+
+```ts
+import { parserUA } from '@zsqk/somefn/js/ua';
+
+const ua = parserUA(window.navigator.userAgent);
+const name = `${ua.os} ${ua.softwareName}`;
+```
 
 ## dev
 
