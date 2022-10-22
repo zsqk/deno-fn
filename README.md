@@ -34,6 +34,5 @@ const name = `${ua.os} ${ua.softwareName}`;
 publish:
 
 ```sh
-npm run tsc && cp package*.json build && cp README.md build
-npm publish ./build --access public
+npm run tsc && cp package*.json build && cp README.md build && npm publish ./build --access public
 ```
