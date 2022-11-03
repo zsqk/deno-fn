@@ -78,31 +78,43 @@ export function timeAnalyze(
 
   /** 总秒数 */
   const s = (ms - res.ms) / 1000;
+  if (s === 0) {
+    return res;
+  }
 
   // s 精度
   res.s = s % 60;
 
   /** 总分钟数 */
   const m = (s - res.s) / 60;
+  if (m === 0) {
+    return res;
+  }
 
   // m 精度
   res.m = m % 60;
 
   /** 总小时数 */
   const h = (m - res.m) / 60;
+  if (h === 0) {
+    return res;
+  }
 
   // h 精度
   res.h = h % 24;
 
   /** 总天数 */
   const d = (h - res.h) / 24;
+  if (d === 0) {
+    return res;
+  }
 
   /** 不足一年的天数 */
   let leftDays: number;
 
   if (opt.leapyear) {
     // 考虑闰年
-    const leftDaysL = d % 1461;
+    const leftDaysL = d % 1461; // 1461 为每四年 (包含闰年) 的总天数
     res.y = (d - leftDaysL) / 1461 * 4;
     leftDays = leftDaysL % 365;
     res.y += (leftDaysL - leftDays) / 365;
