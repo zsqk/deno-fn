@@ -3,6 +3,26 @@
 // 渲染 ms 时间 (通过结构化)
 
 /**
+ * 已被分析并且结构化的时间
+ */
+type AnalyzedTime = {
+  /** 年 */
+  y: number;
+  /** 周 */
+  w: number;
+  /** 天 */
+  d: number;
+  /** 小时 */
+  h: number;
+  /** 分钟 */
+  m: number;
+  /** 秒 */
+  s: number;
+  /** 毫秒 */
+  ms: number;
+};
+
+/**
  * 渲染毫秒时间
  *
  * 默认为 2 精度, 比如 `1h30m20s` 保留精度后为 `1h30m`.
@@ -46,15 +66,7 @@ export function msRender(ms: number): string {
 export function timeAnalyze(
   time: { ms: number },
   opt: { leapyear?: boolean } = {},
-): {
-  y: number;
-  w: number;
-  d: number;
-  h: number;
-  m: number;
-  s: number;
-  ms: number;
-} {
+): AnalyzedTime {
   // 总 ms 数
   const { ms } = time;
 
@@ -66,40 +78,56 @@ export function timeAnalyze(
 
   /** 总秒数 */
   const s = (ms - res.ms) / 1000;
+  if (s === 0) {
+    return res;
+  }
 
   // s 精度
   res.s = s % 60;
 
   /** 总分钟数 */
   const m = (s - res.s) / 60;
+  if (m === 0) {
+    return res;
+  }
 
+  // m 精度
   res.m = m % 60;
 
+  /** 总小时数 */
   const h = (m - res.m) / 60;
+  if (h === 0) {
+    return res;
+  }
 
+  // h 精度
   res.h = h % 24;
 
   /** 总天数 */
   const d = (h - res.h) / 24;
+  if (d === 0) {
+    return res;
+  }
 
-  // 不足一年的天数
+  /** 不足一年的天数 */
   let leftDays: number;
 
-  // 考虑闰年
   if (opt.leapyear) {
-    const leftDaysL = d % 1461;
+    // 考虑闰年
+    const leftDaysL = d % 1461; // 1461 为每四年 (包含闰年) 的总天数
     res.y = (d - leftDaysL) / 1461 * 4;
     leftDays = leftDaysL % 365;
     res.y += (leftDaysL - leftDays) / 365;
   } else {
     leftDays = d % 365;
-    // 整年数
+    // set 整年数
     res.y = (d - leftDays) / 365;
   }
 
-  // 不足一周的天数
+  // set 不足一周的天数
   res.d = leftDays % 7;
 
+  // set 不足一年的周数
   res.w = (leftDays - res.d) / 7;
 
   return res;
@@ -112,15 +140,7 @@ export function timeAnalyze(
  * @returns
  */
 export function timeSummarize(
-  time: {
-    y: number;
-    w: number;
-    d: number;
-    h: number;
-    m: number;
-    s: number;
-    ms: number;
-  },
+  time: AnalyzedTime,
   opt: {
     /** 是否考虑闰年 */
     leapyear?: boolean;
