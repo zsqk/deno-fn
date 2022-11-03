@@ -47,12 +47,19 @@ export function timeAnalyze(
   time: { ms: number },
   opt: { leapyear?: boolean } = {},
 ): {
+  /** 年 */
   y: number;
+  /** 周 */
   w: number;
+  /** 天 */
   d: number;
+  /** 小时 */
   h: number;
+  /** 分钟 */
   m: number;
+  /** 秒 */
   s: number;
+  /** 毫秒 */
   ms: number;
 } {
   // 总 ms 数
@@ -73,33 +80,37 @@ export function timeAnalyze(
   /** 总分钟数 */
   const m = (s - res.s) / 60;
 
+  // m 精度
   res.m = m % 60;
 
+  /** 总小时数 */
   const h = (m - res.m) / 60;
 
+  // h 精度
   res.h = h % 24;
 
   /** 总天数 */
   const d = (h - res.h) / 24;
 
-  // 不足一年的天数
+  /** 不足一年的天数 */
   let leftDays: number;
 
-  // 考虑闰年
   if (opt.leapyear) {
+    // 考虑闰年
     const leftDaysL = d % 1461;
     res.y = (d - leftDaysL) / 1461 * 4;
     leftDays = leftDaysL % 365;
     res.y += (leftDaysL - leftDays) / 365;
   } else {
     leftDays = d % 365;
-    // 整年数
+    // set 整年数
     res.y = (d - leftDays) / 365;
   }
 
-  // 不足一周的天数
+  // set 不足一周的天数
   res.d = leftDays % 7;
 
+  // set 不足一年的周数
   res.w = (leftDays - res.d) / 7;
 
   return res;
