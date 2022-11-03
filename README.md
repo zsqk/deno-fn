@@ -31,6 +31,10 @@ const name = `${ua.os} ${ua.softwareName}`;
 
 ## dev
 
+本仓库不直接提交新功能, 所有新功能均从上层项目中拉取.
+
+本仓库只做 npm 适配工作.
+
 publish:
 
 ```sh
