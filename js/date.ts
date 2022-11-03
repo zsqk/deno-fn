@@ -3,6 +3,26 @@
 // 渲染 ms 时间 (通过结构化)
 
 /**
+ * 已被分析并且结构化的时间
+ */
+type AnalyzedTime = {
+  /** 年 */
+  y: number;
+  /** 周 */
+  w: number;
+  /** 天 */
+  d: number;
+  /** 小时 */
+  h: number;
+  /** 分钟 */
+  m: number;
+  /** 秒 */
+  s: number;
+  /** 毫秒 */
+  ms: number;
+};
+
+/**
  * 渲染毫秒时间
  *
  * 默认为 2 精度, 比如 `1h30m20s` 保留精度后为 `1h30m`.
@@ -46,22 +66,7 @@ export function msRender(ms: number): string {
 export function timeAnalyze(
   time: { ms: number },
   opt: { leapyear?: boolean } = {},
-): {
-  /** 年 */
-  y: number;
-  /** 周 */
-  w: number;
-  /** 天 */
-  d: number;
-  /** 小时 */
-  h: number;
-  /** 分钟 */
-  m: number;
-  /** 秒 */
-  s: number;
-  /** 毫秒 */
-  ms: number;
-} {
+): AnalyzedTime {
   // 总 ms 数
   const { ms } = time;
 
@@ -123,15 +128,7 @@ export function timeAnalyze(
  * @returns
  */
 export function timeSummarize(
-  time: {
-    y: number;
-    w: number;
-    d: number;
-    h: number;
-    m: number;
-    s: number;
-    ms: number;
-  },
+  time: AnalyzedTime,
   opt: {
     /** 是否考虑闰年 */
     leapyear?: boolean;
