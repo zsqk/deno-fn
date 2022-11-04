@@ -1,4 +1,4 @@
-import { getMonths, timeAnalyze, timeSummarize } from './date.ts';
+import { getMonths, parseDate, timeAnalyze, timeSummarize } from './date.ts';
 import {
   assertEquals,
   assertThrows,
@@ -140,4 +140,17 @@ Deno.test({
     assertEquals(before, [1572710400, 1575129599]);
     assertEquals(after, [1617206400, 1618329600]);
   },
+});
+
+Deno.test('parseDate', () => {
+  const date = new Date('2021/08/03');
+  const res = parseDate(date);
+  assertEquals(res, {
+    y: '2021',
+    m: '08',
+    d: '03',
+    h: '00',
+    min: '00',
+    s: '00',
+  });
 });
