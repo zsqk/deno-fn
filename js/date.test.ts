@@ -40,8 +40,8 @@ Deno.test({
   fn() {
     assertThrows(() => {
       getMonths(
-        Math.trunc(new Date('2021/01/14').getTime() / 1000),
-        Math.trunc(new Date('2021/01/03').getTime() / 1000),
+        Math.trunc(new Date('2021/01/14 GMT+08:00').getTime() / 1000),
+        Math.trunc(new Date('2021/01/03 GMT+08:00').getTime() / 1000),
       );
     });
   },
@@ -51,8 +51,8 @@ Deno.test({
   name: 'getMonths 本月部分',
   fn() {
     const { months, before, after } = getMonths(
-      Math.trunc(new Date('2021/01/03').getTime() / 1000),
-      Math.trunc(new Date('2021/01/14').getTime() / 1000),
+      Math.trunc(new Date('2021/01/03 GMT+08:00').getTime() / 1000),
+      Math.trunc(new Date('2021/01/14 GMT+08:00').getTime() / 1000),
     );
     assertEquals(months, []);
     assertEquals(before, [1609603200, 1610553600]);
@@ -64,8 +64,8 @@ Deno.test({
   name: 'getMonths 相邻两月不跨年',
   fn() {
     const { months, before, after } = getMonths(
-      Math.trunc(new Date('2021/01/03').getTime() / 1000),
-      Math.trunc(new Date('2021/02/14').getTime() / 1000),
+      Math.trunc(new Date('2021/01/03 GMT+08:00').getTime() / 1000),
+      Math.trunc(new Date('2021/02/14 GMT+08:00').getTime() / 1000),
     );
     assertEquals(months, []);
     assertEquals(before, [1609603200, 1613232000]);
@@ -77,8 +77,8 @@ Deno.test({
   name: 'getMonths 相邻两月跨年',
   fn() {
     const { months, before, after } = getMonths(
-      Math.trunc(new Date('2020/12/03').getTime() / 1000),
-      Math.trunc(new Date('2021/01/14').getTime() / 1000),
+      Math.trunc(new Date('2020/12/03 GMT+08:00').getTime() / 1000),
+      Math.trunc(new Date('2021/01/14 GMT+08:00').getTime() / 1000),
     );
     assertEquals(months, []);
     assertEquals(before, [1606924800, 1610553600]);
@@ -90,8 +90,8 @@ Deno.test({
   name: 'getMonths 普通多月',
   fn() {
     const { months, before, after } = getMonths(
-      Math.trunc(new Date('2021/01/03').getTime() / 1000),
-      Math.trunc(new Date('2021/04/14').getTime() / 1000),
+      Math.trunc(new Date('2021/01/03 GMT+08:00').getTime() / 1000),
+      Math.trunc(new Date('2021/04/14 GMT+08:00').getTime() / 1000),
     );
     assertEquals(months, ['202102', '202103']);
     assertEquals(before, [1609603200, 1612108799]);
@@ -103,8 +103,8 @@ Deno.test({
   name: 'getMonths 跨年多月',
   fn() {
     const { months, before, after } = getMonths(
-      Math.trunc(new Date('2020/11/03').getTime() / 1000),
-      Math.trunc(new Date('2021/04/14').getTime() / 1000),
+      Math.trunc(new Date('2020/11/03 GMT+08:00').getTime() / 1000),
+      Math.trunc(new Date('2021/04/14 GMT+08:00').getTime() / 1000),
     );
     assertEquals(months, ['202012', '202101', '202102', '202103']);
     assertEquals(before, [1604332800, 1606751999]);
@@ -116,8 +116,8 @@ Deno.test({
   name: 'getMonths 跨多年',
   fn() {
     const { months, before, after } = getMonths(
-      Math.trunc(new Date('2019/11/03').getTime() / 1000),
-      Math.trunc(new Date('2021/04/14').getTime() / 1000),
+      Math.trunc(new Date('2019/11/03 GMT+08:00').getTime() / 1000),
+      Math.trunc(new Date('2021/04/14 GMT+08:00').getTime() / 1000),
     );
     assertEquals(months, [
       '201912',
