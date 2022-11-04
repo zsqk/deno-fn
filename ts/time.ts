@@ -13,3 +13,6 @@ export type UnixTimestamp = number;
 export function isUnixTimestamp(v: unknown): v is UnixTimestamp {
   return Number.isSafeInteger(v);
 }
+
+/** 整月字符串(6 位), 比如 `202101` 表示 2021 年 1 月 */
+export type MonthString = string;

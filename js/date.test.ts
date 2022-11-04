@@ -1,5 +1,14 @@
-import { timeAnalyze, timeSummarize } from './date.ts';
-import { assertEquals } from 'https://deno.land/std@0.131.0/testing/asserts.ts';
+import {
+  getMonths,
+  parseDate,
+  timeAnalyze,
+  timeSummarize,
+  toUnixTimestamp,
+} from './date.ts';
+import {
+  assertEquals,
+  assertThrows,
+} from 'https://deno.land/std@0.131.0/testing/asserts.ts';
 
 Deno.test('renderTime', () => {
   assertEquals(
@@ -30,4 +39,131 @@ Deno.test('renderTime', () => {
     timeAnalyze({ ms: 1659147770282 }, { leapyear: true }),
     { y: 52, w: 30, d: 0, h: 2, m: 22, s: 50, ms: 282 },
   );
+});
+
+Deno.test({
+  name: 'getMonths 错误',
+  fn() {
+    assertThrows(() => {
+      getMonths(
+        toUnixTimestamp('2021/01/14 GMT+08:00'),
+        toUnixTimestamp('2021/01/03 GMT+08:00'),
+        { timezone: 'GMT+08:00' },
+      );
+    });
+  },
+});
+
+Deno.test({
+  name: 'getMonths 本月部分',
+  fn() {
+    const { months, before, after } = getMonths(
+      toUnixTimestamp('2021/01/03 GMT+08:00'),
+      toUnixTimestamp('2021/01/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
+    );
+    assertEquals(months, []);
+    assertEquals(before, [1609603200, 1610553600]);
+    assertEquals(after, undefined);
+  },
+});
+
+Deno.test({
+  name: 'getMonths 相邻两月不跨年',
+  fn() {
+    const { months, before, after } = getMonths(
+      toUnixTimestamp('2021/01/03 GMT+08:00'),
+      toUnixTimestamp('2021/02/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
+    );
+    assertEquals(months, []);
+    assertEquals(before, [1609603200, 1613232000]);
+    assertEquals(after, undefined);
+  },
+});
+
+Deno.test({
+  name: 'getMonths 相邻两月跨年',
+  fn() {
+    const { months, before, after } = getMonths(
+      toUnixTimestamp('2020/12/03 GMT+08:00'),
+      toUnixTimestamp('2021/01/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
+    );
+    assertEquals(months, []);
+    assertEquals(before, [1606924800, 1610553600]);
+    assertEquals(after, undefined);
+  },
+});
+
+Deno.test({
+  name: 'getMonths 普通多月',
+  fn() {
+    const { months, before, after } = getMonths(
+      toUnixTimestamp('2021/01/03 GMT+08:00'),
+      toUnixTimestamp('2021/04/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
+    );
+    assertEquals(months, ['202102', '202103']);
+    assertEquals(before, [1609603200, 1612108799]);
+    assertEquals(after, [1617206400, 1618329600]);
+  },
+});
+
+Deno.test({
+  name: 'getMonths 跨年多月',
+  fn() {
+    const { months, before, after } = getMonths(
+      toUnixTimestamp('2020/11/03 GMT+08:00'),
+      toUnixTimestamp('2021/04/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
+    );
+    assertEquals(months, ['202012', '202101', '202102', '202103']);
+    assertEquals(before, [1604332800, 1606751999]);
+    assertEquals(after, [1617206400, 1618329600]);
+  },
+});
+
+Deno.test({
+  name: 'getMonths 跨多年',
+  fn() {
+    const { months, before, after } = getMonths(
+      toUnixTimestamp('2019/11/03 GMT+08:00'),
+      toUnixTimestamp('2021/04/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
+    );
+    assertEquals(months, [
+      '201912',
+      '202001',
+      '202002',
+      '202003',
+      '202004',
+      '202005',
+      '202006',
+      '202007',
+      '202008',
+      '202009',
+      '202010',
+      '202011',
+      '202012',
+      '202101',
+      '202102',
+      '202103',
+    ]);
+    assertEquals(before, [1572710400, 1575129599]);
+    assertEquals(after, [1617206400, 1618329600]);
+  },
+});
+
+Deno.test('parseDate', () => {
+  const date = new Date('2021/08/03');
+  const res = parseDate(date);
+  assertEquals(res, {
+    y: '2021',
+    m: '08',
+    d: '03',
+    h: '00',
+    min: '00',
+    s: '00',
+  });
 });
