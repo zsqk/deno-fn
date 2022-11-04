@@ -365,16 +365,16 @@ export function toUnixTimestamp(
 
 /**
  * 解析 Date 对象的时间
- * @param v
+ * @param v 需要解析的时间, 默认为当前
  * @param opt 参数
  * @returns
  */
 export function parseDate(
   v:
-    | { date: Date }
+    | Date
     | { unixMS: MillisecondTimestamp }
-    | { unixS: UnixTimestamp } = { date: new Date() },
-  opt: { isUTC: boolean },
+    | { unixS: UnixTimestamp } = new Date(),
+  opt: { isUTC?: boolean } = {},
 ): {
   y: string;
   m: string;
@@ -389,7 +389,7 @@ export function parseDate(
   } else if ('unixS' in v) {
     date = new Date(v.unixS * 1000);
   } else {
-    date = v.date;
+    date = v;
   }
 
   if (opt.isUTC) {
