@@ -357,10 +357,23 @@ export function getBeginningOfMonth(
   return new Date(`${y}/${m.toString().padStart(2, '0')}`).getTime();
 }
 
+/**
+ * 获取 UNIX 时间戳
+ * @param v 毫秒时间戳, Date, 或者生成 Date 所需的字符串
+ * @returns
+ */
 export function toUnixTimestamp(
-  v: MillisecondTimestamp = Date.now(),
+  v: MillisecondTimestamp | Date | string = Date.now(),
 ): UnixTimestamp {
-  return Math.trunc(v / 1000);
+  let t: number;
+  if (typeof v === 'string') {
+    t = new Date(v).getTime();
+  } else if (v instanceof Date) {
+    t = v.getTime();
+  } else {
+    t = v;
+  }
+  return Math.trunc(t / 1000);
 }
 
 /**
