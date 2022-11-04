@@ -48,6 +48,7 @@ Deno.test({
       getMonths(
         toUnixTimestamp('2021/01/14 GMT+08:00'),
         toUnixTimestamp('2021/01/03 GMT+08:00'),
+        { timezone: 'GMT+08:00' },
       );
     });
   },
@@ -59,6 +60,7 @@ Deno.test({
     const { months, before, after } = getMonths(
       toUnixTimestamp('2021/01/03 GMT+08:00'),
       toUnixTimestamp('2021/01/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
     );
     assertEquals(months, []);
     assertEquals(before, [1609603200, 1610553600]);
@@ -72,6 +74,7 @@ Deno.test({
     const { months, before, after } = getMonths(
       toUnixTimestamp('2021/01/03 GMT+08:00'),
       toUnixTimestamp('2021/02/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
     );
     assertEquals(months, []);
     assertEquals(before, [1609603200, 1613232000]);
@@ -85,6 +88,7 @@ Deno.test({
     const { months, before, after } = getMonths(
       toUnixTimestamp('2020/12/03 GMT+08:00'),
       toUnixTimestamp('2021/01/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
     );
     assertEquals(months, []);
     assertEquals(before, [1606924800, 1610553600]);
@@ -98,6 +102,7 @@ Deno.test({
     const { months, before, after } = getMonths(
       toUnixTimestamp('2021/01/03 GMT+08:00'),
       toUnixTimestamp('2021/04/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
     );
     assertEquals(months, ['202102', '202103']);
     assertEquals(before, [1609603200, 1612108799]);
@@ -111,6 +116,7 @@ Deno.test({
     const { months, before, after } = getMonths(
       toUnixTimestamp('2020/11/03 GMT+08:00'),
       toUnixTimestamp('2021/04/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
     );
     assertEquals(months, ['202012', '202101', '202102', '202103']);
     assertEquals(before, [1604332800, 1606751999]);
@@ -124,6 +130,7 @@ Deno.test({
     const { months, before, after } = getMonths(
       toUnixTimestamp('2019/11/03 GMT+08:00'),
       toUnixTimestamp('2021/04/14 GMT+08:00'),
+      { timezone: 'GMT+08:00' },
     );
     assertEquals(months, [
       '201912',

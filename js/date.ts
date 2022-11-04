@@ -206,6 +206,7 @@ export function getMonths(
   startAt: UnixTimestamp,
   /** 结束时间 (包含) */
   endAt: UnixTimestamp,
+  opt: { timezone?: string } = {},
 ): {
   /** 月份, 202101 */
   months: string[];
@@ -242,8 +243,8 @@ export function getMonths(
   }
 
   let before: [UnixTimestamp, UnixTimestamp] | undefined = undefined;
-  if (startMillisecond !== getBeginningOfMonth(start)) {
-    before = [startAt, Math.trunc(getEndOfMonth(start) / 1000)];
+  if (startMillisecond !== getBeginningOfMonth(start, opt)) {
+    before = [startAt, Math.trunc(getEndOfMonth(start, opt) / 1000)];
     if (startMonth === 12) {
       startYear += 1;
       startMonth = 1;
@@ -253,8 +254,8 @@ export function getMonths(
   }
 
   let after: [UnixTimestamp, UnixTimestamp] | undefined = undefined;
-  if (endMillisecond !== getEndOfMonth(end)) {
-    after = [Math.trunc(getBeginningOfMonth(end) / 1000), endAt];
+  if (endMillisecond !== getEndOfMonth(end, opt)) {
+    after = [Math.trunc(getBeginningOfMonth(end, opt) / 1000), endAt];
     if (endMonth === 1) {
       endYear -= 1;
       endMonth = 12;
@@ -312,12 +313,19 @@ export function getMonths(
  * @returns 月末时间的毫秒时间戳
  * @author iugo <code@iugo.dev>
  */
-export function getEndOfMonth(v: Date | MonthString): MillisecondTimestamp {
+export function getEndOfMonth(
+  v: Date | MonthString,
+  opt: { timezone?: string } = {},
+): MillisecondTimestamp {
   let d: Date;
   if (v instanceof Date) {
     d = v;
   } else if (typeof v === 'string') {
-    d = new Date(`${v.substring(0, 4)}/${v.substring(4, 6)}`);
+    let str = `${v.substring(0, 4)}/${v.substring(4, 6)}`;
+    if (opt.timezone) {
+      str += ' ' + opt.timezone;
+    }
+    d = new Date(str);
   } else {
     throw new TypeError('无效的参数类型');
   }
@@ -326,9 +334,12 @@ export function getEndOfMonth(v: Date | MonthString): MillisecondTimestamp {
   }
   const y = d.getFullYear();
   const m = d.getMonth() + 1;
-  const key = m === 12
+  let key = m === 12
     ? `${y + 1}/01`
     : `${y}/${(m + 1).toString().padStart(2, '0')}`;
+  if (opt.timezone) {
+    key += ' ' + opt.timezone;
+  }
   return new Date(key).getTime() - 1000;
 }
 
@@ -340,12 +351,17 @@ export function getEndOfMonth(v: Date | MonthString): MillisecondTimestamp {
  */
 export function getBeginningOfMonth(
   v: Date | MonthString,
+  opt: { timezone?: string } = {},
 ): MillisecondTimestamp {
   let d: Date;
   if (v instanceof Date) {
     d = v;
   } else if (typeof v === 'string') {
-    d = new Date(`${v.substring(0, 4)}/${v.substring(4, 6)}`);
+    let str = `${v.substring(0, 4)}/${v.substring(4, 6)}`;
+    if (opt.timezone) {
+      str += ' ' + opt.timezone;
+    }
+    d = new Date(str);
   } else {
     throw new TypeError('无效的参数类型');
   }
@@ -354,7 +370,11 @@ export function getBeginningOfMonth(
   }
   const y = d.getFullYear();
   const m = d.getMonth() + 1;
-  return new Date(`${y}/${m.toString().padStart(2, '0')}`).getTime();
+  let str = `${y}/${m.toString().padStart(2, '0')}`;
+  if (opt.timezone) {
+    str += ' ' + opt.timezone;
+  }
+  return new Date(str).getTime();
 }
 
 /**
