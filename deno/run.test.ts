@@ -22,3 +22,11 @@ Deno.test('onlyRun', async () => {
   const c = await onlyRun('pwd');
   assertEquals(c, 0);
 });
+
+Deno.test('timeout', async () => {
+  await assertRejects(
+    () => run('curl https://www.baidu.com', { timeout: 1 }),
+    Error,
+    'timeout',
+  );
+});
