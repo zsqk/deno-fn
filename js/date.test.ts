@@ -184,5 +184,6 @@ Deno.test('parseDate-s2', () => {
 Deno.test('parseDate-s3', () => {
   const date = new Date('2021/08/03 09:02:03');
   const d = parseDate(date);
-  assertEquals(`.${d.h + d.min + d.s}`, '.09');
+  assertEquals(`.${d.h + d.min + d.s}`, '.090203');
+  assertEquals(`.${d.h}`, '.09');
 });
