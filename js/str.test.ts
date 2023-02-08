@@ -1,5 +1,5 @@
 import { genRandomString, genSafeString, isSafeString } from './str.ts';
-import { assert } from 'https://deno.land/std@0.131.0/testing/asserts.ts';
+import { assert } from 'https://deno.land/std@0.177.0/testing/asserts.ts';
 import { assertEquals } from 'https://deno.land/std@0.151.0/testing/asserts.ts';
 
 Deno.test('isSafeString', () => {

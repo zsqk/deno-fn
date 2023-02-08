@@ -8,7 +8,7 @@ import {
 import {
   assertEquals,
   assertThrows,
-} from 'https://deno.land/std@0.131.0/testing/asserts.ts';
+} from 'https://deno.land/std@0.177.0/testing/asserts.ts';
 
 Deno.test('renderTime', () => {
   assertEquals(
@@ -155,7 +155,7 @@ Deno.test({
   },
 });
 
-Deno.test('parseDate', () => {
+Deno.test('parseDate-s1', () => {
   const date = new Date('2021/08/03');
   const res = parseDate(date);
   assertEquals(res, {
@@ -166,4 +166,23 @@ Deno.test('parseDate', () => {
     min: '00',
     s: '00',
   });
+});
+
+Deno.test('parseDate-s2', () => {
+  const date = new Date('2021/08/03 09:02:03');
+  const res = parseDate(date);
+  assertEquals(res, {
+    y: '2021',
+    m: '08',
+    d: '03',
+    h: '09',
+    min: '02',
+    s: '03',
+  });
+});
+
+Deno.test('parseDate-s3', () => {
+  const date = new Date('2021/08/03 09:02:03');
+  const d = parseDate(date);
+  assertEquals(`.${d.h + d.min + d.s}`, '.09');
 });

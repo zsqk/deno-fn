@@ -1,5 +1,5 @@
 import { hmac as hmacDiff } from 'https://deno.land/x/hmac@v2.0.1/mod.ts';
-import { assertEquals } from 'https://deno.land/std@0.131.0/testing/asserts.ts';
+import { assertEquals } from 'https://deno.land/std@0.177.0/testing/asserts.ts';
 import { hmac } from './hash.ts';
 import { encode } from 'https://deno.land/std@0.156.0/encoding/base64.ts?s=encode';
 
