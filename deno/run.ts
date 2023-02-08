@@ -43,7 +43,9 @@ export async function getRunData(
  * @param opt 参数
  * @returns
  */
-export function run(
+// 因为该函数一定返回一个 Promise, 所以 async 是有意义的. 暂时关闭该 lint rule.
+// deno-lint-ignore require-await
+export async function run(
   command: string[] | string,
   {
     stdout = 'piped',
