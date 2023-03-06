@@ -29,4 +29,10 @@ Deno.test('timeout', async () => {
     Error,
     'timeout',
   );
+
+  await assertRejects(
+    () => onlyRun('curl https://www.baidu.com', { timeout: 1 }),
+    Error,
+    'timeout',
+  );
 });
