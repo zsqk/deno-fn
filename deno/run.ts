@@ -136,7 +136,9 @@ export async function run(
  */
 export async function onlyRun(
   command: string[] | string,
-  opt?: Omit<Parameters<typeof Deno.run>[0], 'cmd' | 'stdout' | 'stderr'>,
+  opt?: Omit<Parameters<typeof Deno.run>[0], 'cmd' | 'stdout' | 'stderr'> & {
+    timeout?: number;
+  },
 ): Promise<number> {
   const { code } = await run(command, {
     ...opt,
