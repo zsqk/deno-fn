@@ -1,6 +1,6 @@
 {
   "name": "@zsqk/somefn",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "some functions for browser",
   "keywords": ["front-end"],
   "engines": {
@@ -8,6 +8,7 @@
   },
   "scripts": {
     "tsc": "tsc",
+    "build": "tsc && cp package.json build/package.json && cp README.md build/README.md",
     "test": "jest --coverage --passWithNoTests"
   },
   "repository": {
