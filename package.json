@@ -8,7 +8,7 @@
   },
   "scripts": {
     "tsc": "tsc",
-    "test": "jest --coverage"
+    "test": "jest --coverage --passWithNoTests"
   },
   "repository": {
     "type": "git",
