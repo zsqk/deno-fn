@@ -1,5 +1,5 @@
 import { assertEquals } from 'https://deno.land/std@0.154.0/testing/asserts.ts';
-import { gitChanges, pullGitRepo } from './git.ts';
+import { genGitPush, gitChanges, pullGitRepo } from './git.ts';
 
 Deno.test('pullGitRepo-https', async () => {
   const res = await pullGitRepo('https://github.com/zsqk/deno-fn.git');
@@ -112,3 +112,12 @@ Deno.test('gitChanges-delete', async () => {
     notStagedFiles: [],
   });
 });
+
+// TODO: add test
+// Deno.test('genGitPush', async () => {
+//   await genGitPush({
+//     repoName: '',
+//     repoURI: '',
+//     sshPrivateKey: '',
+//   });
+// });

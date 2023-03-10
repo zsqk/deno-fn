@@ -16,7 +16,7 @@ const args = parse<
 
 const repoName = args['repo-name'];
 const repoURI = args['repo-uri'];
-const sshPrivateKey = args.ssh;
+const sshPrivateKey = args.ssh?.replaceAll("\\n", '\n');
 
 if (!repoName || !repoURI || !sshPrivateKey) {
   console.error('args invalid')
