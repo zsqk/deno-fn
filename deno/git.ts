@@ -20,6 +20,8 @@ export async function pullGitRepo(
     dirPath?: string;
     /** 是否要跳过 SSH HOST 检查 (仅在特殊情况下使用) */
     skipHostKeyCheck?: boolean;
+    /** 超时时间 ms */
+    timeout?: number;
   } = {},
 ): Promise<string> {
   // 根据需求创建临时目录
@@ -59,7 +61,7 @@ export async function pullGitRepo(
   ];
 
   try {
-    await onlyRun(command, { cwd: tempPath });
+    await onlyRun(command, { cwd: tempPath, timeout: opt.timeout ?? 60000 });
   } catch (err) {
     console.error(`git 拉取失败`);
     throw err;
@@ -193,15 +195,19 @@ export async function genGitPush(
   } else {
     userName = userEmail.split('@')[0];
   }
+
   // git add
-  await run(['git', 'add', '.']);
+  console.log('git add');
+  await run(['git', 'add', '.'], { timeout: 10000 });
+
+  console.log('git config userinfo');
   await onlyRun(
     `git config --local user.email`.split(' ').concat(userEmail),
   );
-
   await onlyRun('git config --local user.name'.split(' ').concat(userName));
 
   // git commit
+  console.log('git commit begin');
   const commitMsg = await run([
     'git',
     'commit',
@@ -209,11 +215,11 @@ export async function genGitPush(
     '-m',
     id,
     `--author=${userName} <${userEmail}>`,
-  ]);
+  ], { timeout: 10000 });
   console.log(commitMsg);
+  console.log(`git commit end at ${Date.now() - start}ms`);
 
-  await onlyRun(`git push`);
-
-  const msg = `耗时 ${Date.now() - start}ms`;
-  console.log(msg);
+  console.log('git push begin');
+  await onlyRun(`git push`, { timeout: 30000 });
+  console.log(`git push end at ${Date.now() - start}ms`);
 }
