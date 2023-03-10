@@ -145,3 +145,75 @@ export async function gitChanges(repoPath: string): Promise<{
 
   return { stagedFiles, notStagedFiles };
 }
+
+/**
+ * 触发进行一条 Git push
+ *
+ * 外部依赖:
+ *
+ * 1. git 命令.
+ */
+export async function genGitPush(
+  {
+    repoName,
+    repoURI,
+    branch,
+    sshPrivateKey,
+    userName,
+    userEmail = 'bot@zsqk.com.cn',
+  }: {
+    repoName: string;
+    repoURI: string;
+    sshPrivateKey: string;
+    branch?: string;
+    userName?: string;
+    userEmail?: string;
+  },
+): Promise<void> {
+  const start = Date.now();
+
+  const tempPath = ''
+    .concat(
+      await pullGitRepo(repoURI, {
+        keyString: sshPrivateKey,
+        skipHostKeyCheck: true,
+        branch,
+      }),
+    )
+    .concat(`/${repoName}`);
+  console.log('tempPath', tempPath);
+  Deno.chdir(tempPath);
+
+  const id = new Date().toString();
+  Deno.writeTextFileSync(`${tempPath}/time.txt`, id);
+
+  /** 提交者名称 */
+  if (userName) {
+    userName += '_agent';
+  } else {
+    userName = userEmail.split('@')[0];
+  }
+  // git add
+  await run(['git', 'add', '.']);
+  await onlyRun(
+    `git config --local user.email`.split(' ').concat(userEmail),
+  );
+
+  await onlyRun('git config --local user.name'.split(' ').concat(userName));
+
+  // git commit
+  const commitMsg = await run([
+    'git',
+    'commit',
+    '-a',
+    '-m',
+    id,
+    `--author=${userName} <${userEmail}>`,
+  ]);
+  console.log(commitMsg);
+
+  await onlyRun(`git push`);
+
+  const msg = `耗时 ${Date.now() - start}ms`;
+  console.log(msg);
+}
