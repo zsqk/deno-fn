@@ -7,6 +7,7 @@ const args = parse<
     {
       "repo-name": string;
       "repo-uri": string;
+      "branch": string;
       "ssh": string;
     }
   >
@@ -16,6 +17,7 @@ const args = parse<
 
 const repoName = args['repo-name'];
 const repoURI = args['repo-uri'];
+const branch = args['branch'];
 const sshPrivateKey = args.ssh?.replaceAll("\\n", '\n');
 
 if (!repoName || !repoURI || !sshPrivateKey) {
@@ -26,5 +28,6 @@ if (!repoName || !repoURI || !sshPrivateKey) {
 await genGitPush({
   repoName,
   repoURI,
+  branch,
   sshPrivateKey,
 });
