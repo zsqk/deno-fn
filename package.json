@@ -1,6 +1,6 @@
 {
   "name": "@zsqk/somefn",
-  "version": "0.0.13",
+  "version": "0.25.1",
   "description": "some functions for browser",
   "keywords": ["front-end"],
   "engines": {
