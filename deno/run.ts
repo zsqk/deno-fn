@@ -1,4 +1,4 @@
-import { delay } from 'https://deno.land/std@0.177.0/async/delay.ts';
+import { delay } from 'https://deno.land/std@0.190.0/async/delay.ts';
 
 /**
  * [Deno] 执行命令
@@ -73,29 +73,21 @@ export async function run(
   });
 
   /** 进程 */
-  const p = c.spawn();
-  p.unref();
 
   const timeoutPromise = delay(timeout, { signal: ac.signal }).then(() => {
-    p.kill();
     throw new Error('timeout');
   });
 
   const exePromise = (async () => {
     try {
       // 返回信息
-      if (stdout === 'piped' && stderr === 'piped') {
-        /** 执行结果 */
-        const o = await c.output();
-        res = new TextDecoder().decode(o.stdout);
-        if (o.success) {
-          errMsg += `no error.`;
-        }
-        errMsg += new TextDecoder().decode(o.stderr);
-        ac.abort();
-        return { res, errMsg, code: o.code };
+      /** 执行结果 */
+      const o = await c.output();
+      res = new TextDecoder().decode(o.stdout);
+      if (o.success) {
+        errMsg += `no error.`;
       }
-      const o = await p.output();
+      errMsg += new TextDecoder().decode(o.stderr);
       ac.abort();
       return { res, errMsg, code: o.code };
     } catch (err) {
@@ -125,10 +117,10 @@ export async function onlyRun(
     timeout?: number;
   },
 ): Promise<number> {
-  const { code } = await run(command, {
-    ...opt,
-    stderr: 'inherit',
-    stdout: 'inherit',
-  });
+  const { code, res, errMsg } = await run(command, opt);
+  if (code !== 0) {
+    throw new Error(errMsg);
+  }
+  res && console.log(res);
   return code;
 }
