@@ -1,4 +1,5 @@
 import { encode } from "../lib/hex";
+import { decode } from "../lib/base64";
 
 export async function hashString(
   algorithm: "SHA-1" | "SHA-256" | "SHA-512",
@@ -53,6 +54,51 @@ export async function hmac(
   const data = typeof d === "string" ? textEncoder.encode(d) : d;
 
   const res = new Uint8Array(await crypto.subtle.sign("HMAC", cryptoKey, data));
+
+  return res;
+}
+
+/**
+ * Sign data with RSA
+ * - only pkcs8
+ * - only RSASSA-PKCS1-v1_5
+ * @param key
+ * @param d
+ * @returns
+ */
+export async function rasSign(
+  key: {
+    hash: 'SHA-256' | 'SHA-512';
+    /** secret key */
+    s: string | Uint8Array;
+  } | CryptoKey,
+  /** data */
+  d: string | Uint8Array,
+): Promise<Uint8Array> {
+  let cryptoKey: CryptoKey;
+  if (key instanceof CryptoKey) {
+    cryptoKey = key;
+  } else {
+    const { s, hash } = key;
+    const keyData = typeof s === 'string' ? decode(s) : s;
+    cryptoKey = await crypto.subtle.importKey(
+      'pkcs8',
+      keyData,
+      { name: 'RSASSA-PKCS1-v1_5', hash: { name: hash } },
+      true,
+      ['sign'],
+    );
+  }
+
+  const data = typeof d === 'string' ? new TextEncoder().encode(d) : d;
+
+  const res = new Uint8Array(
+    await crypto.subtle.sign(
+      'RSASSA-PKCS1-v1_5',
+      cryptoKey,
+      data,
+    ),
+  );
 
   return res;
 }

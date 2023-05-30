@@ -2,6 +2,7 @@
   "compilerOptions": {
     "strict": true
   },
+  "lock": false,
   "lint": {
     "files": {
       "include": [

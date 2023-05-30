@@ -21,7 +21,7 @@ const baseReverseDic: Record<string, { [key: string]: number }> = {};
  * @param str 基础字符串
  * @returns 经过乱序的字符串
  *
- * @author Lian Zheren <lzr@go0356.com>
+ * @author iugo <code@iugo.dev>
  */
 export function genKeyStr(str = keyStrUriSafe): string {
   const arr = [...str];
