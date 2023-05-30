@@ -65,29 +65,26 @@ export async function getComputeInfo(): Promise<ComputeInfo> {
 
   // get hostname
   if (Deno.build.os === 'darwin' || Deno.build.os === 'linux') {
-    const p = Deno.run({ cmd: ['hostname'], stdout: 'piped' });
-    hostname = new TextDecoder().decode(await p.output()).replace('\n', '');
-    p.close();
+    const p = new Deno.Command('hostname');
+    const s = await p.output();
+    hostname = new TextDecoder().decode(s.stdout).replace('\n', '');
   }
 
   // get os
-  if (Deno.build.os === 'darwin') {
+  if (os === 'darwin') {
     os = 'mac';
   }
 
   // get version
   if (Deno.build.os === 'darwin') {
-    const p = Deno.run({
-      cmd: ['sw_vers', '-productVersion'],
-      stdout: 'piped',
+    const p = new Deno.Command('sw_vers', {
+      args: ['-productVersion'],
     });
-    version = new TextDecoder().decode(await p.output()).replace('\n', '');
-    p.close();
+    version = new TextDecoder().decode(p.outputSync().stdout).replace('\n', '');
   }
   if (Deno.build.os === 'linux') {
-    const p = Deno.run({
-      cmd: ['cat', '/etc/os-release'],
-      stdout: 'piped',
+    const p = new Deno.Command('cat', {
+      args: ['/etc/os-release'],
     });
     // cat /etc/os-release demo
     // PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
@@ -98,10 +95,9 @@ export async function getComputeInfo(): Promise<ComputeInfo> {
     // HOME_URL="https://www.debian.org/"
     // SUPPORT_URL="https://www.debian.org/support"
     // BUG_REPORT_URL="https://bugs.debian.org/"
-    const osRelease = parseEnv(new TextDecoder().decode(await p.output()));
+    const osRelease = parseEnv(new TextDecoder().decode(p.outputSync().stdout));
     version = (osRelease.get('ID') ?? 'linux') +
       (osRelease.get('VERSION_ID') ?? '');
-    p.close();
   }
 
   return { hostname, os, version };

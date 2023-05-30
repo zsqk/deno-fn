@@ -1,5 +1,34 @@
-import { assertEquals } from 'https://deno.land/std@0.154.0/testing/asserts.ts';
+import {
+  assert,
+  assertEquals,
+} from 'https://deno.land/std@0.154.0/testing/asserts.ts';
 import { gitChanges, pullGitRepo } from './git.ts';
+
+// git clone https://github.com/zsqk/deno-fn.git --depth 1
+// Cloning into 'deno-fn'...
+// remote: Enumerating objects: 57, done.
+// remote: Counting objects: 100% (57/57), done.
+// remote: Compressing objects: 100% (52/52), done.
+// remote: Total 57 (delta 0), reused 36 (delta 0), pack-reused 0
+// Receiving objects: 100% (57/57), 31.94 KiB | 281.00 KiB/s, done.
+Deno.test('pullGitRepo-o1', async () => {
+  const dir = Deno.makeTempDirSync();
+  const c = new Deno.Command('git', {
+    args: ['clone', 'https://github.com/zsqk/deno-fn.git', '--depth', '1'],
+    cwd: dir,
+  });
+  const o = await c.output();
+  const stdout = new TextDecoder().decode(o.stdout);
+  const stderr = new TextDecoder().decode(o.stderr);
+  assert(o.success);
+  console.log({ stdout, stderr, dir });
+  assert((stdout + stderr).includes('Cloning into'));
+  // assert(stdout.includes('Cloning into'));
+  // assert(stdout.includes('remote: Enumerating objects'));
+  // assert(stdout.includes('remote: Counting objects'));
+  // assert(stdout.includes('remote: Compressing objects'));
+  // assert(stdout.includes('remote: Total'));
+});
 
 Deno.test('pullGitRepo-https', async () => {
   const res = await pullGitRepo('https://github.com/zsqk/deno-fn.git');
@@ -29,9 +58,11 @@ Deno.test('gitChanges-newfile', async () => {
     notStagedFiles: [{ type: 'newfile', fileName: 'test.txt' }],
   });
 
-  const p2 = Deno.run({ cmd: ['git', 'add', '.'], cwd: path + '/deno-fn' });
-  await p2.status();
-  p2.close();
+  const p2 = new Deno.Command('git', {
+    args: ['add', '.'],
+    cwd: path + '/deno-fn',
+  });
+  await p2.output();
 
   const res2 = await gitChanges(path + '/deno-fn');
   assertEquals(res2, {
@@ -51,9 +82,11 @@ Deno.test('gitChanges-modified', async () => {
     notStagedFiles: [{ type: 'modified', fileName: 'README.md' }],
   });
 
-  const p2 = Deno.run({ cmd: ['git', 'add', '.'], cwd: path + '/deno-fn' });
-  await p2.status();
-  p2.close();
+  const p2 = new Deno.Command('git', {
+    args: ['add', '.'],
+    cwd: path + '/deno-fn',
+  });
+  await p2.output();
 
   const res2 = await gitChanges(path + '/deno-fn');
   assertEquals(res2, {
@@ -64,7 +97,7 @@ Deno.test('gitChanges-modified', async () => {
 
 Deno.test('gitChanges-rename', async () => {
   const path = await pullGitRepo('https://github.com/zsqk/deno-fn.git');
-  console.log(path);
+  console.log('path', path);
 
   Deno.rename(path + '/deno-fn/README.md', path + '/deno-fn/README1.md');
   const res1 = await gitChanges(path + '/deno-fn');
@@ -76,9 +109,11 @@ Deno.test('gitChanges-rename', async () => {
     ],
   });
 
-  const p2 = Deno.run({ cmd: ['git', 'add', '.'], cwd: path + '/deno-fn' });
-  await p2.status();
-  p2.close();
+  const p2 = new Deno.Command('git', {
+    args: ['add', '.'],
+    cwd: path + '/deno-fn',
+  });
+  await p2.output();
 
   const res2 = await gitChanges(path + '/deno-fn');
   assertEquals(res2, {
@@ -102,9 +137,11 @@ Deno.test('gitChanges-delete', async () => {
     notStagedFiles: [{ type: 'deleted', fileName: 'README.md' }],
   });
 
-  const p2 = Deno.run({ cmd: ['git', 'add', '.'], cwd: path + '/deno-fn' });
-  await p2.status();
-  p2.close();
+  const p2 = new Deno.Command('git', {
+    args: ['add', '.'],
+    cwd: path + '/deno-fn',
+  });
+  await p2.output();
 
   const res2 = await gitChanges(path + '/deno-fn');
   assertEquals(res2, {

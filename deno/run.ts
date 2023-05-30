@@ -1,4 +1,4 @@
-import { delay } from 'https://deno.land/std@0.177.0/async/delay.ts';
+import { delay } from 'https://deno.land/std@0.190.0/async/delay.ts';
 
 /**
  * [Deno] 执行命令
@@ -11,30 +11,22 @@ export async function getRunData(
   path?: string,
 ): Promise<string> {
   /** 进程 */
-  const run = Deno.run({
-    cmd: command,
+  const run = new Deno.Command(command[0], {
+    args: command.slice(1),
     cwd: path,
-    stdout: 'piped',
-    stderr: 'piped',
   });
 
-  try {
-    /** 状态 */
-    const s1 = await run.status();
+  const o = await run.output();
 
-    /** 信息 */
-    const stderr = await run.stderrOutput();
-    if (!s1.success) {
-      const r1err = new TextDecoder().decode(stderr);
-      throw new Error(`${s1.code} ${r1err}`);
-    }
-
-    const res = new TextDecoder().decode(await run.output());
-
-    return res;
-  } finally {
-    run.close();
+  /** 信息 */
+  if (!o.success) {
+    const r1err = new TextDecoder().decode(o.stderr);
+    throw new Error(`${o.code} ${r1err}`);
   }
+
+  const res = new TextDecoder().decode(o.stdout);
+
+  return res;
 }
 
 /**
@@ -55,7 +47,7 @@ export async function run(
      */
     timeout = 5000,
     ...opt
-  }: Omit<Parameters<typeof Deno.run>[0], 'cmd'> & { timeout?: number } = {},
+  }: Deno.CommandOptions & { timeout?: number } = {},
 ): Promise<{
   /** 返回结果 */
   res: string;
@@ -66,28 +58,29 @@ export async function run(
 }> {
   let res = '';
   let errMsg = '';
-  let code = 0;
 
-  /** 进程 */
-  let p: Deno.Process;
   const cmd = typeof command === 'string' ? command.split(' ') : command;
 
   /** 超时中断控制器 */
   const ac = new AbortController();
 
+  /** 命令 */
+  const c = new Deno.Command(cmd[0], {
+    args: cmd.slice(1),
+    stdout,
+    stderr,
+    ...opt,
+  });
+
+  /** 进程 */
+  let p: Deno.ChildProcess;
   try {
-    p = Deno.run({
-      stdout,
-      stderr,
-      ...opt,
-      cmd,
-    });
+    p = c.spawn();
   } catch (err) {
     if (!(err instanceof Error)) {
       throw new Error(`${err}`);
     }
     if (err.name === 'NotFound') {
-      console.error(err);
       err.message = `command or file not found: ${cmd[0]}`;
     }
     throw err;
@@ -95,34 +88,20 @@ export async function run(
 
   const timeoutPromise = delay(timeout, { signal: ac.signal }).then(() => {
     p.kill();
-    p.close();
     throw new Error('timeout');
   });
 
   const exePromise = (async () => {
-    try {
-      /** 执行状态 */
-      const s = await p.status();
-      code = s.code;
-
-      // 返回信息
-      if (stdout === 'piped') {
-        res = new TextDecoder().decode(await p.output());
-      }
-
-      // 错误信息
-      if (stderr === 'piped') {
-        const stderr = await p.stderrOutput();
-        if (s.success) {
-          errMsg += `no error.`;
-        }
-        errMsg += new TextDecoder().decode(stderr);
-      }
-      ac.abort();
-      return { res, errMsg, code };
-    } finally {
-      p.close();
+    // 返回信息
+    /** 执行结果 */
+    const o = await p.output();
+    res = new TextDecoder().decode(o.stdout);
+    if (o.success) {
+      errMsg += `no error.`;
     }
+    errMsg += new TextDecoder().decode(o.stderr);
+    ac.abort();
+    return { res, errMsg, code: o.code };
   })();
 
   return Promise.race([timeoutPromise, exePromise]);
@@ -136,14 +115,14 @@ export async function run(
  */
 export async function onlyRun(
   command: string[] | string,
-  opt?: Omit<Parameters<typeof Deno.run>[0], 'cmd' | 'stdout' | 'stderr'> & {
+  opt?: Omit<Deno.CommandOptions, 'stdout' | 'stderr'> & {
     timeout?: number;
   },
 ): Promise<number> {
-  const { code } = await run(command, {
-    ...opt,
-    stderr: 'inherit',
-    stdout: 'inherit',
-  });
+  const { code, res, errMsg } = await run(command, opt);
+  if (code !== 0) {
+    throw new Error(errMsg);
+  }
+  res && console.log(res);
   return code;
 }
