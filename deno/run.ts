@@ -73,7 +73,18 @@ export async function run(
   });
 
   /** 进程 */
-  const p = c.spawn();
+  let p: Deno.ChildProcess;
+  try {
+    p = c.spawn();
+  } catch (err) {
+    if (!(err instanceof Error)) {
+      throw new Error(`${err}`);
+    }
+    if (err.name === 'NotFound') {
+      err.message = `command or file not found: ${cmd[0]}`;
+    }
+    throw err;
+  }
 
   const timeoutPromise = delay(timeout, { signal: ac.signal }).then(() => {
     p.kill();
@@ -81,27 +92,16 @@ export async function run(
   });
 
   const exePromise = (async () => {
-    try {
-      // 返回信息
-      /** 执行结果 */
-      const o = await p.output();
-      res = new TextDecoder().decode(o.stdout);
-      if (o.success) {
-        errMsg += `no error.`;
-      }
-      errMsg += new TextDecoder().decode(o.stderr);
-      ac.abort();
-      return { res, errMsg, code: o.code };
-    } catch (err) {
-      if (!(err instanceof Error)) {
-        throw new Error(`${err}`);
-      }
-      if (err.name === 'NotFound') {
-        console.error(err);
-        err.message = `command or file not found: ${cmd[0]}`;
-      }
-      throw err;
+    // 返回信息
+    /** 执行结果 */
+    const o = await p.output();
+    res = new TextDecoder().decode(o.stdout);
+    if (o.success) {
+      errMsg += `no error.`;
     }
+    errMsg += new TextDecoder().decode(o.stderr);
+    ac.abort();
+    return { res, errMsg, code: o.code };
   })();
 
   return Promise.race([timeoutPromise, exePromise]);
