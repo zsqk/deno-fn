@@ -137,9 +137,11 @@ Deno.test('gitChanges-delete', async () => {
     notStagedFiles: [{ type: 'deleted', fileName: 'README.md' }],
   });
 
-  const p2 = Deno.run({ cmd: ['git', 'add', '.'], cwd: path + '/deno-fn' });
-  await p2.status();
-  p2.close();
+  const p2 = new Deno.Command('git', {
+    args: ['add', '.'],
+    cwd: path + '/deno-fn',
+  });
+  await p2.output();
 
   const res2 = await gitChanges(path + '/deno-fn');
   assertEquals(res2, {
