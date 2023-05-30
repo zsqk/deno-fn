@@ -1,4 +1,7 @@
-import { assertEquals } from 'https://deno.land/std@0.154.0/testing/asserts.ts';
+import {
+  assert,
+  assertEquals,
+} from 'https://deno.land/std@0.154.0/testing/asserts.ts';
 import { gitChanges, pullGitRepo } from './git.ts';
 
 // git clone https://github.com/zsqk/deno-fn.git --depth 1
@@ -15,29 +18,16 @@ Deno.test('pullGitRepo-o1', async () => {
     cwd: dir,
   });
   const o = await c.output();
-  console.log(o, dir);
-  console.log('stdout', new TextDecoder().decode(o.stdout));
-  console.log('stderr', new TextDecoder().decode(o.stderr));
-});
-
-// git clone https://github.com/zsqk/deno-fn.git --depth 1
-// Cloning into 'deno-fn'...
-// remote: Enumerating objects: 57, done.
-// remote: Counting objects: 100% (57/57), done.
-// remote: Compressing objects: 100% (52/52), done.
-// remote: Total 57 (delta 0), reused 36 (delta 0), pack-reused 0
-// Receiving objects: 100% (57/57), 31.94 KiB | 281.00 KiB/s, done.
-Deno.test('pullGitRepo-o2', async () => {
-  const dir = Deno.makeTempDirSync();
-  const c = new Deno.Command('git', {
-    args: ['clone', 'https://github.com/zsqk/deno-fn.git', '--depth', '1'],
-    stdout: 'null',
-    stderr: 'null',
-    cwd: dir,
-  });
-  const p = c.spawn();
-  await p.status;
-  console.log(dir);
+  const stdout = new TextDecoder().decode(o.stdout);
+  const stderr = new TextDecoder().decode(o.stderr);
+  assert(o.success);
+  console.log({ stdout, stderr, dir });
+  assert((stdout + stderr).includes('Cloning into'));
+  // assert(stdout.includes('Cloning into'));
+  // assert(stdout.includes('remote: Enumerating objects'));
+  // assert(stdout.includes('remote: Counting objects'));
+  // assert(stdout.includes('remote: Compressing objects'));
+  // assert(stdout.includes('remote: Total'));
 });
 
 Deno.test('pullGitRepo-https', async () => {
