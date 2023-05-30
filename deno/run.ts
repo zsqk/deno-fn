@@ -73,8 +73,10 @@ export async function run(
   });
 
   /** 进程 */
+  const p = c.spawn();
 
   const timeoutPromise = delay(timeout, { signal: ac.signal }).then(() => {
+    p.kill();
     throw new Error('timeout');
   });
 
@@ -82,7 +84,7 @@ export async function run(
     try {
       // 返回信息
       /** 执行结果 */
-      const o = await c.output();
+      const o = await p.output();
       res = new TextDecoder().decode(o.stdout);
       if (o.success) {
         errMsg += `no error.`;
