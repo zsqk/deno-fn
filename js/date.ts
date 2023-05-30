@@ -6,7 +6,7 @@ import {
   MillisecondTimestamp,
   MonthString,
   UnixTimestamp,
-} from '../ts/time.ts';
+} from '../ts/time';
 
 /**
  * 已被分析并且结构化的时间
