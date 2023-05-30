@@ -60,3 +60,33 @@ export function genRandomString(
     return p + map[v % map.length];
   }, '');
 }
+
+/**
+ * 编码字符串为 UTF-8
+ * @param str 16 位的 Unicode 编码的 ASCII 字符串, 比如 `\u8fd9a` 表示 `这a`
+ */
+export function fromUnicodeStr(str: string): string {
+  let encoded = '';
+  let tempArr: number[] = [];
+  for (let i = 0; i < str.length; i++) {
+    const k = str[i];
+    if (k === '\\') {
+      if (str[i + 1] !== 'u') {
+        throw new Error(`暂不支持 \\${str[i + 1]} 编码`);
+      }
+      tempArr.push(Number(`0x${str.slice(i + 2, i + 6)}`));
+      i = i + 5;
+      continue;
+    }
+    if (tempArr.length > 0) {
+      encoded += String.fromCodePoint(...tempArr);
+      tempArr = [];
+    }
+    encoded += k;
+  }
+  // 将最后还未编码的信息写入
+  if (tempArr.length > 0) {
+    encoded += String.fromCodePoint(...tempArr);
+  }
+  return encoded;
+}
