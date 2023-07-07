@@ -14,6 +14,12 @@ some functions for deno
   - SHA256
   - SHA512
 - Uint8Array to hex string tools
+  [hexString()](https://deno.land/x/somefn@v0.26.0/js/hash.ts?s=hexString)
+- 文本加 BOM, 用于 Windows 老款软件
+  [textWithBOM()](https://deno.land/x/somefn@v0.26.0/js/str.ts?s=textWithBOM)
+- 随机字符串 (基于 crypto)
+  [genRandomString()](https://deno.land/x/somefn@v0.26.0/js/str.ts?s=genRandomString)
+- [为数据进行 RSA 签名](https://deno.land/x/somefn@v0.26.0/js/hash.ts?s=rasSign)
 
 依赖 Deno 运行时的功能:
 
@@ -21,5 +27,5 @@ some functions for deno
 
 说明:
 
-- csv2array 使用 Deno 标准库
-  <https://github.com/denoland/deno_std/blob/0.144.0/encoding/csv.ts>
+- CSV 使用 Deno 标准库 <https://deno.land/std@0.193.0/csv/mod.ts>
+- XML 建议使用 `npm:fast-xml-parser`
