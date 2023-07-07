@@ -104,6 +104,9 @@ export function textWithBOM(v: Uint8Array | string): Uint8Array {
     const encoder = new TextEncoder();
     data = encoder.encode(v);
   } else {
+    if (v[0] === 239 && v[1] === 187 && v[2] === 191) {
+      return v;
+    }
     data = v;
   }
 
