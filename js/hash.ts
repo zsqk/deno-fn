@@ -75,7 +75,7 @@ export async function hmac(
  * @param d
  * @returns
  */
-export async function rasSign(
+export async function rsaSign(
   key: {
     hash: 'SHA-256' | 'SHA-512';
     /** secret key */
