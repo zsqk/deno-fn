@@ -109,9 +109,9 @@ export function textWithBOM(v: Uint8Array | string): Uint8Array {
 
   /** EF BB BF */
   const mn = [239, 187, 191];
-  const u8a = new Uint8Array(data.length + mn.length);
+  const u8a = new Uint8Array(data.length + 3); // mn.length is 3
   u8a.set(mn);
-  u8a.set(data, mn.length);
+  u8a.set(data, 3); // mn.length is 3
 
   return u8a;
 }
