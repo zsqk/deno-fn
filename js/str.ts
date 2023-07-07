@@ -104,9 +104,11 @@ export function textWithBOM(v: Uint8Array | string): Uint8Array {
     const encoder = new TextEncoder();
     data = encoder.encode(v);
   } else {
+    // 避免重复增加 BOM
     if (v[0] === 239 && v[1] === 187 && v[2] === 191) {
       return v;
     }
+    // 基于性能考虑, 不会更严格检查 Uint8Array 有效性
     data = v;
   }
 
