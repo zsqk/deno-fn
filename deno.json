@@ -28,15 +28,13 @@
     }
   },
   "fmt": {
-    "files": {
-      "include": [
-        "js/",
-        "ts/",
-        "deno/",
-        "test/",
-        "mod.ts"
-      ]
-    },
+    "include": [
+      "js/",
+      "ts/",
+      "deno/",
+      "test/",
+      "mod.ts"
+    ],
     "options": {
       "useTabs": false,
       "lineWidth": 80,

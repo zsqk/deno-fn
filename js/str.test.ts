@@ -3,9 +3,12 @@ import {
   genRandomString,
   genSafeString,
   isSafeString,
+  textWithBOM,
 } from './str.ts';
-import { assert } from 'https://deno.land/std@0.177.0/testing/asserts.ts';
-import { assertEquals } from 'https://deno.land/std@0.151.0/testing/asserts.ts';
+import {
+  assert,
+  assertEquals,
+} from 'https://deno.land/std@0.192.0/testing/asserts.ts';
 
 Deno.test('isSafeString', () => {
   assert(isSafeString('9'));
@@ -86,4 +89,20 @@ Deno.test('fromUnicodeStr', () => {
     const res = fromUnicodeStr('\\ud83c\\udf03');
     assertEquals(res, '🌃');
   }
+});
+
+Deno.test('textWithBOM', async () => {
+  const otext = `col,value
+123,中文`;
+
+  const u8a = textWithBOM(otext);
+  const dir = await Deno.makeTempDir();
+  await Deno.writeFile(dir + '/test.csv', u8a);
+
+  const decoder = new TextDecoder();
+  const res = await Deno.readFile(dir + '/test.csv');
+  const restext = decoder.decode(res);
+  console.log('res', res, decoder.decode(res));
+
+  assertEquals(restext, otext);
 });

@@ -90,3 +90,33 @@ export function fromUnicodeStr(str: string): string {
   }
   return encoded;
 }
+
+/**
+ * 为文本添加 UTF-8 BOM (for Windows...)
+ * - [Magic Number](https://en.wikipedia.org/wiki/Magic_number_(programming))
+ * - [Byte Order Mark](https://en.wikipedia.org/wiki/Byte_order_mark)
+ * @param v 需要增加 BOM 的文本
+ * @returns
+ */
+export function textWithBOM(v: Uint8Array | string): Uint8Array {
+  let data: Uint8Array;
+  if (typeof v === 'string') {
+    const encoder = new TextEncoder();
+    data = encoder.encode(v);
+  } else {
+    // 避免重复增加 BOM
+    if (v[0] === 239 && v[1] === 187 && v[2] === 191) {
+      return v;
+    }
+    // 基于性能考虑, 不会更严格检查 Uint8Array 有效性
+    data = v;
+  }
+
+  /** EF BB BF */
+  const mn = [239, 187, 191];
+  const u8a = new Uint8Array(data.length + 3); // mn.length is 3
+  u8a.set(mn);
+  u8a.set(data, 3); // mn.length is 3
+
+  return u8a;
+}

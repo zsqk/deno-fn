@@ -9,7 +9,6 @@ Deno.test('isEmptyObj-fn', () => {
 
   const MAX = 1000000;
 
-  // deno-lint-ignore ban-types
   const isEmpty1 = (obj: object) => {
     return JSON.stringify(obj) === '{}';
   };
