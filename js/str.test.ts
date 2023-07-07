@@ -96,10 +96,11 @@ Deno.test('textWithBOM', async () => {
 123,中文`;
 
   const u8a = textWithBOM(otext);
-  await Deno.writeFile('./temp/test.csv', u8a);
+  const dir = await Deno.makeTempDir();
+  await Deno.writeFile(dir + '/test.csv', u8a);
 
   const decoder = new TextDecoder();
-  const res = await Deno.readFile('./temp/test.csv');
+  const res = await Deno.readFile(dir + '/test.csv');
   const restext = decoder.decode(res);
   console.log('res', res, decoder.decode(res));
 
