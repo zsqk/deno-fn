@@ -1,6 +1,21 @@
+/**
+ * 校验或签名数据, 目的在于保护数据不被篡改及确认数据来源可靠.
+ *
+ * 主要有三种方式:
+ *
+ * 1. 非加密.
+ * 2. HMAC 签名.
+ * 3. RSA 签名.
+ */
 import { encode } from 'https://deno.land/std@0.143.0/encoding/hex.ts';
 import { decode } from 'https://deno.land/std@0.179.0/encoding/base64.ts';
 
+/**
+ * 获取数据散列值
+ * @param algorithm 可选 SHA-1 等算法, 不支持 MD5
+ * @param d 需要计算散列值的数据
+ * @returns 数据的散列值
+ */
 export async function hashString(
   algorithm: 'SHA-1' | 'SHA-256' | 'SHA-512',
   d: string | Uint8Array,
