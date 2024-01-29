@@ -445,3 +445,55 @@ export function parseDate(
 
   return { y, m, d, h, min, s };
 }
+
+/**
+ * 计算时间间隔中星期的天数
+ * @param before
+ * @param after
+ * @returns [总天数, 周一天数, 周二天数, 周三天数, 周四天数, 周五天数, 周六天数, 周日天数]
+ */
+export function getWeekday(
+  before: Date,
+  after: Date,
+): [number, number, number, number, number, number, number, number] {
+  // 获取 before 的第一时间
+  const beforeDay = new Date(
+    `${before.getFullYear()}-${before.getMonth() + 1}-${before.getDate()}`,
+  );
+  // 获取 after 的最后时间
+  const afterDay = new Date(
+    `${after.getFullYear()}-${after.getMonth() + 1}-${after.getDate()}`,
+  );
+  // 24 * 60 * 60 * 1,000 = 86,400,000 毫秒
+  const MILLISECONDS_ONE_DAY = 86400000;
+
+  /** 两个时间中间包含多少天 */
+  const days = (afterDay.getTime() -
+        beforeDay.getTime()) / MILLISECONDS_ONE_DAY + 1;
+
+  const beforeWeekday = before.getDay();
+  const afterWeekday = after.getDay();
+  const weeks = Math.floor(
+    (
+      days -
+      (8 - beforeWeekday) % 7 -
+      afterWeekday
+    ) / 7,
+  );
+
+  return [
+    days,
+    (afterWeekday !== 0 ? 1 : 0) + weeks,
+    (beforeWeekday === 2 ? 1 : 0) + (afterWeekday >= 2 ? 1 : 0) + weeks,
+    (beforeWeekday === 2 || beforeWeekday === 3 ? 1 : 0) +
+    (afterWeekday >= 3 ? 1 : 0) +
+    weeks,
+    (beforeWeekday >= 2 && beforeWeekday <= 4 ? 1 : 0) +
+    (afterWeekday >= 4 ? 1 : 0) + weeks,
+    (beforeWeekday >= 2 && beforeWeekday <= 5 ? 1 : 0) +
+    (afterWeekday >= 5 ? 1 : 0) + weeks,
+    (beforeWeekday >= 2 && beforeWeekday <= 6 ? 1 : 0) +
+    (afterWeekday === 6 ? 1 : 0) + weeks,
+    (beforeWeekday !== 1 ? 1 : 0) + weeks,
+  ];
+}
