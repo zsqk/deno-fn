@@ -9,6 +9,8 @@ import {
   assertEquals,
   assertThrows,
 } from 'https://deno.land/std@0.177.0/testing/asserts.ts';
+import { getWeekday as getWeekday2 } from './date.ts';
+import { getWeekday } from './date.altimpl.ts';
 
 Deno.test('renderTime', () => {
   assertEquals(
@@ -186,4 +188,84 @@ Deno.test('parseDate-s3', () => {
   const d = parseDate(date);
   assertEquals(`.${d.h + d.min + d.s}`, '.090203');
   assertEquals(`.${d.h}`, '.09');
+});
+
+Deno.test('getWeekday test #1 diff time', () => {
+  const before = new Date('2024-01-01 11:12 +8');
+  const after = new Date('2024-01-26 15:00 +8');
+  const expected = [26, 4, 4, 4, 4, 4, 3, 3];
+
+  assertEquals(
+    getWeekday2(before, after),
+    expected,
+  );
+
+  assertEquals(
+    getWeekday(before, after),
+    expected,
+  );
+});
+
+Deno.test('getWeekday test #2 from monday with timezone', () => {
+  const before = new Date('2024-01-01 00:00 +8');
+  const after = new Date('2024-01-26 00:00 +8');
+  const expected = [26, 4, 4, 4, 4, 4, 3, 3];
+
+  assertEquals(
+    getWeekday2(before, after),
+    expected,
+  );
+
+  assertEquals(
+    getWeekday(before, after),
+    expected,
+  );
+});
+
+Deno.test('getWeekday test #3 from monday', () => {
+  const before = new Date('2024-01-01');
+  const after = new Date('2024-01-26');
+  const expected = [26, 4, 4, 4, 4, 4, 3, 3];
+
+  assertEquals(
+    getWeekday2(before, after),
+    expected,
+  );
+
+  assertEquals(
+    getWeekday(before, after),
+    expected,
+  );
+});
+
+Deno.test('getWeekday test #4 from wendesday', () => {
+  const before = new Date('2024-01-03');
+  const after = new Date('2024-01-26');
+  const expected = [24, 3, 3, 4, 4, 4, 3, 3];
+
+  assertEquals(
+    getWeekday2(before, after),
+    expected,
+  );
+
+  assertEquals(
+    getWeekday(before, after),
+    expected,
+  );
+});
+
+Deno.test('getWeekday test #5 end sunday', () => {
+  const before = new Date('2024-01-03');
+  const after = new Date('2024-01-28');
+  const expected = [26, 3, 3, 4, 4, 4, 4, 4];
+
+  assertEquals(
+    getWeekday2(before, after),
+    expected,
+  );
+
+  assertEquals(
+    getWeekday(before, after),
+    expected,
+  );
 });
