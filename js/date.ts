@@ -468,8 +468,9 @@ export function getWeekday(
   const MILLISECONDS_ONE_DAY = 86400000;
 
   /** 两个时间中间包含多少天 */
-  const days = (afterDay.getTime() -
-        beforeDay.getTime()) / MILLISECONDS_ONE_DAY + 1;
+  const days = Math.round(
+    (afterDay.getTime() - beforeDay.getTime()) / MILLISECONDS_ONE_DAY,
+  ) + 1;
 
   const beforeWeekday = before.getDay();
   const afterWeekday = after.getDay();
