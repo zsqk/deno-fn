@@ -4,6 +4,7 @@ import {
 } from 'https://deno.land/std@0.154.0/testing/asserts.ts';
 
 import { onlyRun, run } from './run.ts';
+import { delay } from 'https://deno.land/std@0.190.0/async/delay.ts';
 
 Deno.test('run-base', async () => {
   const { res } = await run('pwd', { cwd: '/' });
@@ -35,4 +36,6 @@ Deno.test('timeout', async () => {
     Error,
     'timeout',
   );
+
+  await delay(3000);
 });
