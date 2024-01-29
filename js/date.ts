@@ -474,7 +474,7 @@ export function getWeekday(
 
   const beforeWeekday = before.getDay();
   const afterWeekday = after.getDay();
-  const weeks = Math.floor(
+  const weeks = Math.round(
     (
       days -
       (8 - beforeWeekday) % 7 -
