@@ -13,5 +13,8 @@
   "editor.formatOnSave": true,
   "[sql]": {
     "editor.formatOnSave": false
+  },
+  "[json]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
   }
 }
