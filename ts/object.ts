@@ -21,3 +21,13 @@ export function assertUnknownObject(v: unknown): asserts v is UnknownObject {
     throw new TypeError('Expected an object');
   }
 }
+
+/**
+ * 断言为数组
+ * @param v 需要断言的变量
+ */
+export function assertArray(v: unknown): asserts v is Array<unknown> {
+  if (!Array.isArray(v)) {
+    throw new TypeError('Expected an array');
+  }
+}
