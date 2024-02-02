@@ -14,3 +14,10 @@ export function isUnknownObject(v: unknown): v is UnknownObject {
   }
   return true;
 }
+
+/** 断言为未知对象 */
+export function assertUnknownObject(v: unknown): asserts v is UnknownObject {
+  if (typeof v !== 'object' || v === null) {
+    throw new TypeError('Expected an object');
+  }
+}
