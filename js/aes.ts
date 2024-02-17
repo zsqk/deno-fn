@@ -2,6 +2,7 @@ import {
   decode,
   encode,
 } from 'https://deno.land/std@0.151.0/encoding/base64.ts';
+import { isBufferSource } from '../ts/binary.ts';
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -91,19 +92,80 @@ export async function encrypt(
  * 解密
  * @param cryptoKey 用于解密的 key
  * @param iv 随机向量
- * @param encrypted 需要解密的的二进制数据, 允许 base64 编码的字符串和普通
+ * @param encrypted 需要解密的的二进制数据, 允许 base64 编码的字符串和原始二进制数据
  * @returns
  */
 export async function decrypt(
   cryptoKey: CryptoKey,
-  iv: Uint8Array,
-  encrypted: string | Uint8Array,
-): Promise<string> {
+  iv: BufferSource | { data: string; encodingType: 'base64' | 'utf8' },
+  encrypted: BufferSource | { data: string; encodingType: 'base64' },
+  {
+    additionalData,
+    decryptedEncodingType = 'utf8',
+  }: {
+    /**
+     * 解密后数据的编码方式. `arraybuffer` 为不编码, `utf8` 为编码为 UTF-8 字符串,
+     * `base64` 为编码为 Base64 字符串.
+     */
+    decryptedEncodingType?: 'arraybuffer' | 'utf8' | 'base64';
+    additionalData?: BufferSource | {
+      data: string;
+      encodingType: 'utf8' | 'base64';
+    };
+  } = {},
+): Promise<string | ArrayBuffer> {
+  let encryptedArray: BufferSource;
+  if (isBufferSource(encrypted)) {
+    encryptedArray = encrypted;
+  } else if (encrypted?.encodingType === 'base64') {
+    encryptedArray = decode(encrypted.data);
+  } else {
+    throw new TypeError('encrypted must be BufferSource or base64 string');
+  }
+
+  let additionalArray: BufferSource | undefined;
+  if (isBufferSource(additionalData)) {
+    additionalArray = additionalData;
+  } else if (additionalData?.encodingType === 'utf8') {
+    // 将 UTF-8 编码的 additionalData 转为二进制数据
+    additionalArray = textEncoder.encode(additionalData.data);
+  } else if (additionalData?.encodingType === 'base64') {
+    // 将 base64 编码的 additionalData 转为二进制数据
+    additionalArray = decode(additionalData.data);
+  }
+
+  let ivArray: BufferSource | undefined;
+  if (isBufferSource(iv)) {
+    ivArray = iv;
+  } else if (iv?.encodingType === 'utf8') {
+    // 将 UTF-8 编码的 ivData 转为二进制数据
+    ivArray = textEncoder.encode(iv.data);
+  } else if (iv?.encodingType === 'base64') {
+    // 将 base64 编码的 ivData 转为二进制数据
+    ivArray = decode(iv.data);
+  }
+
+  // 解密
   const decrypted = await crypto.subtle.decrypt(
-    { name: cryptoKey.algorithm.name, iv },
+    {
+      name: cryptoKey.algorithm.name,
+      iv: ivArray,
+      additionalData: additionalArray,
+    },
     cryptoKey,
-    typeof encrypted === 'string' ? decode(encrypted) : encrypted,
+    encryptedArray,
   );
 
-  return textDecoder.decode(decrypted);
+  // 将解密后的内容编码为 UTF-8 字符串
+  if (decryptedEncodingType === 'utf8') {
+    return textDecoder.decode(decrypted);
+  }
+
+  // 将解密后的内容编码为 base64 字符串
+  if (decryptedEncodingType === 'base64') {
+    return encode(decrypted);
+  }
+
+  // 返回原始的解密后内容
+  return decrypted;
 }

@@ -11,7 +11,10 @@ Deno.test('encrypt-decrypt-1', async () => {
     u.slice(16),
     '中文',
   );
-  const d2 = await decrypt(k, u.slice(16), d1);
+  const d2 = await decrypt(k, u.slice(16), {
+    encodingType: 'base64',
+    data: d1,
+  });
   assertEquals(d2, '中文');
 });
 
@@ -58,7 +61,10 @@ Deno.test('encrypt-decrypt-cbc128', async () => {
     iv,
     '中文',
   );
-  const d2 = await decrypt(k, iv, d1);
+  const d2 = await decrypt(k, iv, {
+    encodingType: 'base64',
+    data: d1,
+  });
   assertEquals(d2, '中文');
 });
 
@@ -73,7 +79,10 @@ Deno.test('encrypt-decrypt-cbc256', async () => {
     iv,
     '中文',
   );
-  const d2 = await decrypt(k, iv, d1);
+  const d2 = await decrypt(k, iv, {
+    encodingType: 'base64',
+    data: d1,
+  });
   assertEquals(d2, '中文');
 });
 
@@ -88,7 +97,10 @@ Deno.test('encrypt-decrypt-gcm256', async () => {
     iv,
     '中文',
   );
-  const d2 = await decrypt(k, iv, d1);
+  const d2 = await decrypt(k, iv, {
+    encodingType: 'base64',
+    data: d1,
+  });
   assertEquals(d2, '中文');
 });
 
@@ -103,6 +115,9 @@ Deno.test('encrypt-decrypt-gcm192', async () => {
     '中文',
   );
 
-  const d2 = await decrypt(k, iv, d1);
+  const d2 = await decrypt(k, iv, {
+    encodingType: 'base64',
+    data: d1,
+  });
   assertEquals(d2, '中文');
 });
