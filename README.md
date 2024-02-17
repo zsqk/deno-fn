@@ -4,7 +4,10 @@
 
 some functions for deno
 
-通用 JS 功能 (浏览器环境兼容):
+**This project is still under development, and the parameters of the functions**
+**are subject to change.**
+
+Generic JS Functions (Browser Environment Compatible):
 
 - hash
   - SHA1
@@ -15,17 +18,17 @@ some functions for deno
   - SHA512
 - Uint8Array to hex string tools
   [hexString()](https://deno.land/x/somefn@v0.26.0/js/hash.ts?s=hexString)
-- 文本加 BOM, 用于 Windows 老款软件
+- Text append BOM, for older Windows software
   [textWithBOM()](https://deno.land/x/somefn@v0.26.0/js/str.ts?s=textWithBOM)
-- 随机字符串 (基于 crypto)
+- Generate random string (based on Web API `crypto`)
   [genRandomString()](https://deno.land/x/somefn@v0.26.0/js/str.ts?s=genRandomString)
-- [为数据进行 RSA 签名](https://deno.land/x/somefn@v0.26.0/js/hash.ts?s=rasSign)
+- [RSA signing of data](https://deno.land/x/somefn@v0.26.0/js/hash.ts?s=rasSign)
 
-依赖 Deno 运行时的功能:
+Functions that depend on the Deno runtime:
 
-- `gitChanges` 查看 Git 变动.
+- `gitChanges` View Git changes.
 
-说明:
+Other features:
 
-- CSV 使用 Deno 标准库 <https://deno.land/std@0.193.0/csv/mod.ts>
-- XML 建议使用 `npm:fast-xml-parser`
+- CSV using the Deno standard library <https://deno.land/std@0.193.0/csv/mod.ts>
+- XML recommends using `npm:fast-xml-parser`
