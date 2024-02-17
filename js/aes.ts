@@ -89,10 +89,50 @@ export async function encrypt(
 }
 
 /**
- * 解密
- * @param cryptoKey 用于解密的 key
- * @param iv 随机向量
- * @param encrypted 需要解密的的二进制数据, 允许 base64 编码的字符串和原始二进制数据
+ * 解密时附加的数据 1
+ */
+type AdditionalData = BufferSource | {
+  data: string;
+  encodingType: 'utf8' | 'base64';
+};
+
+export function decrypt(
+  cryptoKey: CryptoKey,
+  iv: BufferSource | { data: string; encodingType: 'base64' | 'utf8' },
+  encrypted: BufferSource | { data: string; encodingType: 'base64' },
+  opt?: {
+    /**
+     * 解密后数据的编码方式. 默认会进行 UTF-8 编码. `arraybuffer` 为不编码.
+     */
+    decryptedEncodingType?: 'arraybuffer';
+    /** 解密时附加的数据 */
+    additionalData?: AdditionalData;
+  },
+): Promise<ArrayBuffer>;
+export function decrypt(
+  cryptoKey: CryptoKey,
+  iv: BufferSource | { data: string; encodingType: 'base64' | 'utf8' },
+  encrypted: BufferSource | { data: string; encodingType: 'base64' },
+  opt?: {
+    /**
+     * 解密后数据的编码方式.
+     * - 默认值 `utf8` 为编码为 UTF-8 字符串,
+     * - `base64` 为编码为 Base64 字符串.
+     */
+    decryptedEncodingType?: 'utf8' | 'base64';
+    /**
+     * Data that may be present during AES-GCM encryption to participate in
+     * additional authentication.
+     */
+    additionalData?: AdditionalData;
+  },
+): Promise<string>;
+/**
+ * AES decryption based on key
+ * @param cryptoKey CryptoKey for decryption
+ * @param iv initialization vector
+ * @param encrypted Binary data to be decrypted, allowing base64 encoded strings
+ *        and raw binary data.
  * @returns
  */
 export async function decrypt(
@@ -103,15 +143,11 @@ export async function decrypt(
     additionalData,
     decryptedEncodingType = 'utf8',
   }: {
-    /**
-     * 解密后数据的编码方式. `arraybuffer` 为不编码, `utf8` 为编码为 UTF-8 字符串,
-     * `base64` 为编码为 Base64 字符串.
-     */
     decryptedEncodingType?: 'arraybuffer' | 'utf8' | 'base64';
-    additionalData?: BufferSource | {
-      data: string;
-      encodingType: 'utf8' | 'base64';
-    };
+    /** 解密时附加的数据 3 */
+    additionalData?:
+      | BufferSource
+      | { data: string; encodingType: 'utf8' | 'base64' };
   } = {},
 ): Promise<string | ArrayBuffer> {
   let encryptedArray: BufferSource;
