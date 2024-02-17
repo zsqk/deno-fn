@@ -1,4 +1,4 @@
-declare type BufferSource = ArrayBufferView | ArrayBuffer;
+export type BufferSource = ArrayBufferView | ArrayBuffer;
 
 export function isBufferSource(v: unknown): v is BufferSource {
   if (v instanceof ArrayBuffer) {
