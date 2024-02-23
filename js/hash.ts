@@ -7,8 +7,8 @@
  * 2. HMAC 签名.
  * 3. RSA 签名.
  */
-import { encode } from 'https://deno.land/std@0.143.0/encoding/hex.ts';
-import { decode } from 'https://deno.land/std@0.179.0/encoding/base64.ts';
+import { encodeHex } from 'https://deno.land/std@0.217.0/encoding/hex.ts';
+import { decodeBase64 } from 'https://deno.land/std@0.217.0/encoding/base64.ts';
 
 /**
  * 获取数据散列值
@@ -27,20 +27,7 @@ export async function hashString(
       data,
     ),
   );
-  return hexString(hashRes);
-}
-
-/**
- * 将二进制数据储存为 HEX (16 进制字符串)
- * @param data 二进制数据
- * @returns HEX (16 进制字符串)
- */
-export function hexString(data: Uint8Array): string {
-  let s = '';
-  for (const d of encode(data)) {
-    s += String.fromCodePoint(d);
-  }
-  return s;
+  return encodeHex(hashRes);
 }
 
 export async function hmac(
@@ -104,7 +91,7 @@ export async function rsaSign(
     cryptoKey = key;
   } else {
     const { s, hash } = key;
-    const keyData = typeof s === 'string' ? decode(s) : s;
+    const keyData = typeof s === 'string' ? decodeBase64(s) : s;
     cryptoKey = await crypto.subtle.importKey(
       'pkcs8',
       keyData,
