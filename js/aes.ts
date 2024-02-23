@@ -89,7 +89,9 @@ export async function encrypt(
 }
 
 /**
- * 解密时附加的数据 1
+ * Data that may be present during AES-GCM encryption to participate in
+ * additional authentication.
+ * <https://developer.mozilla.org/en-US/docs/Web/API/AesGcmParams#additionaldata>
  */
 type AdditionalData = BufferSource | {
   data: string;
@@ -105,7 +107,10 @@ export function decrypt(
      * 解密后数据的编码方式. 默认会进行 UTF-8 编码. `arraybuffer` 为不编码.
      */
     decryptedEncodingType?: 'arraybuffer';
-    /** 解密时附加的数据 */
+    /**
+     * Data that may be present during AES-GCM encryption to participate in
+     * additional authentication.
+     */
     additionalData?: AdditionalData;
   },
 ): Promise<ArrayBuffer>;
@@ -144,7 +149,6 @@ export async function decrypt(
     decryptedEncodingType = 'utf8',
   }: {
     decryptedEncodingType?: 'arraybuffer' | 'utf8' | 'base64';
-    /** 解密时附加的数据 3 */
     additionalData?:
       | BufferSource
       | { data: string; encodingType: 'utf8' | 'base64' };
