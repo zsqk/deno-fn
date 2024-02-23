@@ -1,23 +1,7 @@
 // 依赖 Deno 的常用函数
 
-import { readAll } from 'https://deno.land/std@0.144.0/streams/conversion.ts';
 import { parseEnv } from './js/parse-env.ts';
 import { getRunData } from './deno/run.ts';
-
-/**
- * [Deno] 解析 JSON 格式的 Deno.Reader 为 JS 对象
- * @deprecated 因为 Deno 支持 Request 所以不再需要该功能.
- * @param reqBody
- * @returns
- */
-export async function readBody(reqBody?: Deno.Reader): Promise<unknown> {
-  if (reqBody === undefined) {
-    return {};
-  }
-  const buf: Uint8Array = await readAll(reqBody);
-  const str = new TextDecoder('utf-8').decode(buf);
-  return JSON.parse(str);
-}
 
 /**
  * [Deno] Load Environment Variables
