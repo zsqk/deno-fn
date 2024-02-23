@@ -89,19 +89,22 @@ export async function encrypt(
 }
 
 /**
- * Data that may be present during AES-GCM encryption to participate in
- * additional authentication.
- * <https://developer.mozilla.org/en-US/docs/Web/API/AesGcmParams#additionaldata>
+ * Binary data
  */
-type AdditionalData = BufferSource | {
-  data: string;
-  encodingType: 'utf8' | 'base64';
-};
+type BinaryData =
+  | BufferSource
+  | { data: string; encodingType: 'utf8' }
+  | { data: string; encodingType: 'base64' };
+
+/**
+ * <https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#data>
+ */
+type EncryptedData = BufferSource | { data: string; encodingType: 'base64' };
 
 export function decrypt(
   cryptoKey: CryptoKey,
-  iv: BufferSource | { data: string; encodingType: 'base64' | 'utf8' },
-  encrypted: BufferSource | { data: string; encodingType: 'base64' },
+  iv: BinaryData,
+  encrypted: EncryptedData,
   opt?: {
     /**
      * The encoding method of the decrypted data.
@@ -113,13 +116,13 @@ export function decrypt(
      * Data that may be present during AES-GCM encryption to participate in
      * additional authentication.
      */
-    additionalData?: AdditionalData;
+    additionalData?: BinaryData;
   },
 ): Promise<string>;
 export function decrypt(
   cryptoKey: CryptoKey,
-  iv: BufferSource | { data: string; encodingType: 'base64' | 'utf8' },
-  encrypted: BufferSource | { data: string; encodingType: 'base64' },
+  iv: BinaryData,
+  encrypted: EncryptedData,
   opt?: {
     /**
      * The encoding method of the decrypted data.
@@ -130,7 +133,7 @@ export function decrypt(
      * Data that may be present during AES-GCM encryption to participate in
      * additional authentication.
      */
-    additionalData?: AdditionalData;
+    additionalData?: BinaryData;
   },
 ): Promise<ArrayBuffer>;
 /**
