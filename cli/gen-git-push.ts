@@ -1,8 +1,8 @@
 // deno run -A tools/cli.ts
-import { parse } from 'https://deno.land/std@0.161.0/flags/mod.ts';
+import { parseArgs } from "https://deno.land/std@0.217.0/cli/parse_args.ts";
 import { genGitPush } from "../deno/git.ts";
 
-const args = parse<
+const args = parseArgs<
   Partial<
     {
       "repo-name": string;

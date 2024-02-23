@@ -1,7 +1,6 @@
-import {
-  assert,
-  assertEquals,
-} from 'https://deno.land/std@0.154.0/testing/asserts.ts';
+import { assert } from 'https://deno.land/std@0.217.0/assert/assert.ts';
+import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
+
 import { gitChanges, pullGitRepo } from './git.ts';
 
 // git clone https://github.com/zsqk/deno-fn.git --depth 1

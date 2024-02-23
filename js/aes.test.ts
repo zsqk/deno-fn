@@ -1,5 +1,5 @@
 import { decrypt, encrypt, genAesKey, genIV } from './aes.ts';
-import { assertEquals } from 'https://deno.land/std@0.177.0/testing/asserts.ts';
+import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
 
 Deno.test('encrypt-decrypt-1', async () => {
   const [k, u] = await genAesKey(

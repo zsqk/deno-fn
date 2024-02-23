@@ -1,4 +1,4 @@
-import { assertEquals } from 'https://deno.land/std@0.151.0/testing/asserts.ts';
+import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
 import { intToU8a, u8aToInt } from './int.ts';
 
 Deno.test('u8aToInt', () => {
