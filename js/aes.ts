@@ -105,23 +105,6 @@ export function decrypt(
   opt?: {
     /**
      * The encoding method of the decrypted data.
-     * By default, it will be UTF-8 encoded. The `arraybuffer` is not encoded.
-     */
-    decryptedEncodingType?: 'arraybuffer';
-    /**
-     * Data that may be present during AES-GCM encryption to participate in
-     * additional authentication.
-     */
-    additionalData?: AdditionalData;
-  },
-): Promise<ArrayBuffer>;
-export function decrypt(
-  cryptoKey: CryptoKey,
-  iv: BufferSource | { data: string; encodingType: 'base64' | 'utf8' },
-  encrypted: BufferSource | { data: string; encodingType: 'base64' },
-  opt?: {
-    /**
-     * The encoding method of the decrypted data.
      * - The default value `utf8` is a UTF-8 string.
      * - `base64` is a string encoded as Base64.
      */
@@ -133,12 +116,31 @@ export function decrypt(
     additionalData?: AdditionalData;
   },
 ): Promise<string>;
+export function decrypt(
+  cryptoKey: CryptoKey,
+  iv: BufferSource | { data: string; encodingType: 'base64' | 'utf8' },
+  encrypted: BufferSource | { data: string; encodingType: 'base64' },
+  opt?: {
+    /**
+     * The encoding method of the decrypted data.
+     * By default, it will be UTF-8 encoded. The `arraybuffer` is not encoded.
+     */
+    decryptedEncodingType?: 'arraybuffer';
+    /**
+     * Data that may be present during AES-GCM encryption to participate in
+     * additional authentication.
+     */
+    additionalData?: AdditionalData;
+  },
+): Promise<ArrayBuffer>;
 /**
  * AES decryption based on key (AES-CBC, AES-GCM)
  * @param cryptoKey CryptoKey for decryption
  * @param iv initialization vector
  * @param encrypted Binary data to be decrypted, allowing base64 encoded strings
  *        and raw binary data.
+ * @param opt
+ * @param opt.decryptedEncodingType - default value `utf8`
  * @returns
  */
 export async function decrypt(
