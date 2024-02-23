@@ -89,10 +89,61 @@ export async function encrypt(
 }
 
 /**
- * 解密
- * @param cryptoKey 用于解密的 key
- * @param iv 随机向量
- * @param encrypted 需要解密的的二进制数据, 允许 base64 编码的字符串和原始二进制数据
+ * Binary data
+ */
+type BinaryData =
+  | BufferSource
+  | { data: string; encodingType: 'utf8' }
+  | { data: string; encodingType: 'base64' };
+
+/**
+ * <https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#data>
+ */
+type EncryptedData = BufferSource | { data: string; encodingType: 'base64' };
+
+export function decrypt(
+  cryptoKey: CryptoKey,
+  iv: BinaryData,
+  encrypted: EncryptedData,
+  opt?: {
+    /**
+     * The encoding method of the decrypted data.
+     * - The default value `utf8` is a UTF-8 string.
+     * - `base64` is a string encoded as Base64.
+     */
+    decryptedEncodingType?: 'utf8' | 'base64';
+    /**
+     * Data that may be present during AES-GCM encryption to participate in
+     * additional authentication.
+     */
+    additionalData?: BinaryData;
+  },
+): Promise<string>;
+export function decrypt(
+  cryptoKey: CryptoKey,
+  iv: BinaryData,
+  encrypted: EncryptedData,
+  opt?: {
+    /**
+     * The encoding method of the decrypted data.
+     * By default, it will be UTF-8 encoded. The `arraybuffer` is not encoded.
+     */
+    decryptedEncodingType?: 'arraybuffer';
+    /**
+     * Data that may be present during AES-GCM encryption to participate in
+     * additional authentication.
+     */
+    additionalData?: BinaryData;
+  },
+): Promise<ArrayBuffer>;
+/**
+ * AES decryption based on key (AES-CBC, AES-GCM)
+ * @param cryptoKey CryptoKey for decryption
+ * @param iv initialization vector
+ * @param encrypted Binary data to be decrypted, allowing base64 encoded strings
+ *        and raw binary data.
+ * @param opt
+ * @param opt.decryptedEncodingType - default value `utf8`
  * @returns
  */
 export async function decrypt(
@@ -103,15 +154,10 @@ export async function decrypt(
     additionalData,
     decryptedEncodingType = 'utf8',
   }: {
-    /**
-     * 解密后数据的编码方式. `arraybuffer` 为不编码, `utf8` 为编码为 UTF-8 字符串,
-     * `base64` 为编码为 Base64 字符串.
-     */
     decryptedEncodingType?: 'arraybuffer' | 'utf8' | 'base64';
-    additionalData?: BufferSource | {
-      data: string;
-      encodingType: 'utf8' | 'base64';
-    };
+    additionalData?:
+      | BufferSource
+      | { data: string; encodingType: 'utf8' | 'base64' };
   } = {},
 ): Promise<string | ArrayBuffer> {
   let encryptedArray: BufferSource;
