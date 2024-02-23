@@ -104,7 +104,8 @@ export function decrypt(
   encrypted: BufferSource | { data: string; encodingType: 'base64' },
   opt?: {
     /**
-     * 解密后数据的编码方式. 默认会进行 UTF-8 编码. `arraybuffer` 为不编码.
+     * The encoding method of the decrypted data.
+     * By default, it will be UTF-8 encoded. The `arraybuffer` is not encoded.
      */
     decryptedEncodingType?: 'arraybuffer';
     /**
@@ -120,9 +121,9 @@ export function decrypt(
   encrypted: BufferSource | { data: string; encodingType: 'base64' },
   opt?: {
     /**
-     * 解密后数据的编码方式.
-     * - 默认值 `utf8` 为编码为 UTF-8 字符串,
-     * - `base64` 为编码为 Base64 字符串.
+     * The encoding method of the decrypted data.
+     * - The default value `utf8` is a UTF-8 string.
+     * - `base64` is a string encoded as Base64.
      */
     decryptedEncodingType?: 'utf8' | 'base64';
     /**
@@ -133,7 +134,7 @@ export function decrypt(
   },
 ): Promise<string>;
 /**
- * AES decryption based on key
+ * AES decryption based on key (AES-CBC, AES-GCM)
  * @param cryptoKey CryptoKey for decryption
  * @param iv initialization vector
  * @param encrypted Binary data to be decrypted, allowing base64 encoded strings
