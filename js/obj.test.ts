@@ -1,4 +1,4 @@
-import { assertEquals } from 'https://deno.land/std@0.144.0/testing/asserts.ts';
+import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
 
 import { isEmpty, isEmptyObj } from './obj.ts';
 
