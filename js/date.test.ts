@@ -5,10 +5,8 @@ import {
   timeSummarize,
   toUnixTimestamp,
 } from './date.ts';
-import {
-  assertEquals,
-  assertThrows,
-} from 'https://deno.land/std@0.177.0/testing/asserts.ts';
+import { assertThrows } from 'https://deno.land/std@0.217.0/testing/asserts.ts';
+import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
 import { getWeekday as getWeekday2 } from './date.ts';
 import { getWeekday } from './date.altimpl.ts';
 

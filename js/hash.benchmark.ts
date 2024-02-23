@@ -1,7 +1,7 @@
 import { hmac as hmacDiff } from 'https://deno.land/x/hmac@v2.0.1/mod.ts';
-import { assertEquals } from 'https://deno.land/std@0.177.0/testing/asserts.ts';
+import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
+import { encodeBase64 } from 'https://deno.land/std@0.217.0/encoding/base64.ts';
 import { hmac } from './hash.ts';
-import { encode } from 'https://deno.land/std@0.156.0/encoding/base64.ts?s=encode';
 
 Deno.test('hmac', async () => {
   const data =
@@ -14,7 +14,7 @@ Deno.test('hmac', async () => {
   console.time('hmac-n');
   for (let i = 0; i < times; i++) {
     const res = await hmac({ hash: 'SHA-1', s: secret }, data);
-    assertEquals(encode(res), sres);
+    assertEquals(encodeBase64(res), sres);
   }
   console.timeEnd('hmac-n');
 
@@ -29,7 +29,7 @@ Deno.test('hmac', async () => {
   );
   for (let i = 0; i < times; i++) {
     const res = await hmac(cryptoKey, data);
-    assertEquals(encode(res), sres);
+    assertEquals(encodeBase64(res), sres);
   }
   console.timeEnd('hmac-k');
 

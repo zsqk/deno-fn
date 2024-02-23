@@ -1,4 +1,4 @@
-import { delay } from 'https://deno.land/std@0.153.0/async/delay.ts';
+import { delay } from 'https://deno.land/std@0.217.0/async/delay.ts';
 
 /**
  * 判断一个错误是否是网络错误, 如果是网络错误, 一般可以重试

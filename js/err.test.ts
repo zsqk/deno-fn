@@ -1,7 +1,5 @@
-import {
-  assertIsError,
-} from 'https://deno.land/std@0.153.0/testing/asserts.ts';
-import { delay } from 'https://deno.land/std@0.153.0/async/delay.ts';
+import { assertIsError } from 'https://deno.land/std@0.217.0/assert/assert_is_error.ts';
+import { delay } from 'https://deno.land/std@0.217.0/async/delay.ts';
 import { autoRetry } from './err.ts';
 
 Deno.test('autoRetry', async () => {

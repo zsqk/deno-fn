@@ -1,7 +1,7 @@
 import {
-  decode,
-  encode,
-} from 'https://deno.land/std@0.151.0/encoding/base64.ts';
+  decodeBase64,
+  encodeBase64,
+} from 'https://deno.land/std@0.217.0/encoding/base64.ts';
 import { isBufferSource } from '../ts/binary.ts';
 
 const textEncoder = new TextEncoder();
@@ -25,7 +25,7 @@ export async function genAesKey(
 ): Promise<[CryptoKey, Uint8Array]> {
   let u8aKey: Uint8Array;
   if (typeof k === 'string') {
-    u8aKey = decode(k);
+    u8aKey = decodeBase64(k);
   } else if (typeof k === 'number') {
     u8aKey = genIV(k / 8);
   } else {
@@ -85,7 +85,7 @@ export async function encrypt(
     typeof data === 'string' ? textEncoder.encode(data) : data,
   );
 
-  return encode(encrypted);
+  return encodeBase64(encrypted);
 }
 
 /**
@@ -164,7 +164,7 @@ export async function decrypt(
   if (isBufferSource(encrypted)) {
     encryptedArray = encrypted;
   } else if (encrypted?.encodingType === 'base64') {
-    encryptedArray = decode(encrypted.data);
+    encryptedArray = decodeBase64(encrypted.data);
   } else {
     throw new TypeError('encrypted must be BufferSource or base64 string');
   }
@@ -177,7 +177,7 @@ export async function decrypt(
     additionalArray = textEncoder.encode(additionalData.data);
   } else if (additionalData?.encodingType === 'base64') {
     // 将 base64 编码的 additionalData 转为二进制数据
-    additionalArray = decode(additionalData.data);
+    additionalArray = decodeBase64(additionalData.data);
   }
 
   let ivArray: BufferSource | undefined;
@@ -188,7 +188,7 @@ export async function decrypt(
     ivArray = textEncoder.encode(iv.data);
   } else if (iv?.encodingType === 'base64') {
     // 将 base64 编码的 ivData 转为二进制数据
-    ivArray = decode(iv.data);
+    ivArray = decodeBase64(iv.data);
   }
 
   // 解密
@@ -209,7 +209,7 @@ export async function decrypt(
 
   // 将解密后的内容编码为 base64 字符串
   if (decryptedEncodingType === 'base64') {
-    return encode(decrypted);
+    return encodeBase64(decrypted);
   }
 
   // 返回原始的解密后内容
