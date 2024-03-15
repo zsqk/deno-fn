@@ -65,6 +65,7 @@ export function isCalculateField(cf: unknown): cf is CalculateField {
 export function fieldCalculate(
   data: Record<string, string | number>,
   calculateField: CalculateField,
+  { debug }: { debug?: boolean } = {},
 ): number {
   const keys = Object.keys(data);
 
@@ -78,12 +79,16 @@ export function fieldCalculate(
     if (keys.includes(v)) {
       const num = Number(data[v]);
       if (Number.isNaN(num)) {
-        throw new Error(`invalid data: ${v} is not a number`);
+        throw new Error(`invalid data: ${v} ${data[v]} is not a number`);
       }
       return `${acc}${num}`;
     }
     throw new Error(`invalid data: key ${v} not found`);
   }, '');
+
+  if (debug) {
+    console.log('calculateCode', calculateCode);
+  }
 
   return eval(calculateCode);
 }
