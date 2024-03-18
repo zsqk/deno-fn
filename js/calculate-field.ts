@@ -62,6 +62,15 @@ export function isCalculateField(cf: unknown): cf is CalculateField {
   return true;
 }
 
+/**
+ * 计算字段
+ * @param data
+ * @param calculateField
+ * @param options
+ * @returns
+ *
+ * @todo 替换 `eval` 以避免浮点误差
+ */
 export function fieldCalculate(
   data: Record<string, string | number>,
   calculateField: CalculateField,
