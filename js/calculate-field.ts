@@ -69,15 +69,13 @@ function remainder(x: number, y: number) {
 }
 
 /**
- * 计算字段
+ * 计算字段 (eval 版本, 不能避免浮点误差)
  * @param data
  * @param calculateField
  * @param options
  * @returns
- *
- * @todo 替换 `eval` 以避免浮点误差
  */
-export function fieldCalculate(
+export function fieldCalculateEval(
   data: Record<string, string | number>,
   calculateField: CalculateField,
   { debug }: { debug?: boolean } = {},
@@ -212,7 +210,7 @@ function nestCalculate(
   }, 0);
 }
 
-export function fieldCalculate2(
+export function fieldCalculate(
   data: Record<string, string | number>,
   calculateField: CalculateField,
   { debug }: { debug?: boolean } = {},
@@ -267,7 +265,7 @@ export function fieldCalculate2(
       console.log('新数组前半部分', calculateField.slice(0, index1));
       console.log('新数组后半部分', calculateField.slice(index2 + 1));
     }
-    return fieldCalculate2(data, [
+    return fieldCalculate(data, [
       ...calculateField.slice(0, index1),
       nest,
       ...calculateField.slice(index2 + 1),

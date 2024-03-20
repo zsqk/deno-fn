@@ -1,5 +1,5 @@
-import { fieldCalculate2 as fieldCalculate } from './calculate-field.ts';
-// import { fieldCalculate } from './calculate-field.ts';
+// import { fieldCalculate2 as fieldCalculate } from './calculate-field.ts';
+import { fieldCalculate } from './calculate-field.ts';
 import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
 import { assertThrows } from 'https://deno.land/std@0.217.0/assert/assert_throws.ts';
 
