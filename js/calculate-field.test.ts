@@ -25,10 +25,21 @@ Deno.test('test2', () => {
     60,
   );
 
+  // 浮点误差, 浮点数乘法
   assertEquals(
-    fieldCalculate(data, '( a + b * 3 + ( a + c ) ) * 5'.split(' ')),
-    55,
+    fieldCalculate(data, '0.1 * 0.2'.split(' ')),
+    0.02,
   );
+
+  // 浮点误差, 浮点数加法
+  assertEquals(fieldCalculate(data, '0.1 + 0.2'.split(' ')), 0.3);
+  assertEquals(fieldCalculate(data, '10000.1 + 0.2'.split(' ')), 10000.3);
+
+  // 浮点误差, 浮点数减法
+  assertEquals(fieldCalculate(data, '0.3 - 0.1'.split(' ')), 0.2);
+
+  // 浮点误差, 浮点数除法
+  assertEquals(fieldCalculate(data, '0.3 / 0.1'.split(' ')), 3);
 
   // 使用其他数据
   assertEquals(
