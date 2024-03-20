@@ -1,19 +1,20 @@
 /**
- * 将浮点数转为整数形式
+ * 将浮点数转为整数形式 (仅支持 15 位精度)
  * @param v
  * @returns
  */
-function toIntFromFloat(v: string) {
-  const i = v.indexOf('.');
-  if (i === -1) {
-    throw new Error('Not a float');
+export function toIntFromFloat(v: string): {
+  int: number;
+  precision: number;
+} {
+  const subv = v.slice(0, 16);
+  const i = subv.indexOf('.');
+  if (i === -1 || i === 15) {
+    return { int: Number(subv), precision: 0 };
   }
 
-  const int = Number(v.replace('.', ''));
-  if (!Number.isSafeInteger(int)) {
-    throw new Error('Cannot as a safe integer');
-  }
-  return { int, precision: v.length - i - 1 };
+  const int = Number(subv.replace('.', ''));
+  return { int, precision: subv.length - i - 1 };
 }
 
 /**
