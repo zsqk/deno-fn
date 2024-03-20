@@ -62,6 +62,26 @@ export function isCalculateField(cf: unknown): cf is CalculateField {
   return true;
 }
 
+function addition(x: number, y: number) {
+  return x + y;
+}
+
+function subtraction(x: number, y: number) {
+  return x - y;
+}
+
+function multiplication(x: number, y: number) {
+  return x * y;
+}
+
+function division(x: number, y: number) {
+  return x / y;
+}
+
+function remainder(x: number, y: number) {
+  return x % y;
+}
+
 /**
  * 计算字段
  * @param data
@@ -125,15 +145,7 @@ function nestCalculate(
     }
   }
 
-  if (indexsFor11.length !== 0 && indexsFor12.length !== 0) {
-    // TODO: 支持混合运算符优先级
-    throw new Error(`暂不支持混合运算符优先级 ${calculateField.join('')}`);
-  }
-
-  return calculateField.reduce<number>((acc, v, i, arr) => {
-    if (isCalculateOperator(v)) {
-      return acc;
-    }
+  function getVal(v: number | string) {
     let n = typeof v === 'number' ? v : Number(v);
     if (Number.isNaN(n)) {
       n = Number(data[v]);
@@ -141,20 +153,73 @@ function nestCalculate(
         throw new Error(`invalid data: ${v} ${data[v]} is not a number`);
       }
     }
+    return n;
+  }
+
+  if (indexsFor11.length !== 0 && indexsFor12.length !== 0) {
+    // 支持混合运算符优先级
+    const newArr = [...calculateField];
+    for (const i of indexsFor12) {
+      const o = newArr[i];
+      if (o === '*') {
+        newArr[i + 1] = multiplication(
+          getVal(newArr[i - 1]),
+          getVal(newArr[i + 1]),
+        );
+      }
+      if (o === '/') {
+        newArr[i + 1] = division(
+          getVal(newArr[i - 1]),
+          getVal(newArr[i + 1]),
+        );
+      }
+      if (o === '%') {
+        newArr[i + 1] = remainder(
+          getVal(newArr[i - 1]),
+          getVal(newArr[i + 1]),
+        );
+      }
+      newArr[i - 1] = '';
+      newArr[i] = '';
+    }
+    return newArr.filter((v) => v !== '').reduce<number>((acc, v, i, arr) => {
+      if (isCalculateOperator(v)) {
+        return acc;
+      }
+      const n = getVal(v);
+      if (i === 0) {
+        return n;
+      }
+      switch (arr[i - 1]) {
+        case '+':
+          return addition(acc, n);
+        case '-':
+          return subtraction(acc, n);
+        default:
+          throw new Error('invalid isCalculateOperator');
+      }
+    }, 0);
+  }
+
+  return calculateField.reduce<number>((acc, v, i, arr) => {
+    if (isCalculateOperator(v)) {
+      return acc;
+    }
+    const n = getVal(v);
     if (i === 0) {
       return n;
     }
     switch (arr[i - 1]) {
       case '+':
-        return acc + n;
+        return addition(acc, n);
       case '-':
-        return acc - n;
+        return subtraction(acc, n);
       case '*':
-        return acc * n;
+        return multiplication(acc, n);
       case '/':
-        return acc / n;
+        return division(acc, n);
       case '%':
-        return acc % n;
+        return remainder(acc, n);
       default:
         throw new Error('invalid isCalculateOperator');
     }
