@@ -101,3 +101,128 @@ export function fieldCalculate(
 
   return eval(calculateCode);
 }
+
+function nestCalculate(
+  data: Record<string, string | number>,
+  calculateField: (FieldName | number | MathOperator)[],
+) {
+  /**
+   * +, - 这类权重 11 的运算符索引数组
+   */
+  const indexsFor11: number[] = [];
+  /**
+   * *, /, % 这类权重 12 的运算符索引数组
+   */
+  const indexsFor12: number[] = [];
+
+  for (let i = 0; i < calculateField.length; i++) {
+    const v = calculateField[i];
+    if (v === '*' || v === '/' || v === '%') {
+      indexsFor12.push(i);
+    }
+    if (v === '+' || v === '-') {
+      indexsFor11.push(i);
+    }
+  }
+
+  if (indexsFor11.length !== 0 && indexsFor12.length !== 0) {
+    // TODO: 支持混合运算符优先级
+    throw new Error(`暂不支持混合运算符优先级 ${calculateField.join('')}`);
+  }
+
+  return calculateField.reduce<number>((acc, v, i, arr) => {
+    if (isCalculateOperator(v)) {
+      return acc;
+    }
+    let n = typeof v === 'number' ? v : Number(v);
+    if (Number.isNaN(n)) {
+      n = Number(data[v]);
+      if (Number.isNaN(n)) {
+        throw new Error(`invalid data: ${v} ${data[v]} is not a number`);
+      }
+    }
+    if (i === 0) {
+      return n;
+    }
+    switch (arr[i - 1]) {
+      case '+':
+        return acc + n;
+      case '-':
+        return acc - n;
+      case '*':
+        return acc * n;
+      case '/':
+        return acc / n;
+      case '%':
+        return acc % n;
+      default:
+        throw new Error('invalid isCalculateOperator');
+    }
+  }, 0);
+}
+
+export function fieldCalculate2(
+  data: Record<string, string | number>,
+  calculateField: CalculateField,
+  { debug }: { debug?: boolean } = {},
+): number {
+  if (debug) {
+    console.log('data', data);
+    console.log('calculateField', calculateField);
+  }
+  // console.log('data', data);
+  // console.log('calculateField', calculateField);
+
+  /**
+   * 找到 calculateField 中的最后一个 `(`
+   */
+  const index1 = calculateField.findLastIndex((v) => {
+    if (v === '(') {
+      return true;
+    }
+    return false;
+  });
+
+  // 如果存在 `(`, 就先计算括号内的
+  if (index1 !== -1) {
+    /**
+     * 找到 `(` 后的第一个 `)`
+     */
+    const relativeIndex2 = calculateField.slice(index1).findIndex((v) => {
+      if (v === ')') {
+        return true;
+      }
+      return false;
+    });
+    if (relativeIndex2 === -1) {
+      throw new Error(`invalid calculateField index1 ${index1}`);
+    }
+
+    const index2 = relativeIndex2 + index1;
+
+    if (debug) {
+      console.log(`( 的索引为 ${index1}, ) 的索引为 ${index2}`);
+      console.log(
+        '本次要计算的内容为',
+        calculateField.slice(index1 + 1, index2),
+      );
+    }
+
+    // 逐个计算
+    const nest = nestCalculate(data, calculateField.slice(index1 + 1, index2));
+
+    if (debug) {
+      console.log('计算结果', nest);
+      console.log('新数组前半部分', calculateField.slice(0, index1));
+      console.log('新数组后半部分', calculateField.slice(index2 + 1));
+    }
+    return fieldCalculate2(data, [
+      ...calculateField.slice(0, index1),
+      nest,
+      ...calculateField.slice(index2 + 1),
+    ]);
+  }
+
+  // 如果不存在 `(`, 就直接计算
+  return nestCalculate(data, calculateField);
+}
