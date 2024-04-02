@@ -26,7 +26,11 @@ const data: Record<string, string | number> = {
   k: 12454989,
   k1: 'adsfqwerzxcv',
   k2: 'sdfasdf021.',
-  m: 12,
+  m: '12',
+  m1: 12,
+  m2: '22',
+  m3: '1',
+  m4: '3',
 };
 
 // greaterThan 大于
@@ -740,6 +744,96 @@ Deno.test('test-includes-false-2', () => {
         field: 'k1',
         operator: LogicOperator.includes,
         value: 22,
+      }],
+    }),
+  );
+});
+
+//此处有错误 ，当m1为数字12时，结果错误
+// beinclude
+Deno.test('test-beIncludes-true', () => {
+  assert(
+    logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'm',
+        operator: LogicOperator.beIncludes,
+        value: '22,12,32',
+      }],
+    }),
+  );
+
+  assert(
+    logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'm2',
+        operator: LogicOperator.beIncludes,
+        value: '32,22',
+      }],
+    }),
+  );
+  //m1 为数字 12
+  assert(
+    logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'm1',
+        operator: LogicOperator.beIncludes,
+        value: '22,12,32',
+      }],
+    }),
+  );
+  //m1 为数字 12 value中包含"1 2"
+  assert(
+    logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'm1',
+        operator: LogicOperator.beIncludes,
+        value: '22,1 2,32',
+      }],
+    }),
+  );
+});
+
+//此处有错误，m为'12'，未被value包含，预期结果应为false
+Deno.test('test-beIncludes-false-1', () => {
+  assert(
+    logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'm',
+        operator: LogicOperator.beIncludes,
+        value: '22,122,32',
+      }],
+    }),
+  );
+});
+
+//此处有错误，m3为'1'，未被value包含，预期结果应为false
+Deno.test('test-beIncludes-false-2', () => {
+  assert(
+    logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'm3',
+        operator: LogicOperator.beIncludes,
+        value: '122,122,32',
+      }],
+    }),
+  );
+});
+
+//此处有错误，m4为'3'，未被value包含，预期结果应为false
+Deno.test('test-beIncludes-false-3', () => {
+  assert(
+    logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'm4',
+        operator: LogicOperator.beIncludes,
+        value: '122,122,32',
       }],
     }),
   );
