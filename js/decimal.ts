@@ -81,12 +81,16 @@ export function multiplication(x: number, y: number): number {
     power += precision;
     res *= int;
     isFloat = true;
+  } else {
+    res *= x;
   }
   if (!Number.isInteger(y)) {
     const { int, precision } = toIntFromFloat(y.toString());
     power += precision;
     res *= int;
     isFloat = true;
+  } else {
+    res *= y;
   }
   if (isFloat) {
     return res / Math.pow(10, power);
