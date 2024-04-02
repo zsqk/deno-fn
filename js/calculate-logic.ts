@@ -115,6 +115,17 @@ function fieldItemCalculate<K extends string>(
   }
 }
 
+/**
+ * 逻辑计算
+ * ----------
+ *
+ * 在做字符串包含匹配时, 建议:
+ * 1. 定长, 比如 `022,122,032` 不包含 `012`.
+ * 2. 额外处理字符串, 比如 `',22,122,32,'` 不包含 `',12,'`.
+ * @param data
+ * @param logicRelationship
+ * @returns
+ */
 export function logicCalculate<K extends string>(
   data: Record<K, string | number>,
   logicRelationship: LogicRelationship<K>,
