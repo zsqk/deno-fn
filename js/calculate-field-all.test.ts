@@ -310,5 +310,5 @@ Deno.test('test-error', () => {
   assertThrows(() => {
     const calculateField = 'a * 3'.split(' ');
     fieldCalculate({}, calculateField);
-  }, 'invalid');
+  }, 'not found');
 });

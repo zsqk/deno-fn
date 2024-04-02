@@ -1,5 +1,6 @@
 import { assert } from 'https://deno.land/std@0.217.0/assert/assert.ts';
 import { logicCalculate, LogicOperator } from './calculate-logic.ts';
+import { assertThrows } from 'https://deno.land/std@0.217.0/assert/assert_throws.ts';
 
 const data: Record<string, string | number> = {
   a: 65537,
@@ -35,12 +36,11 @@ const data: Record<string, string | number> = {
 
 // greaterThan 大于
 Deno.test('test-greaterThan-notExist-false-0', () => {
-  assert(
+  assertThrows(() =>
     logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'n', operator: LogicOperator.greaterThan, value: -1 }],
-    }),
-  );
+    }), 'not found');
 });
 
 Deno.test('test-greaterThan-true', () => {
