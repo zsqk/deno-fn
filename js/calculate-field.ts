@@ -121,11 +121,21 @@ function nestCalculate(
 
   for (let i = 0; i < calculateField.length; i++) {
     const v = calculateField[i];
-    if (v === '*' || v === '/' || v === '%') {
-      indexsFor12.push(i);
-    }
-    if (v === '+' || v === '-') {
-      indexsFor11.push(i);
+    if (isMathOperator(v)) {
+      const next = calculateField[i + 1];
+      if (next === undefined) {
+        throw new Error('invalid data: MathOperator cannot as last');
+      }
+      if (isMathOperator(next)) {
+        throw new Error(
+          'invalid data: cannot be two consecutive MathOperator',
+        );
+      }
+      if (v === '+' || v === '-') {
+        indexsFor11.push(i);
+      } else {
+        indexsFor12.push(i);
+      }
     }
   }
 

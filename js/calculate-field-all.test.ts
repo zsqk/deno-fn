@@ -301,7 +301,7 @@ Deno.test('test-error-2', () => {
   assertThrows(() => {
     const calculateField = '2 + + 3'.split(' ');
     fieldCalculate(data, calculateField);
-  }, 'd');
+  }, 'invalid data');
 });
 
 //测试非法字符
