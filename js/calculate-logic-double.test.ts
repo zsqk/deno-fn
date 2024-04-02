@@ -37,7 +37,7 @@ Deno.test('test-true-and-aa', () => {
 // and a>-1 true  a>65540 false
 Deno.test('test-false-1-and-aa', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [
         { field: 'a', operator: LogicOperator.greaterThan, value: -1 },
@@ -62,7 +62,7 @@ Deno.test('test-true-and-abc', () => {
 
 Deno.test('test-false-2-and-abc', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [
         { field: 'a', operator: LogicOperator.lessThan, value: 65540 },
@@ -90,7 +90,7 @@ Deno.test('test-true-and-fghjk', () => {
 
 Deno.test('test-false-3-and-fghjk', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [
         { field: 'f', operator: LogicOperator.greaterThanOrEqual, value: 0 },
@@ -118,7 +118,7 @@ Deno.test('test-true-or-a', () => {
 });
 Deno.test('test-false-4-or-a', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'OR',
       rules: [
         { field: 'a', operator: LogicOperator.lessThan, value: -1 },
@@ -143,7 +143,7 @@ Deno.test('test-true-or-a-123', () => {
 
 Deno.test('test-false-5-or-a-123', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'OR',
       rules: [
         { field: 'a', operator: LogicOperator.greaterThan, value: 65537 },
@@ -170,7 +170,7 @@ Deno.test('test-true-or', () => {
 // or a>66666 false   b<0  false
 Deno.test('test-false-6-or', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'OR',
       rules: [
         { field: 'a', operator: LogicOperator.greaterThan, value: 66666 },
@@ -201,7 +201,7 @@ Deno.test('test-true-and-134', () => {
 });
 Deno.test('test-false-7-and-134', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [
         { field: 'a', operator: LogicOperator.greaterThan, value: 0 },
@@ -225,7 +225,7 @@ Deno.test('test-true-or-134', () => {
 });
 Deno.test('test-false-8-or-134', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'OR',
       rules: [
         { field: 'a', operator: LogicOperator.greaterThan, value: 666666 },
@@ -266,7 +266,7 @@ Deno.test('test-true-OR-1237890', () => {
   );
 });
 
-Deno.test('test-false-9-OR-1237890', () => {
+Deno.test('test-true-9-OR-1237890', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',

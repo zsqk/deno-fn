@@ -37,7 +37,7 @@ const data: Record<string, string | number> = {
 // greaterThan 大于
 Deno.test('test-greaterThan-notExist-false-0', () => {
   assertThrows(() =>
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'n', operator: LogicOperator.greaterThan, value: -1 }],
     }), 'not found');
@@ -84,7 +84,7 @@ Deno.test('test-greaterThan-true', () => {
 
 Deno.test('test-greaterThan-false-1', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'a',
@@ -96,7 +96,7 @@ Deno.test('test-greaterThan-false-1', () => {
 });
 Deno.test('test-greaterThan-false-2', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'a',
@@ -110,7 +110,7 @@ Deno.test('test-greaterThan-false-2', () => {
 // 超过14位，精度不正确
 Deno.test('test-greaterThan-false-3', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'a2',
@@ -123,7 +123,7 @@ Deno.test('test-greaterThan-false-3', () => {
 
 Deno.test('test-greaterThan-false-4', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'a3',
@@ -135,7 +135,7 @@ Deno.test('test-greaterThan-false-4', () => {
 });
 Deno.test('test-greaterThan-false-5', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'a3',
@@ -179,7 +179,7 @@ Deno.test('test-lessThan-true', () => {
 
 Deno.test('test-lessThan-false-1', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'b', operator: LogicOperator.lessThan, value: -1 }],
     }),
@@ -188,7 +188,7 @@ Deno.test('test-lessThan-false-1', () => {
 
 Deno.test('test-lessThan-false-2', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'b2', operator: LogicOperator.lessThan, value: 1 }],
     }),
@@ -197,7 +197,7 @@ Deno.test('test-lessThan-false-2', () => {
 
 Deno.test('test-lessThan-false-3', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'b', operator: LogicOperator.lessThan, value: `-2` }],
     }),
@@ -205,7 +205,7 @@ Deno.test('test-lessThan-false-3', () => {
 });
 Deno.test('test-lessThan-false-4', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'b1',
@@ -218,7 +218,7 @@ Deno.test('test-lessThan-false-4', () => {
 
 Deno.test('test-lessThan-false-5', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'b1',
@@ -261,7 +261,7 @@ Deno.test('test-equals-true', () => {
 });
 Deno.test('test-equals-false-1', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'c',
@@ -273,7 +273,7 @@ Deno.test('test-equals-false-1', () => {
 });
 Deno.test('test-equals-false-2', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'c1', operator: LogicOperator.equals, value: 6 }],
     }),
@@ -282,7 +282,7 @@ Deno.test('test-equals-false-2', () => {
 
 Deno.test('test-equals-false-3', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'c1', operator: LogicOperator.equals, value: '6' }],
     }),
@@ -291,7 +291,7 @@ Deno.test('test-equals-false-3', () => {
 
 Deno.test('test-equals-false-4', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'c2', operator: LogicOperator.equals, value: 6 }],
     }),
@@ -340,7 +340,7 @@ Deno.test('test-notEqual-true', () => {
 });
 Deno.test('test-notEqual-false-1', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'c', operator: LogicOperator.notEqual, value: 'asdf' }],
     }),
@@ -349,7 +349,7 @@ Deno.test('test-notEqual-false-1', () => {
 
 Deno.test('test-notEqual-false-2', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'c1', operator: LogicOperator.notEqual, value: 0 }],
     }),
@@ -357,7 +357,7 @@ Deno.test('test-notEqual-false-2', () => {
 });
 Deno.test('test-notEqual-false-3', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'c1',
@@ -369,7 +369,7 @@ Deno.test('test-notEqual-false-3', () => {
 });
 Deno.test('test-notEqual-false-4', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'c2', operator: LogicOperator.notEqual, value: 0 }],
     }),
@@ -436,7 +436,7 @@ Deno.test('test-greaterThanOrEqual-true', () => {
 });
 Deno.test('test-greaterThanOrEqual-false-1', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'e',
@@ -449,7 +449,7 @@ Deno.test('test-greaterThanOrEqual-false-1', () => {
 
 Deno.test('test-greaterThanOrEqual-false-2', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'e',
@@ -462,7 +462,7 @@ Deno.test('test-greaterThanOrEqual-false-2', () => {
 
 Deno.test('test-greaterThanOrEqual-false-3', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'e1',
@@ -508,7 +508,7 @@ Deno.test('test-lessThanOrEqual-true', () => {
 });
 Deno.test('test-lessThanOrEqual-false-1', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'f',
@@ -573,7 +573,7 @@ Deno.test('test-startsWith-true', () => {
 
 Deno.test('test-startsWith-false-1', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'h', operator: LogicOperator.startsWith, value: 0 }],
     }),
@@ -582,7 +582,7 @@ Deno.test('test-startsWith-false-1', () => {
 
 Deno.test('test-startsWith-false-2', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'h1',
@@ -652,7 +652,7 @@ Deno.test('test-endsWith-true', () => {
 
 Deno.test('test-endsWith-false-1', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'j',
@@ -665,7 +665,7 @@ Deno.test('test-endsWith-false-1', () => {
 
 Deno.test('test-endsWith-false-2', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'j1',
@@ -752,7 +752,7 @@ Deno.test('test-includes-num-num-not', () => {
 
 Deno.test('test-includes-false-1', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'k',
@@ -765,7 +765,7 @@ Deno.test('test-includes-false-1', () => {
 
 Deno.test('test-includes-false-2', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'k1',
@@ -778,7 +778,7 @@ Deno.test('test-includes-false-2', () => {
 
 //此处有错误 ，当m1为数字12时，结果错误
 // beinclude
-Deno.test('test-beIncludes-true', () => {
+Deno.test('test-beIncludes-true-1', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -800,6 +800,8 @@ Deno.test('test-beIncludes-true', () => {
       }],
     }),
   );
+});
+Deno.test('test-beIncludes-true-2', () => {
   //m1 为数字 12
   assert(
     logicCalculate(data, {
@@ -827,7 +829,7 @@ Deno.test('test-beIncludes-true', () => {
 //此处有错误，m为'12'，未被value包含，预期结果应为false
 Deno.test('test-beIncludes-false-1', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'm',
@@ -841,7 +843,7 @@ Deno.test('test-beIncludes-false-1', () => {
 //此处有错误，m3为'1'，未被value包含，预期结果应为false
 Deno.test('test-beIncludes-false-2', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'm3',
@@ -855,7 +857,7 @@ Deno.test('test-beIncludes-false-2', () => {
 //此处有错误，m4为'3'，未被value包含，预期结果应为false
 Deno.test('test-beIncludes-false-3', () => {
   assert(
-    logicCalculate(data, {
+    !logicCalculate(data, {
       condition: 'AND',
       rules: [{
         field: 'm4',
