@@ -15,9 +15,9 @@ const data = {
   g1: ' ',
   h: 100,
   h1: 'asdfqwerzxcv',
-  j: 100240251 - 1, // 先计算结果
+  j: 100240250, 
   j1: 'adsfqwerzxcv+*/1',
-  k: 12455054 - 65, // 先计算结果
+  k: 12454989, 
   k1: 'adsfqwerzxcv',
 };
 

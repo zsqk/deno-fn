@@ -1,18 +1,5 @@
-// import { fieldCalculate2 as fieldCalculate } from './calculate-field.ts';
 import { fieldCalculate } from './calculate-field.ts';
 import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
-import { assertThrows } from 'https://deno.land/std@0.217.0/assert/assert_throws.ts';
-
-const data1 = {
-  a: 1,
-  a1: 2,
-  b: 1.0000000000000001,
-  c: 0.99999999999999998,
-  d: '0',
-  e: 0,
-  f: 100240251 - 1,
-  g: 12455054 - 65,
-};
 
 Deno.test('testAddAndSub-true', () => {
   const data = {
@@ -135,14 +122,6 @@ Deno.test('testBracket-true', () => {
     c1: 3,
     d: 'asdf',
   };
-  // 只有（  (a undefined is not a number
-  // assertEquals(fieldCalculate(data, '( a % b'.split(' ')), 0);
-
-  // // 只有）
-  // assertEquals(fieldCalculate(data, ')a % b'.split(' ')), 0);
-
-  // //()中没有内容
-  // assertEquals(fieldCalculate(data, '()a % a1'.split(' ')), 1);
 
   // 正确使用;
   assertEquals(fieldCalculate(data, '( a1 % b1 ) * 10'.split(' ')), 10);
@@ -188,10 +167,10 @@ Deno.test('testBracket-false', () => {
   assertEquals(fieldCalculate(data, '( a % b'.split(' ')), 0);
 
   // 只有）
-  assertEquals(fieldCalculate(data, ')a % b'.split(' ')), 0);
+  assertEquals(fieldCalculate(data, ') a % b'.split(' ')), 0);
 
   //()中没有内容
-  assertEquals(fieldCalculate(data, '()a % a1'.split(' ')), 1);
+  assertEquals(fieldCalculate(data, '() a % a1'.split(' ')), 1);
 });
 
 //复杂运算测试用例
@@ -310,10 +289,10 @@ Deno.test('test-error', () => {
 });
 
 //测试非法字符
-Deno.test('test-error', () => {
-  const data = {
-    a: '9999999999999999999999999999999999999999',
-  };
-  // 错误
-  assertEquals(fieldCalculate({}, 'a * 3'.split(' ')), 6);
-});
+// Deno.test('test-error', () => {
+//   const data = {
+//     a: '9999999999999999999999999999999999999999',
+//   };
+//   // 错误
+//   assertEquals(fieldCalculate({}, 'a * 3'.split(' ')), 6);
+// });

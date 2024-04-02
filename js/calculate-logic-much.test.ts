@@ -1,6 +1,5 @@
 import { assert } from 'https://deno.land/std@0.217.0/assert/assert.ts';
 import { logicCalculate, LogicOperator } from './calculate-logic.ts';
-import { fieldCalculate } from './calculate-field.ts';
 
 const data = {
   a: 65537,

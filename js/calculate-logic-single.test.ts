@@ -29,7 +29,7 @@ const data = {
   m: 12,
 };
 
-// greaterThan 大于
+// greaterThan 大于
 Deno.test('test-greaterThan-notExist-false', () => {
   assert(
     logicCalculate(data, {
@@ -103,6 +103,7 @@ Deno.test('test-greaterThan-false', () => {
   );
 });
 
+// 超过14位，精度不正确
 Deno.test('test-greaterThan-false', () => {
   assert(
     logicCalculate(data, {
@@ -141,7 +142,7 @@ Deno.test('test-greaterThan-false', () => {
   );
 });
 
-// lessThan 小于
+// lessThan 小于
 // const data = {
 // b: 0,
 // b1: 'asdfqwer',
@@ -180,6 +181,7 @@ Deno.test('test-lessThan-false', () => {
     }),
   );
 });
+
 Deno.test('test-lessThan-false', () => {
   assert(
     logicCalculate(data, {
@@ -223,7 +225,7 @@ Deno.test('test-lessThan-false', () => {
   );
 });
 
-// equals 等于 字符串
+// equals 等于 字符串
 // c: 'asdf',
 // c1: 0,
 // c2: '0',
@@ -295,7 +297,7 @@ Deno.test('test-equals-false', () => {
 //------------------------------------
 //对于字符串首尾的空格是否去除？回车符号是否去除？
 
-// notEqual 不等于
+// notEqual 不等于
 // const data = {
 // c: 'asdf',
 // c1: 0,
@@ -372,7 +374,7 @@ Deno.test('test-notEqual-false', () => {
 Deno.test('test-notEqual-100', () => {
 });
 
-// e:0 greaterThanOrEqual 大于等于 (类似语法糖)
+// e:0 greaterThanOrEqual 大于等于 (类似语法糖)
 // const data = {
 // e: 0,
 // e1: '123',
@@ -469,7 +471,7 @@ Deno.test('test-greaterThanOrEqual-false', () => {
   );
 });
 
-// lessThanOrEqual 小于等于 (类似语法糖)
+// lessThanOrEqual 小于等于 (类似语法糖)
 Deno.test('test-lessThanOrEqual-true', () => {
   assert(
     logicCalculate(data, {
@@ -515,7 +517,7 @@ Deno.test('test-lessThanOrEqual-false', () => {
   );
 });
 
-// isValid 不等于 null, 不等于 undefined 并且不等于空字符串 (没有 value, 或特定 value)
+// isValid 不等于 null, 不等于 undefined 并且不等于空字符串 (没有 value, 或特定 value)
 
 Deno.test('test-isValid-true', () => {
   assert(
@@ -526,7 +528,7 @@ Deno.test('test-isValid-true', () => {
   );
 });
 
-//  (如果为数字则转为字符串)startsWith 以什么开头
+//  (如果为数字则转为字符串)startsWith 以什么开头
 // const data = {
 //   h: 100,
 //   h1: 'asdfqwerzxcv',
@@ -588,7 +590,7 @@ Deno.test('test-startsWith-false', () => {
     }),
   );
 });
-// (如果为数字则转为字符串) endsWith 以什么结尾
+// (如果为数字则转为字符串) endsWith 以什么结尾
 // const data = {
 // j: 100240251 - 1,
 // j1: 'adsfqwerzxcv+*/1',
@@ -671,7 +673,7 @@ Deno.test('test-endsWith-false', () => {
     }),
   );
 });
-// (如果为数字则转为字符串) includes 包含
+// (如果为数字则转为字符串) includes 包含
 // k: 12455054 - 65, 12454989
 // k1: 'adsfqwerzxcv',
 // k2: 'sdfasdf021.',
