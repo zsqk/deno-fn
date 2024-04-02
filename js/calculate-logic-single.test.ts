@@ -723,6 +723,33 @@ Deno.test('test-includes-true', () => {
     }),
   );
 });
+
+Deno.test('test-includes-num-num-is', () => {
+  assert(
+    logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'k',
+        operator: LogicOperator.includes,
+        value: 12,
+      }],
+    }),
+  );
+});
+
+Deno.test('test-includes-num-num-not', () => {
+  assert(
+    !logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'k',
+        operator: LogicOperator.includes,
+        value: 123,
+      }],
+    }),
+  );
+});
+
 Deno.test('test-includes-false-1', () => {
   assert(
     logicCalculate(data, {
