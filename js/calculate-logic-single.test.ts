@@ -1,7 +1,7 @@
 import { assert } from 'https://deno.land/std@0.217.0/assert/assert.ts';
 import { logicCalculate, LogicOperator } from './calculate-logic.ts';
 
-const data = {
+const data: Record<string, string | number> = {
   a: 65537,
   a1: 'asdf',
   a2: 1.0000000000000001,
@@ -21,16 +21,16 @@ const data = {
   g1: ' ',
   h: 100,
   h1: 'asdfqwerzxcv',
-  j: 100240251 - 1,
+  j: 100240250,
   j1: 'adsfqwerzxcv+*/1',
-  k: 12455054 - 65,
+  k: 12454989,
   k1: 'adsfqwerzxcv',
   k2: 'sdfasdf021.',
   m: 12,
 };
 
 // greaterThan 大于
-Deno.test('test-greaterThan-notExist-false', () => {
+Deno.test('test-greaterThan-notExist-false-0', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -78,7 +78,7 @@ Deno.test('test-greaterThan-true', () => {
   );
 });
 
-Deno.test('test-greaterThan-false', () => {
+Deno.test('test-greaterThan-false-1', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -90,7 +90,7 @@ Deno.test('test-greaterThan-false', () => {
     }),
   );
 });
-Deno.test('test-greaterThan-false', () => {
+Deno.test('test-greaterThan-false-2', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -104,7 +104,7 @@ Deno.test('test-greaterThan-false', () => {
 });
 
 // 超过14位，精度不正确
-Deno.test('test-greaterThan-false', () => {
+Deno.test('test-greaterThan-false-3', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -117,7 +117,7 @@ Deno.test('test-greaterThan-false', () => {
   );
 });
 
-Deno.test('test-greaterThan-false', () => {
+Deno.test('test-greaterThan-false-4', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -129,7 +129,7 @@ Deno.test('test-greaterThan-false', () => {
     }),
   );
 });
-Deno.test('test-greaterThan-false', () => {
+Deno.test('test-greaterThan-false-5', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -173,7 +173,7 @@ Deno.test('test-lessThan-true', () => {
   );
 });
 
-Deno.test('test-lessThan-false', () => {
+Deno.test('test-lessThan-false-1', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -182,7 +182,7 @@ Deno.test('test-lessThan-false', () => {
   );
 });
 
-Deno.test('test-lessThan-false', () => {
+Deno.test('test-lessThan-false-2', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -191,7 +191,7 @@ Deno.test('test-lessThan-false', () => {
   );
 });
 
-Deno.test('test-lessThan-false', () => {
+Deno.test('test-lessThan-false-3', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -199,7 +199,7 @@ Deno.test('test-lessThan-false', () => {
     }),
   );
 });
-Deno.test('test-lessThan-false', () => {
+Deno.test('test-lessThan-false-4', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -212,7 +212,7 @@ Deno.test('test-lessThan-false', () => {
   );
 });
 
-Deno.test('test-lessThan-false', () => {
+Deno.test('test-lessThan-false-5', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -255,7 +255,7 @@ Deno.test('test-equals-true', () => {
     }),
   );
 });
-Deno.test('test-equals-false', () => {
+Deno.test('test-equals-false-1', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -267,7 +267,7 @@ Deno.test('test-equals-false', () => {
     }),
   );
 });
-Deno.test('test-equals-false', () => {
+Deno.test('test-equals-false-2', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -276,7 +276,7 @@ Deno.test('test-equals-false', () => {
   );
 });
 
-Deno.test('test-equals-false', () => {
+Deno.test('test-equals-false-3', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -285,7 +285,7 @@ Deno.test('test-equals-false', () => {
   );
 });
 
-Deno.test('test-equals-false', () => {
+Deno.test('test-equals-false-4', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -334,7 +334,7 @@ Deno.test('test-notEqual-true', () => {
     }),
   );
 });
-Deno.test('test-notEqual-false', () => {
+Deno.test('test-notEqual-false-1', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -343,7 +343,7 @@ Deno.test('test-notEqual-false', () => {
   );
 });
 
-Deno.test('test-notEqual-false', () => {
+Deno.test('test-notEqual-false-2', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -351,7 +351,7 @@ Deno.test('test-notEqual-false', () => {
     }),
   );
 });
-Deno.test('test-notEqual-false', () => {
+Deno.test('test-notEqual-false-3', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -363,15 +363,13 @@ Deno.test('test-notEqual-false', () => {
     }),
   );
 });
-Deno.test('test-notEqual-false', () => {
+Deno.test('test-notEqual-false-4', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
       rules: [{ field: 'c2', operator: LogicOperator.notEqual, value: 0 }],
     }),
   );
-});
-Deno.test('test-notEqual-100', () => {
 });
 
 // e:0 greaterThanOrEqual 大于等于 (类似语法糖)
@@ -432,7 +430,7 @@ Deno.test('test-greaterThanOrEqual-true', () => {
     }),
   );
 });
-Deno.test('test-greaterThanOrEqual-false', () => {
+Deno.test('test-greaterThanOrEqual-false-1', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -445,7 +443,7 @@ Deno.test('test-greaterThanOrEqual-false', () => {
   );
 });
 
-Deno.test('test-greaterThanOrEqual-false', () => {
+Deno.test('test-greaterThanOrEqual-false-2', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -458,7 +456,7 @@ Deno.test('test-greaterThanOrEqual-false', () => {
   );
 });
 
-Deno.test('test-greaterThanOrEqual-false', () => {
+Deno.test('test-greaterThanOrEqual-false-3', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -504,7 +502,7 @@ Deno.test('test-lessThanOrEqual-true', () => {
     }),
   );
 });
-Deno.test('test-lessThanOrEqual-false', () => {
+Deno.test('test-lessThanOrEqual-false-1', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -569,7 +567,7 @@ Deno.test('test-startsWith-true', () => {
   );
 });
 
-Deno.test('test-startsWith-false', () => {
+Deno.test('test-startsWith-false-1', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -578,7 +576,7 @@ Deno.test('test-startsWith-false', () => {
   );
 });
 
-Deno.test('test-startsWith-false', () => {
+Deno.test('test-startsWith-false-2', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -648,7 +646,7 @@ Deno.test('test-endsWith-true', () => {
   );
 });
 
-Deno.test('test-endsWith-false', () => {
+Deno.test('test-endsWith-false-1', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -661,7 +659,7 @@ Deno.test('test-endsWith-false', () => {
   );
 });
 
-Deno.test('test-endsWith-false', () => {
+Deno.test('test-endsWith-false-2', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -721,7 +719,7 @@ Deno.test('test-includes-true', () => {
     }),
   );
 });
-Deno.test('test-includes-false', () => {
+Deno.test('test-includes-false-1', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -734,7 +732,7 @@ Deno.test('test-includes-false', () => {
   );
 });
 
-Deno.test('test-includes-false', () => {
+Deno.test('test-includes-false-2', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',

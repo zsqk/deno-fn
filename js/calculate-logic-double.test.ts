@@ -15,14 +15,14 @@ const data = {
   g1: ' ',
   h: 100,
   h1: 'asdfqwerzxcv',
-  j: 100240250, 
+  j: 100240250,
   j1: 'adsfqwerzxcv+*/1',
-  k: 12454989, 
+  k: 12454989,
   k1: 'adsfqwerzxcv',
 };
 
 // and a>-1 true  a>65535 true
-Deno.test('test-and-aa-true', () => {
+Deno.test('test-true-and-aa', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -35,7 +35,7 @@ Deno.test('test-and-aa-true', () => {
 });
 
 // and a>-1 true  a>65540 false
-Deno.test('test-and-aa-false', () => {
+Deno.test('test-false-1-and-aa', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -47,7 +47,7 @@ Deno.test('test-and-aa-false', () => {
   );
 });
 
-Deno.test('test-and-abc-true', () => {
+Deno.test('test-true-and-abc', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -60,7 +60,7 @@ Deno.test('test-and-abc-true', () => {
   );
 });
 
-Deno.test('test-and-abc-false', () => {
+Deno.test('test-false-2-and-abc', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -73,7 +73,7 @@ Deno.test('test-and-abc-false', () => {
   );
 });
 
-Deno.test('test-and-fghjk-true', () => {
+Deno.test('test-true-and-fghjk', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -88,7 +88,7 @@ Deno.test('test-and-fghjk-true', () => {
   );
 });
 
-Deno.test('test-and-fghjk-false', () => {
+Deno.test('test-false-3-and-fghjk', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -105,7 +105,7 @@ Deno.test('test-and-fghjk-false', () => {
 
 //test  or
 
-Deno.test('test-or-a-true', () => {
+Deno.test('test-true-or-a', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -116,7 +116,7 @@ Deno.test('test-or-a-true', () => {
     }),
   );
 });
-Deno.test('test-or-a-false', () => {
+Deno.test('test-false-4-or-a', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -128,7 +128,7 @@ Deno.test('test-or-a-false', () => {
   );
 });
 
-Deno.test('test-or-a-123-true', () => {
+Deno.test('test-true-or-a-123', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -141,7 +141,7 @@ Deno.test('test-or-a-123-true', () => {
   );
 });
 
-Deno.test('test-or-a-123-false', () => {
+Deno.test('test-false-5-or-a-123', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -155,7 +155,7 @@ Deno.test('test-or-a-123-false', () => {
 });
 
 // or a>66666 false   b<1  true
-Deno.test('test-or-true', () => {
+Deno.test('test-true-or', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -168,7 +168,7 @@ Deno.test('test-or-true', () => {
 });
 
 // or a>66666 false   b<0  false
-Deno.test('test-or-false', () => {
+Deno.test('test-false-6-or', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -187,7 +187,7 @@ Deno.test('test-or-false', () => {
 //     d: 'asdf',
 //     d1: '0',
 //   };
-Deno.test('test-and-134-true', () => {
+Deno.test('test-true-and-134', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -199,7 +199,7 @@ Deno.test('test-and-134-true', () => {
     }),
   );
 });
-Deno.test('test-and-134-false', () => {
+Deno.test('test-false-7-and-134', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -211,7 +211,7 @@ Deno.test('test-and-134-false', () => {
     }),
   );
 });
-Deno.test('test-or-134-true', () => {
+Deno.test('test-true-or-134', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -223,7 +223,7 @@ Deno.test('test-or-134-true', () => {
     }),
   );
 });
-Deno.test('test-or-134-false', () => {
+Deno.test('test-false-8-or-134', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -250,7 +250,7 @@ Deno.test('test-or-134-false', () => {
 //     k1: 'adsfqwerzxcv',
 //   };
 
-Deno.test('test-OR-1237890-true', () => {
+Deno.test('test-true-OR-1237890', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -266,7 +266,7 @@ Deno.test('test-OR-1237890-true', () => {
   );
 });
 
-Deno.test('test-OR-1237890-false', () => {
+Deno.test('test-false-9-OR-1237890', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',

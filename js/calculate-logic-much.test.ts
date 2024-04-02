@@ -15,9 +15,9 @@ const data = {
   g1: ' ',
   h: 100,
   h1: 'asdfqwerzxcv',
-  j: 100240251 - 1, // 先计算结果
+  j: 100240250,
   j1: 'adsfqwerzxcv+*/1',
-  k: 12455054 - 65, // 先计算结果
+  k: 12454989,
   k1: 'adsfqwerzxcv',
 };
 
@@ -41,7 +41,7 @@ Deno.test('test-and-and-true', () => {
   );
 });
 
-Deno.test('test-and-and-false', () => {
+Deno.test('test-and-and-false-1', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -204,7 +204,7 @@ Deno.test('test-or-and-a-true', () => {
   );
 });
 
-Deno.test('test-or-and-a-false', () => {
+Deno.test('test-or-and-a-false-2', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -293,7 +293,7 @@ Deno.test('test-or-and-a-false', () => {
     );
   });
 
-Deno.test('test-and-or-a-false', () => {
+Deno.test('test-and-or-a-false-3', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -342,7 +342,7 @@ Deno.test('test-and-or-a-false', () => {
   );
 });
 
-Deno.test('test-or-or-a-false', () => {
+Deno.test('test-or-or-a-false-4', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -515,7 +515,7 @@ Deno.test('test-and-and-and-true', () => {
   );
 });
 
-Deno.test('test-and-and-and-false', () => {
+Deno.test('test-and-and-and-false-5', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -617,7 +617,7 @@ Deno.test('test-and-and-or-true', () => {
   );
 });
 
-Deno.test('test-and-and-or-false', () => {
+Deno.test('test-and-and-or-false-6', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -720,7 +720,7 @@ Deno.test('test-and-or-and-true', () => {
   );
 });
 
-Deno.test('test-and-or-and-false', () => {
+Deno.test('test-and-or-and-false-7', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -827,7 +827,7 @@ Deno.test('test-and-or-or-true', () => {
   );
 });
 
-Deno.test('test-and-or-or-false', () => {
+Deno.test('test-and-or-or-false-8', () => {
   assert(
     logicCalculate(data, {
       condition: 'AND',
@@ -972,7 +972,7 @@ Deno.test('test-or-and-and-true', () => {
   );
 });
 
-Deno.test('test-or-and-and-false', () => {
+Deno.test('test-or-and-and-false-9', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -1126,7 +1126,7 @@ Deno.test('test-or-and-or-true', () => {
 });
 
 //001
-Deno.test('test-or-or-and-false', () => {
+Deno.test('test-or-or-and-false-11', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -1179,7 +1179,7 @@ Deno.test('test-or-or-and-false', () => {
 });
 
 //000
-Deno.test('test-or-or-or-false', () => {
+Deno.test('test-or-or-or-false-12', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',
@@ -1232,7 +1232,7 @@ Deno.test('test-or-or-or-false', () => {
 });
 
 //3层逻辑 000
-Deno.test('test-or-or-or-or-false', () => {
+Deno.test('test-or-or-or-or-false-13', () => {
   assert(
     logicCalculate(data, {
       condition: 'OR',

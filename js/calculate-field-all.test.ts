@@ -153,7 +153,7 @@ Deno.test('testBracket-true', () => {
   );
 });
 
-Deno.test('testBracket-false', () => {
+Deno.test('testBracket-false-1', () => {
   const data = {
     a: '100',
     a1: 3,
@@ -165,10 +165,30 @@ Deno.test('testBracket-false', () => {
   };
   //只有（  (a undefined is not a number
   assertEquals(fieldCalculate(data, '( a % b'.split(' ')), 0);
-
+});
+Deno.test('testBracket-false-2', () => {
+  const data = {
+    a: '100',
+    a1: 3,
+    b: '2',
+    b1: 2,
+    c: '3',
+    c1: 3,
+    d: 'asdf',
+  };
   // 只有）
   assertEquals(fieldCalculate(data, ') a % b'.split(' ')), 0);
-
+});
+Deno.test('testBracket-false-3', () => {
+  const data = {
+    a: '100',
+    a1: 3,
+    b: '2',
+    b1: 2,
+    c: '3',
+    c1: 3,
+    d: 'asdf',
+  };
   //()中没有内容
   assertEquals(fieldCalculate(data, '() a % a1'.split(' ')), 1);
 });
