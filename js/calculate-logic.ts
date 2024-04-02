@@ -70,49 +70,46 @@ function fieldItemCalculate<K extends string>(
   /**
    * 将 item.value 进行类型转换为和 v 一致
    */
-  let contrast: typeof v;
-  if (typeof v !== typeof item.value) {
+  function getContrast() {
     switch (typeof v) {
+      case typeof item.value:
+        return item.value;
       case 'string':
-        contrast = `${item.value}`;
-        break;
+        return `${item.value}`;
       case 'number':
-        contrast = Number(item.value);
-        break;
+        return Number(item.value);
       default:
         // 变量 v 为不被支持的类型
         throw new Error(
           `Field "${item.field}" type "${typeof v}" is not supported`,
         );
     }
-  } else {
-    contrast = item.value;
   }
 
   // 执行逻辑运算
   switch (item.operator) {
     case LogicOperator.greaterThan:
-      return v > contrast;
+      return v > getContrast();
     case LogicOperator.lessThan:
-      return v < contrast;
+      return v < getContrast();
     case LogicOperator.equals:
-      return v === contrast;
+      return v === getContrast();
     case LogicOperator.notEqual:
-      return v !== contrast;
+      return v !== getContrast();
     case LogicOperator.greaterThanOrEqual:
-      return v >= contrast;
+      return v >= getContrast();
     case LogicOperator.lessThanOrEqual:
-      return v <= contrast;
+      return v <= getContrast();
     case LogicOperator.isValid:
       return v !== '' && v !== null && v !== undefined;
     case LogicOperator.startsWith:
-      return `${v}`.startsWith(`${contrast}`);
+      return `${v}`.startsWith(`${item.value}`);
     case LogicOperator.endsWith:
-      return `${v}`.endsWith(`${contrast}`);
+      return `${v}`.endsWith(`${item.value}`);
     case LogicOperator.includes:
-      return `${v}`.includes(`${contrast}`);
+      return `${v}`.includes(`${item.value}`);
     case LogicOperator.beIncludes:
-      return `${contrast}`.includes(`${v}`);
+      return `${item.value}`.includes(`${v}`);
     default:
       throw new Error(`Unknown operator "${item.operator}"`);
   }
