@@ -27,11 +27,12 @@ const data: Record<string, string | number> = {
   k: 12454989,
   k1: 'adsfqwerzxcv',
   k2: 'sdfasdf021.',
-  m: '12',
+  m: '012',
   m1: 12,
-  m2: '22',
-  m3: '1',
-  m4: '3',
+  m2: '022',
+  m3: '012',
+  m4: '003',
+  m5: '1 2',
 };
 
 // greaterThan 大于
@@ -785,7 +786,7 @@ Deno.test('test-beIncludes-true-1', () => {
       rules: [{
         field: 'm',
         operator: LogicOperator.beIncludes,
-        value: '22,12,32',
+        value: '022,012,032',
       }],
     }),
   );
@@ -796,7 +797,7 @@ Deno.test('test-beIncludes-true-1', () => {
       rules: [{
         field: 'm2',
         operator: LogicOperator.beIncludes,
-        value: '32,22',
+        value: '032,022',
       }],
     }),
   );
@@ -818,7 +819,7 @@ Deno.test('test-beIncludes-true-2', () => {
     logicCalculate(data, {
       condition: 'AND',
       rules: [{
-        field: 'm1',
+        field: 'm5',
         operator: LogicOperator.beIncludes,
         value: '22,1 2,32',
       }],
@@ -834,7 +835,7 @@ Deno.test('test-beIncludes-false-1', () => {
       rules: [{
         field: 'm',
         operator: LogicOperator.beIncludes,
-        value: '22,122,32',
+        value: '022,122,032',
       }],
     }),
   );
@@ -848,7 +849,7 @@ Deno.test('test-beIncludes-false-2', () => {
       rules: [{
         field: 'm3',
         operator: LogicOperator.beIncludes,
-        value: '122,122,32',
+        value: '122,122,032',
       }],
     }),
   );
@@ -862,7 +863,7 @@ Deno.test('test-beIncludes-false-3', () => {
       rules: [{
         field: 'm4',
         operator: LogicOperator.beIncludes,
-        value: '122,122,32',
+        value: '122,122,032',
       }],
     }),
   );
