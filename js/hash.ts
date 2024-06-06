@@ -7,8 +7,8 @@
  * 2. HMAC 签名.
  * 3. RSA 签名.
  */
-import { encodeHex } from 'https://deno.land/std@0.217.0/encoding/hex.ts';
-import { decodeBase64 } from 'https://deno.land/std@0.217.0/encoding/base64.ts';
+import { encodeHex } from '@std/encoding/hex';
+import { decodeBase64 } from '@std/encoding/base64';
 
 /**
  * 获取数据散列值

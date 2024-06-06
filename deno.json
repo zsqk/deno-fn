@@ -39,5 +39,10 @@
     "lineWidth": 80,
     "indentWidth": 2,
     "singleQuote": true
+  },
+  "imports": {
+    "@std/async": "jsr:@std/async@^0.224.1",
+    "@std/encoding": "jsr:@std/encoding@^0.224.3",
+    "@std/fs": "jsr:@std/fs@^0.229.1"
   }
 }

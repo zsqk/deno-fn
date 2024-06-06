@@ -1,4 +1,4 @@
-import { ensureDirSync } from 'https://deno.land/std@0.217.0/fs/mod.ts';
+import { ensureDirSync } from '@std/fs';
 
 /**
  * 文本文件简易复制
