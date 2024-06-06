@@ -10,6 +10,7 @@ export type UnknownObject = Record<string, unknown>;
 /**
  * 非 Promise 对象
  */
+// deno-lint-ignore no-explicit-any
 export type NotPromise<T> = T extends Promise<any> ? never : T;
 
 /** 判断是否为未知对象 */

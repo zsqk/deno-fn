@@ -97,6 +97,7 @@ export function safeWarpSync<
  * @param errHandler 错误处理函数
  */
 export function safeWarp<
+  // deno-lint-ignore no-explicit-any
   T extends (...args: Parameters<T>) => Promise<any>,
   R,
 >(
