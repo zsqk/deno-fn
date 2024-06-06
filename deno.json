@@ -35,11 +35,9 @@
       "test/",
       "mod.ts"
     ],
-    "options": {
-      "useTabs": false,
-      "lineWidth": 80,
-      "indentWidth": 2,
-      "singleQuote": true
-    }
+    "useTabs": false,
+    "lineWidth": 80,
+    "indentWidth": 2,
+    "singleQuote": true
   }
 }
