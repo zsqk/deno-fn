@@ -33,3 +33,11 @@ Other features:
 - CSV using the Deno standard library <https://deno.land/std@0.217.0/csv/mod.ts>
 - XML recommends using `npm:fast-xml-parser`
 - Uint8Array to HEX string <https://deno.land/std@0.217.0/encoding/hex.ts>
+
+## How to use
+
+```ts
+import { getComputeInfo } from "@zsqk/somefn";
+
+// TODO
+```
