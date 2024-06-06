@@ -7,6 +7,11 @@ export type EmptyObject = Record<string, never>;
 /** 未知对象 */
 export type UnknownObject = Record<string, unknown>;
 
+/**
+ * 非 Promise 对象
+ */
+export type NotPromise<T> = T extends Promise<any> ? never : T;
+
 /** 判断是否为未知对象 */
 export function isUnknownObject(v: unknown): v is UnknownObject {
   if (typeof v !== 'object' || v === null) {
