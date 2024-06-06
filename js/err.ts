@@ -1,4 +1,5 @@
 import { delay } from 'https://deno.land/std@0.217.0/async/delay.ts';
+import { NotPromise } from '../ts/object.ts';
 
 /**
  * 判断一个错误是否是网络错误, 如果是网络错误, 一般可以重试
@@ -66,5 +67,44 @@ export function autoRetry<T extends Array<any>, R>(
     }
     timeoutError.message += ` and retryed ${retry - left} times`;
     throw timeoutError;
+  };
+}
+
+/**
+ * 同步函数抛错处理
+ * @param fn 业务函数
+ * @param errHandler 错误处理函数
+ */
+export function safeWarpSync<
+  T extends (...args: Parameters<T>) => NotPromise<ReturnType<T>>,
+  R,
+>(
+  fn: T,
+  errHandler: (err: unknown) => R,
+): (...args: Parameters<T>) => ReturnType<T> | R {
+  return (...args) => {
+    try {
+      return fn(...args);
+    } catch (err) {
+      return errHandler(err);
+    }
+  };
+}
+
+/**
+ * 异步函数抛错处理
+ * @param fn 业务函数
+ * @param errHandler 错误处理函数
+ */
+export function safeWarp<
+  // deno-lint-ignore no-explicit-any
+  T extends (...args: Parameters<T>) => Promise<any>,
+  R,
+>(
+  fn: T,
+  errHandler: (err: unknown) => R,
+): (...args: Parameters<T>) => ReturnType<T> | Promise<R> {
+  return (...args) => {
+    return fn(...args).catch(errHandler);
   };
 }

@@ -1,6 +1,7 @@
 import { assertIsError } from 'https://deno.land/std@0.217.0/assert/assert_is_error.ts';
 import { delay } from 'https://deno.land/std@0.217.0/async/delay.ts';
-import { autoRetry } from './err.ts';
+// deno-lint-ignore no-unused-vars
+import { autoRetry, safeWarp, safeWarpSync } from './err.ts';
 
 Deno.test('autoRetry', async () => {
   async function test(time: number) {
@@ -16,4 +17,25 @@ Deno.test('autoRetry', async () => {
   await fn(1).catch((err) => {
     assertIsError(err, Error, 'retryed');
   });
+});
+
+Deno.test('safeWarpSync and safeWarp', () => {
+  // 👇 手动查看类型符合预期
+  // (name: string) => number | void
+  // const nf1 = safeWarpSync((name: string) => 1, () => {});
+  // (name: string) => number
+  // const nf2 = safeWarpSync((name: string) => 1, () => 2);
+
+  // 👇 预期类型错误
+  // const nf3 = safeWarpSync((name: string) => Promise.resolve(1), () => 2);
+  // const nf4 = safeWarpSync(async (name: string) => 1, () => 2);
+
+  // 👇 手动查看类型符合预期
+  // (name: string) => Promise<void | number>
+  // const anf1 = safeWarp(async (name: string) => 1, () => {});
+  // (name: string) => Promise<number>
+  // const anf2 = safeWarp(async (name: string) => 1, () => 2);
+
+  // 👇 预期类型错误
+  // const anf3 = safeWarp((name: string) => 1, () => 2);
 });
