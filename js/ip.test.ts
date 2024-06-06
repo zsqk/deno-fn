@@ -1,4 +1,4 @@
-import { assert } from 'https://deno.land/std@0.217.0/assert/assert.ts';
+import { assert } from '@std/assert/assert';
 import { checkIPv4 } from './ip.ts';
 
 Deno.test('ipv4', () => {

@@ -1,6 +1,6 @@
-import { assert } from 'https://deno.land/std@0.217.0/assert/assert.ts';
+import { assert } from '@std/assert/assert';
 import { logicCalculate, LogicOperator } from './calculate-logic.ts';
-import { assertThrows } from 'https://deno.land/std@0.217.0/assert/assert_throws.ts';
+import { assertThrows } from '@std/assert/assert_throws';
 
 const data: Record<string, string | number> = {
   a: 65537,

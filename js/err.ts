@@ -1,4 +1,4 @@
-import { delay } from 'https://deno.land/std@0.217.0/async/delay.ts';
+import { delay } from '@std/async/delay';
 import { NotPromise } from '../ts/object.ts';
 
 /**

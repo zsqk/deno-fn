@@ -1,6 +1,6 @@
 import { fieldCalculate } from './calculate-field.ts';
-import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
-import { assertThrows } from 'https://deno.land/std@0.217.0/assert/assert_throws.ts';
+import { assertEquals } from '@std/assert/assert_equals';
+import { assertThrows } from '@std/assert/assert_throws';
 Deno.test('testAddAndSub-true', () => {
   const data = {
     a: '100',

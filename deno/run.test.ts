@@ -1,10 +1,10 @@
 import {
   assertRejects,
-} from 'https://deno.land/std@0.217.0/testing/asserts.ts';
-import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
+} from '@std/testing/asserts';
+import { assertEquals } from '@std/assert/assert_equals';
 
 import { onlyRun, run } from './run.ts';
-import { delay } from 'https://deno.land/std@0.217.0/async/delay.ts';
+import { delay } from '@std/asyn2/delay';
 
 Deno.test('run-base', async () => {
   const { res } = await run('pwd', { cwd: '/' });
