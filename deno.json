@@ -2,10 +2,13 @@
   "name": "@zsqk/somefn",
   "version": "0.0.1",
   "exports": "./mod.ts",
+  "publish": {
+    "include": ["js", "deno", "ts"],
+    "exclude": ["**/*.test.ts", "**/*.benchmark.ts"]
+  },
   "compilerOptions": {
     "strict": true
   },
-  "lock": false,
   "lint": {
     "files": {
       "include": [
