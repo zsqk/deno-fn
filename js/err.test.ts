@@ -23,6 +23,7 @@ Deno.test('safeWarpSync and safeWarp', () => {
   const nf2 = safeWarpSync((name: string) => 1, () => 2);
   // 👇 预期类型错误
   // const nf3 = safeWarpSync((name: string) => Promise.resolve(1), () => 2);
+  // const nf4 = safeWarpSync(async (name: string) => 1, () => 2);
 
   const anf1 = safeWarp(async (name?: string) => 1, () => {});
   const anf2 = safeWarp(async (name: string) => 1, () => 2);
