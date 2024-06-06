@@ -1,6 +1,6 @@
-import { hmac as hmacDiff } from 'https://deno.land/x/hmac@v2.0.1/mod.ts';
-import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
-import { encodeBase64 } from 'https://deno.land/std@0.217.0/encoding/base64.ts';
+import { hmac as hmacDiff } from 'hmac/mod.ts';
+import { assertEquals } from '@std/assert/assert_equals';
+import { encodeBase64 } from '@std/encodin2/base64';
 import { hmac } from './hash.ts';
 
 Deno.test('hmac', async () => {

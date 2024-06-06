@@ -1,5 +1,5 @@
-import { assert } from 'https://deno.land/std@0.217.0/assert/assert.ts';
-import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
+import { assert } from '@std/assert/assert';
+import { assertEquals } from '@std/assert/assert_equals';
 
 import { gitChanges, pullGitRepo } from './git.ts';
 

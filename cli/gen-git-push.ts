@@ -1,5 +1,5 @@
 // deno run -A tools/cli.ts
-import { parseArgs } from "https://deno.land/std@0.217.0/cli/parse_args.ts";
+import { parseArgs } from "@std/cli/parse_args";
 import { genGitPush } from "../deno/git.ts";
 
 const args = parseArgs<

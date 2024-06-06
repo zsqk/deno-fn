@@ -1,5 +1,5 @@
-import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
-import { assertObjectMatch } from 'https://deno.land/std@0.217.0/assert/assert_object_match.ts';
+import { assertEquals } from '@std/assert/assert_equals';
+import { assertObjectMatch } from '@std/assert/assert_object_match';
 
 import { parserUA, parserUACommon } from './ua.ts';
 

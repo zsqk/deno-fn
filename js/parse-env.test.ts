@@ -1,4 +1,4 @@
-import { assertEquals } from 'https://deno.land/std@0.217.0/assert/assert_equals.ts';
+import { assertEquals } from '@std/assert/assert_equals';
 import { parseEnv } from './parse-env.ts';
 
 const testContent = `PRETTY_NAME="Debian GNU/Linux 9 (stretch)"

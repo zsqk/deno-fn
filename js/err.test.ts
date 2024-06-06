@@ -1,5 +1,5 @@
-import { assertIsError } from 'https://deno.land/std@0.217.0/assert/assert_is_error.ts';
-import { delay } from 'https://deno.land/std@0.217.0/async/delay.ts';
+import { assertIsError } from '@std/assert/assert_is_error';
+import { delay } from '@std/asyn2/delay';
 // deno-lint-ignore no-unused-vars
 import { autoRetry, safeWarp, safeWarpSync } from './err.ts';
 
