@@ -1,6 +1,6 @@
 {
   "name": "@zsqk/somefn",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "exports": {
     "./js/aes": "./js/aes.ts",
     "./js/hash": "./js/hash.ts",
