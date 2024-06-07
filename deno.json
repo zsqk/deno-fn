@@ -30,8 +30,8 @@
     ".": "./mod.ts"
   },
   "publish": {
-    "include": ["js", "deno", "ts"],
-    "exclude": ["mod.ts", "**/*.test.ts", "**/*.benchmark.ts"]
+    "include": ["js", "deno", "ts", "mod.ts"],
+    "exclude": ["**/*.test.ts", "**/*.benchmark.ts"]
   },
   "compilerOptions": {
     "strict": true
