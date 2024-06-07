@@ -2,35 +2,6 @@ import { delay } from '@std/async/delay';
 
 /**
  * [Deno] 执行命令
- * @deprecated 使用 `run` 替代以支持更多参数
- * @param command 需要执行的命令
- * @returns 命令执行结果
- */
-export async function getRunData(
-  command: string[],
-  path?: string,
-): Promise<string> {
-  /** 进程 */
-  const run = new Deno.Command(command[0], {
-    args: command.slice(1),
-    cwd: path,
-  });
-
-  const o = await run.output();
-
-  /** 信息 */
-  if (!o.success) {
-    const r1err = new TextDecoder().decode(o.stderr);
-    throw new Error(`${o.code} ${r1err}`);
-  }
-
-  const res = new TextDecoder().decode(o.stdout);
-
-  return res;
-}
-
-/**
- * [Deno] 执行命令
  * @param command 需要运行的命令
  * @param opt 参数
  * @returns

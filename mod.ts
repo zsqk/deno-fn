@@ -1,7 +1,6 @@
 // 依赖 Deno 的常用函数
 
 import { parseEnv } from './js/parse-env.ts';
-import { getRunData } from './deno/run.ts';
 
 /**
  * [Deno] Load Environment Variables
@@ -30,8 +29,6 @@ export function loadENV(
   }
   return [error, res];
 }
-
-export { getRunData };
 
 type ComputeInfo = {
   hostname: string;
