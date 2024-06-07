@@ -10,6 +10,9 @@ export type MillisecondTimestamp = number;
 /** UNIX 时间戳(秒) */
 export type UnixTimestamp = number;
 
+/**
+ * 判断是否为 UNIX 时间戳类型
+ */
 export function isUnixTimestamp(v: unknown): v is UnixTimestamp {
   return Number.isSafeInteger(v);
 }

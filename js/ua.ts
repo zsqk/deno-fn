@@ -8,8 +8,18 @@ type OSName =
   | 'Chrome OS'
   | 'unknown';
 
-type SoftwareName = '钉钉' | '支付宝' | '微信' | '企业微信' | '飞书' | 'Lark' | 'unknown';
+type SoftwareName =
+  | '钉钉'
+  | '支付宝'
+  | '微信'
+  | '企业微信'
+  | '飞书'
+  | 'Lark'
+  | 'unknown';
 
+/**
+ * 解析 UA 内容
+ */
 export function parserUA(ua: string): {
   isDingtalk: boolean;
   dingtalkVersion: string | null;
@@ -102,6 +112,9 @@ export function parserUA(ua: string): {
   };
 }
 
+/**
+ * 解析 UA 内容为通用数据
+ */
 export function parserUACommon(
   ua: string,
 ): { key: string; version?: string; info: string[] }[] {

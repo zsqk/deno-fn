@@ -1,5 +1,8 @@
 import { onlyRun } from './run.ts';
 
+/**
+ * [deno] 生成一个 SSH 密钥 (Ed25519)
+ */
 export async function genKey({ email = 'test@ssh.org' } = {}): Promise<{
   keyPath: string;
   pubPath: string;

@@ -98,9 +98,18 @@ type BinaryData =
  */
 type EncryptedData = BufferSource | { data: string; encodingType: 'base64' };
 
+/**
+ * AES decryption based on key (AES-CBC, AES-GCM)
+ */
 export function decrypt(
+  /** CryptoKey for decryption */
   cryptoKey: CryptoKey,
+  /** initialization vector */
   iv: BinaryData,
+  /**
+   * Binary data to be decrypted, allowing base64 encoded strings
+   * and raw binary data.
+   */
   encrypted: EncryptedData,
   opt?: {
     /**
@@ -116,9 +125,18 @@ export function decrypt(
     additionalData?: BinaryData;
   },
 ): Promise<string>;
+/**
+ * AES decryption based on key (AES-CBC, AES-GCM)
+ */
 export function decrypt(
+  /** CryptoKey for decryption */
   cryptoKey: CryptoKey,
+  /** initialization vector */
   iv: BinaryData,
+  /**
+   * Binary data to be decrypted, allowing base64 encoded strings
+   * and raw binary data.
+   */
   encrypted: EncryptedData,
   opt?: {
     /**

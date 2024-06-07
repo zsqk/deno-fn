@@ -12,8 +12,15 @@
 
 // private property
 const f = String.fromCharCode;
+/**
+ * URI 安全的字符串
+ * @todo 使用 . 替换 ! 以确保安全.
+ */
 const keyStrUriSafe =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-!';
+/**
+ * base64 安全的字符串
+ */
 export const keyStrBase64Safe =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 const baseReverseDic: Record<string, { [key: string]: number }> = {};
