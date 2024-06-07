@@ -30,6 +30,9 @@ export async function hashString(
   return encodeHex(hashRes);
 }
 
+/**
+ * 为数据生成 HMAC 值
+ */
 export async function hmac(
   key: {
     hash: 'SHA-1' | 'SHA-256' | 'SHA-512';

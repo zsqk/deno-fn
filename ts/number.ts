@@ -20,6 +20,9 @@ export function isPositiveInteger(v: unknown): v is PositiveInteger {
 /** 人民币分 */
 export type RMBFen = number;
 
+/**
+ * 判断是否为人民币分类型
+ */
 export function isRMBFen(v: unknown): v is RMBFen {
   return Number.isSafeInteger(v);
 }

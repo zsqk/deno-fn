@@ -220,6 +220,9 @@ function nestCalculate(
   }, 0);
 }
 
+/**
+ * 填充数据计算
+ */
 export function fieldCalculate(
   data: Record<string, string | number>,
   calculateField: CalculateField,

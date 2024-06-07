@@ -1,5 +1,8 @@
 type Condition = 'AND' | 'OR';
 
+/**
+ * 逻辑运算符
+ */
 export enum LogicOperator {
   /**
    * `>`
@@ -53,6 +56,9 @@ type FieldItem<K> = {
   value: string | number;
 };
 
+/**
+ * 逻辑关系
+ */
 export type LogicRelationship<K> = {
   condition: Condition;
   rules: Array<FieldItem<K> | LogicRelationship<K>>;
