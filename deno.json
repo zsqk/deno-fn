@@ -30,7 +30,7 @@
     ".": "./mod.ts"
   },
   "publish": {
-    "include": ["js", "deno", "ts", "mod.ts"],
+    "include": ["js", "deno", "ts", "mod.ts", "README.md"],
     "exclude": ["**/*.test.ts", "**/*.benchmark.ts"]
   },
   "compilerOptions": {
