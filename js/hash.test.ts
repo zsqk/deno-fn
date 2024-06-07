@@ -1,6 +1,6 @@
 import { assertEquals } from '@std/assert/assert_equals';
 import { hashString, hmac } from './hash.ts';
-import { encodeHex } from '@std/encodin2/hex';
+import { encodeHex } from '@std/encoding/hex';
 
 Deno.test('hash', async () => {
   {

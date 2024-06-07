@@ -1,6 +1,6 @@
 import { hmac as hmacDiff } from 'hmac/mod.ts';
 import { assertEquals } from '@std/assert/assert_equals';
-import { encodeBase64 } from '@std/encodin2/base64';
+import { encodeBase64 } from '@std/encoding/base64';
 import { hmac } from './hash.ts';
 
 Deno.test('hmac', async () => {
