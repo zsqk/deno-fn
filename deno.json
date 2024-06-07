@@ -1,9 +1,36 @@
 {
   "name": "@zsqk/somefn",
   "version": "0.0.2",
-  "exports": "./mod.ts",
+  "exports": {
+    "./js/aes": "./js/aes.ts",
+    "./js/hash": "./js/hash.ts",
+    "./js/calculate-field": "./js/calculate-field.ts",
+    "./js/calculate-logic": "./js/calculate-logic.ts",
+    "./js/date": "./js/date.ts",
+    "./js/decimal": "./js/decimal.ts",
+    "./js/int": "./js/int.ts",
+    "./js/obj": "./js/obj.ts",
+    "./js/str": "./js/str.ts",
+    "./js/err": "./js/err.ts",
+    "./js/iterator": "./js/iterator.ts",
+    "./js/ip": "./js/ip.ts",
+    "./js/lz-string": "./js/lz-string.ts",
+    "./js/parse-env": "./js/parse-env.ts",
+    "./js/ua": "./js/ua.ts",
+    "./ts/binary": "./ts/binary.ts",
+    "./ts/error": "./ts/error.ts",
+    "./ts/number": "./ts/number.ts",
+    "./ts/object": "./ts/object.ts",
+    "./ts/string": "./ts/string.ts",
+    "./ts/time": "./ts/time.ts",
+    "./deno/copy": "./deno/copy.ts",
+    "./deno/git": "./deno/git.ts",
+    "./deno/run": "./deno/run.ts",
+    "./deno/ssh": "./deno/ssh.ts",
+    ".": "./mod.ts"
+  },
   "publish": {
-    "include": ["js", "deno", "ts"],
+    "include": ["js", "deno", "ts", "mod.ts"],
     "exclude": ["**/*.test.ts", "**/*.benchmark.ts"]
   },
   "compilerOptions": {

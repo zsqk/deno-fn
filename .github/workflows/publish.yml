@@ -10,7 +10,8 @@ name: publish
 
 on:
   push:
-    branches: [main]
+    tags:
+      - "v*"
 
 jobs:
   test:
@@ -24,10 +25,5 @@ jobs:
       - name: Setup repo
         uses: actions/checkout@v4
 
-      - name: Setup Deno
-        uses: denoland/setup-deno@v1
-        with:
-          deno-version: canary
-
       - name: Run publish
-        run: deno publish
+        run: npx jsr publish
