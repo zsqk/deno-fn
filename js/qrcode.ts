@@ -128,12 +128,12 @@ class QRCodeModel {
     buffer: { buffer: number[] },
     rsBlocks: string | any[],
   ) {
-    var offset = 0;
-    var maxDcCount = 0;
-    var maxEcCount = 0;
-    var dcdata = new Array(rsBlocks.length);
-    var ecdata = new Array(rsBlocks.length);
-    for (var r = 0; r < rsBlocks.length; r++) {
+    let offset = 0;
+    let maxDcCount = 0;
+    let maxEcCount = 0;
+    const dcdata = new Array(rsBlocks.length);
+    const ecdata = new Array(rsBlocks.length);
+    for (let r = 0; r < rsBlocks.length; r++) {
       var dcCount = rsBlocks[r].dataCount;
       var ecCount = rsBlocks[r].totalCount - dcCount;
       maxDcCount = Math.max(maxDcCount, dcCount);
@@ -610,7 +610,7 @@ const QRUtil = {
     return lostPoint;
   },
 };
-var QRMath = {
+const QRMath = {
   glog: function (n: number) {
     if (n < 1) throw new Error('glog(' + n + ')');
     return QRMath.LOG_TABLE[n];
@@ -1052,14 +1052,14 @@ class QRCode {
       }
     }
 
-    //Get type number
+    // Get type number
     function _getTypeNumber(content: any, ecl: string) {
-      var length = _getUTF8Length(content);
+      const length = _getUTF8Length(content);
 
-      var type = 1;
-      var limit = 0;
-      for (var i = 0, len = QRCodeLimitLength.length; i <= len; i++) {
-        var table = QRCodeLimitLength[i];
+      let type = 1;
+      let limit = 0;
+      for (let i = 0, len = QRCodeLimitLength.length; i <= len; i++) {
+        const table = QRCodeLimitLength[i];
         if (!table) {
           throw new Error(
             'Content too long: expected ' + limit + ' but got ' + length,
