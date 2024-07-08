@@ -91,8 +91,8 @@ class QRCodeModel {
   ) {
     const rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
     const buffer = new QRBitBuffer();
-    for (var i = 0; i < dataList.length; i++) {
-      var data = dataList[i];
+    for (let i = 0; i < dataList.length; i++) {
+      const data = dataList[i];
       buffer.put(data.mode, 4);
       buffer.put(
         data.getLength(),
@@ -100,7 +100,7 @@ class QRCodeModel {
       );
       data.write(buffer);
     }
-    var totalDataCount = 0;
+    let totalDataCount = 0;
     for (var i = 0; i < rsBlocks.length; i++) {
       totalDataCount += rsBlocks[i].dataCount;
     }
@@ -126,7 +126,7 @@ class QRCodeModel {
 
   static createBytes = function (
     buffer: { buffer: number[] },
-    rsBlocks: string | any[],
+    rsBlocks: { dataCount: number; totalCount: number }[],
   ) {
     let offset = 0;
     let maxDcCount = 0;
@@ -134,21 +134,21 @@ class QRCodeModel {
     const dcdata = new Array(rsBlocks.length);
     const ecdata = new Array(rsBlocks.length);
     for (let r = 0; r < rsBlocks.length; r++) {
-      var dcCount = rsBlocks[r].dataCount;
-      var ecCount = rsBlocks[r].totalCount - dcCount;
+      const dcCount = rsBlocks[r].dataCount;
+      const ecCount = rsBlocks[r].totalCount - dcCount;
       maxDcCount = Math.max(maxDcCount, dcCount);
       maxEcCount = Math.max(maxEcCount, ecCount);
       dcdata[r] = new Array(dcCount);
-      for (var i = 0; i < dcdata[r].length; i++) {
+      for (let i = 0; i < dcdata[r].length; i++) {
         dcdata[r][i] = 0xff & buffer.buffer[i + offset];
       }
       offset += dcCount;
-      var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
-      var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
-      var modPoly = rawPoly.mod(rsPoly);
+      const rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+      const rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+      const modPoly = rawPoly.mod(rsPoly);
       ecdata[r] = new Array(rsPoly.getLength() - 1);
-      for (var i = 0; i < ecdata[r].length; i++) {
-        var modIndex = i + modPoly.getLength() - ecdata[r].length;
+      for (let i = 0; i < ecdata[r].length; i++) {
+        const modIndex = i + modPoly.getLength() - ecdata[r].length;
         ecdata[r][i] = (modIndex >= 0) ? modPoly.get(modIndex) : 0;
       }
     }
@@ -188,7 +188,7 @@ class QRCodeModel {
    * 增加数据
    * @param data
    */
-  addData(data: any) {
+  addData(data: string) {
     const newData = new QR8bitByte(data);
     this.dataList.push(newData);
   }
@@ -284,24 +284,24 @@ class QRCodeModel {
     return qr_mc;
   }
   setupTimingPattern() {
-    for (var r = 8; r < this.moduleCount - 8; r++) {
+    for (let r = 8; r < this.moduleCount - 8; r++) {
       if (this.modules[r][6] != null) continue;
       this.modules[r][6] = r % 2 == 0;
     }
-    for (var c = 8; c < this.moduleCount - 8; c++) {
+    for (let c = 8; c < this.moduleCount - 8; c++) {
       if (this.modules[6][c] != null) continue;
       this.modules[6][c] = c % 2 == 0;
     }
   }
   setupPositionAdjustPattern() {
     var pos = QRUtil.getPatternPosition(this.typeNumber);
-    for (var i = 0; i < pos.length; i++) {
-      for (var j = 0; j < pos.length; j++) {
-        var row = pos[i];
-        var col = pos[j];
+    for (let i = 0; i < pos.length; i++) {
+      for (let j = 0; j < pos.length; j++) {
+        const row = pos[i];
+        const col = pos[j];
         if (this.modules[row][col] != null) continue;
-        for (var r = -2; r <= 2; r++) {
-          for (var c = -2; c <= 2; c++) {
+        for (let r = -2; r <= 2; r++) {
+          for (let c = -2; c <= 2; c++) {
             if (
               r == -2 || r == 2 || c == -2 || c == 2 || (r == 0 && c == 0)
             ) this.modules[row + r][col + c] = true;
