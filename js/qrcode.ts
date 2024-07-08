@@ -31,16 +31,19 @@
 
 class QR8bitByte {
   mode = QRMode.MODE_8BIT_BYTE;
+  /**
+   * 被编码的数据
+   */
   data;
-  parsedData: any[] = [];
-  constructor(data: any) {
+  parsedData: number[] = [];
+  constructor(data: string) {
     this.data = data;
 
+    const temp: number[][] = [];
     // Added to support UTF-8 Characters
-    for (let i = 0, l = this.data.length; i < l; i++) {
+    for (let i = 0, l = data.length; i < l; i++) {
       const byteArray: number[] = [];
-      const code = this.data.charCodeAt(i);
-
+      const code = data.charCodeAt(i);
       if (code > 0x10000) {
         byteArray[0] = 0xF0 | ((code & 0x1C0000) >>> 18);
         byteArray[1] = 0x80 | ((code & 0x3F000) >>> 12);
@@ -56,16 +59,13 @@ class QR8bitByte {
       } else {
         byteArray[0] = code;
       }
-
-      this.parsedData.push(byteArray);
+      temp.push(byteArray);
     }
 
-    this.parsedData = Array.prototype.concat.apply([], this.parsedData);
+    this.parsedData = temp.flat();
 
     if (this.parsedData.length !== this.data.length) {
-      this.parsedData.unshift(191);
-      this.parsedData.unshift(187);
-      this.parsedData.unshift(239);
+      this.parsedData.unshift(239, 187, 191);
     }
   }
 
