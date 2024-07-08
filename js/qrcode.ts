@@ -175,14 +175,12 @@ class QRCodeModel {
   errorCorrectLevel;
   modules: any;
   moduleCount;
-  dataCache: any;
   dataList: any[];
   constructor(typeNumber: number, errorCorrectLevel: number) {
     this.typeNumber = typeNumber;
     this.errorCorrectLevel = errorCorrectLevel;
     this.modules = null;
     this.moduleCount = 0;
-    this.dataCache = null;
     this.dataList = [];
   }
 
@@ -193,7 +191,6 @@ class QRCodeModel {
   addData(data: any) {
     const newData = new QR8bitByte(data);
     this.dataList.push(newData);
-    this.dataCache = null;
   }
   isDark(row: string | number, col: string | number) {
     if (
@@ -224,14 +221,15 @@ class QRCodeModel {
     this.setupTimingPattern();
     this.setupTypeInfo(test, maskPattern);
     if (this.typeNumber >= 7) this.setupTypeNumber(test);
-    if (this.dataCache == null) {
-      this.dataCache = QRCodeModel.createData(
+
+    this.mapData(
+      QRCodeModel.createData(
         this.typeNumber,
         this.errorCorrectLevel,
         this.dataList,
-      );
-    }
-    this.mapData(this.dataCache, maskPattern);
+      ),
+      maskPattern,
+    );
   }
   setupPositionProbePattern(row: number, col: number) {
     for (var r = -1; r <= 7; r++) {
