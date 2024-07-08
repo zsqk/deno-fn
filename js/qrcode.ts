@@ -1,5 +1,6 @@
 /**
  * @fileoverview
+ * - modified for use prue js
  * - modified davidshimjs/qrcodejs library for use in node.js
  * - Using the 'QRCode for Javascript library'
  * - Fixed dataset of 'QRCode for Javascript library' for support full-spec.
@@ -151,19 +152,19 @@ class QRCodeModel {
         ecdata[r][i] = (modIndex >= 0) ? modPoly.get(modIndex) : 0;
       }
     }
-    var totalCodeCount = 0;
-    for (var i = 0; i < rsBlocks.length; i++) {
+    let totalCodeCount = 0;
+    for (let i = 0; i < rsBlocks.length; i++) {
       totalCodeCount += rsBlocks[i].totalCount;
     }
-    var data = new Array(totalCodeCount);
-    var index = 0;
-    for (var i = 0; i < maxDcCount; i++) {
-      for (var r = 0; r < rsBlocks.length; r++) {
+    const data = new Array(totalCodeCount);
+    let index = 0;
+    for (let i = 0; i < maxDcCount; i++) {
+      for (let r = 0; r < rsBlocks.length; r++) {
         if (i < dcdata[r].length) data[index++] = dcdata[r][i];
       }
     }
-    for (var i = 0; i < maxEcCount; i++) {
-      for (var r = 0; r < rsBlocks.length; r++) {
+    for (let i = 0; i < maxEcCount; i++) {
+      for (let r = 0; r < rsBlocks.length; r++) {
         if (i < ecdata[r].length) data[index++] = ecdata[r][i];
       }
     }
@@ -185,8 +186,12 @@ class QRCodeModel {
     this.dataList = [];
   }
 
+  /**
+   * 增加数据
+   * @param data
+   */
   addData(data: any) {
-    var newData = new QR8bitByte(data);
+    const newData = new QR8bitByte(data);
     this.dataList.push(newData);
     this.dataCache = null;
   }
