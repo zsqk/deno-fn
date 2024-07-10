@@ -101,7 +101,7 @@ class QRCodeModel {
       data.write(buffer);
     }
     let totalDataCount = 0;
-    for (var i = 0; i < rsBlocks.length; i++) {
+    for (let i = 0; i < rsBlocks.length; i++) {
       totalDataCount += rsBlocks[i].dataCount;
     }
     if (buffer.getLengthInBits() > totalDataCount * 8) {
@@ -114,7 +114,7 @@ class QRCodeModel {
       );
     }
     if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) buffer.put(0, 4);
-    while (buffer.getLengthInBits() % 8 != 0) buffer.putBit(false);
+    while (buffer.getLengthInBits() % 8 !== 0) buffer.putBit(false);
     while (true) {
       if (buffer.getLengthInBits() >= totalDataCount * 8) break;
       buffer.put(QRCodeModel.PAD0, 8);
@@ -208,9 +208,9 @@ class QRCodeModel {
   makeImpl(test: any, maskPattern: any) {
     this.moduleCount = this.typeNumber * 4 + 17;
     this.modules = new Array(this.moduleCount);
-    for (var row = 0; row < this.moduleCount; row++) {
+    for (let row = 0; row < this.moduleCount; row++) {
       this.modules[row] = new Array(this.moduleCount);
-      for (var col = 0; col < this.moduleCount; col++) {
+      for (let col = 0; col < this.moduleCount; col++) {
         this.modules[row][col] = null;
       }
     }
@@ -232,9 +232,9 @@ class QRCodeModel {
     );
   }
   setupPositionProbePattern(row: number, col: number) {
-    for (var r = -1; r <= 7; r++) {
+    for (let r = -1; r <= 7; r++) {
       if (row + r <= -1 || this.moduleCount <= row + r) continue;
-      for (var c = -1; c <= 7; c++) {
+      for (let c = -1; c <= 7; c++) {
         if (col + c <= -1 || this.moduleCount <= col + c) continue;
         if (
           (0 <= r && r <= 6 && (c == 0 || c == 6)) ||
@@ -246,12 +246,12 @@ class QRCodeModel {
     }
   }
   getBestMaskPattern() {
-    var minLostPoint = 0;
-    var pattern = 0;
-    for (var i = 0; i < 8; i++) {
+    let minLostPoint = 0;
+    let pattern = 0;
+    for (let i = 0; i < 8; i++) {
       this.makeImpl(true, i);
-      var lostPoint = QRUtil.getLostPoint(this);
-      if (i == 0 || minLostPoint > lostPoint) {
+      const lostPoint = QRUtil.getLostPoint(this);
+      if (i === 0 || minLostPoint > lostPoint) {
         minLostPoint = lostPoint;
         pattern = i;
       }
@@ -263,14 +263,14 @@ class QRCodeModel {
     instance_name: any,
     depth: any,
   ) {
-    var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
-    var cs = 1;
+    const qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+    const cs = 1;
     this.make();
-    for (var row = 0; row < this.modules.length; row++) {
-      var y = row * cs;
-      for (var col = 0; col < this.modules[row].length; col++) {
-        var x = col * cs;
-        var dark = this.modules[row][col];
+    for (let row = 0; row < this.modules.length; row++) {
+      const y = row * cs;
+      for (let col = 0; col < this.modules[row].length; col++) {
+        const x = col * cs;
+        const dark = this.modules[row][col];
         if (dark) {
           qr_mc.beginFill(0, 100);
           qr_mc.moveTo(x, y);
@@ -294,7 +294,7 @@ class QRCodeModel {
     }
   }
   setupPositionAdjustPattern() {
-    var pos = QRUtil.getPatternPosition(this.typeNumber);
+    const pos = QRUtil.getPatternPosition(this.typeNumber);
     for (let i = 0; i < pos.length; i++) {
       for (let j = 0; j < pos.length; j++) {
         const row = pos[i];
@@ -312,28 +312,28 @@ class QRCodeModel {
     }
   }
   setupTypeNumber(test: any) {
-    var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
-    for (var i = 0; i < 18; i++) {
-      var mod = !test && ((bits >> i) & 1) == 1;
+    const bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+    for (let i = 0; i < 18; i++) {
+      const mod = !test && ((bits >> i) & 1) == 1;
       this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
     }
-    for (var i = 0; i < 18; i++) {
-      var mod = !test && ((bits >> i) & 1) == 1;
+    for (let i = 0; i < 18; i++) {
+      const mod = !test && ((bits >> i) & 1) == 1;
       this.modules[i % 3 + this.moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
     }
   }
 
   setupTypeInfo(test: any, maskPattern: number) {
-    var data = (this.errorCorrectLevel << 3) | maskPattern;
-    var bits = QRUtil.getBCHTypeInfo(data);
-    for (var i = 0; i < 15; i++) {
-      var mod = !test && ((bits >> i) & 1) == 1;
+    const data = (this.errorCorrectLevel << 3) | maskPattern;
+    const bits = QRUtil.getBCHTypeInfo(data);
+    for (let i = 0; i < 15; i++) {
+      const mod = !test && ((bits >> i) & 1) == 1;
       if (i < 6) this.modules[i][8] = mod;
       else if (i < 8) this.modules[i + 1][8] = mod;
       else this.modules[this.moduleCount - 15 + i][8] = mod;
     }
-    for (var i = 0; i < 15; i++) {
-      var mod = !test && ((bits >> i) & 1) == 1;
+    for (let i = 0; i < 15; i++) {
+      const mod = !test && ((bits >> i) & 1) == 1;
       if (i < 8) this.modules[8][this.moduleCount - i - 1] = mod;
       else if (i < 9) this.modules[8][15 - i - 1 + 1] = mod;
       else this.modules[8][15 - i - 1] = mod;
@@ -341,24 +341,24 @@ class QRCodeModel {
     this.modules[this.moduleCount - 8][8] = !test;
   }
   mapData(data: string | any[], maskPattern: any) {
-    var inc = -1;
-    var row = this.moduleCount - 1;
-    var bitIndex = 7;
-    var byteIndex = 0;
-    for (var col = this.moduleCount - 1; col > 0; col -= 2) {
-      if (col == 6) col--;
+    let inc = -1;
+    let row = this.moduleCount - 1;
+    let bitIndex = 7;
+    let byteIndex = 0;
+    for (let col = this.moduleCount - 1; col > 0; col -= 2) {
+      if (col === 6) col--;
       while (true) {
-        for (var c = 0; c < 2; c++) {
+        for (let c = 0; c < 2; c++) {
           if (this.modules[row][col - c] == null) {
-            var dark = false;
+            let dark = false;
             if (byteIndex < data.length) {
               dark = ((data[byteIndex] >>> bitIndex) & 1) == 1;
             }
-            var mask = QRUtil.getMask(maskPattern, row, col - c);
+            const mask = QRUtil.getMask(maskPattern, row, col - c);
             if (mask) dark = !dark;
             this.modules[row][col - c] = dark;
             bitIndex--;
-            if (bitIndex == -1) {
+            if (bitIndex === -1) {
               byteIndex++;
               bitIndex = 7;
             }
@@ -441,7 +441,7 @@ const QRUtil = {
     (1 << 2) | (1 << 0),
   G15_MASK: (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1),
   getBCHTypeInfo: function (data: number) {
-    var d = data << 10;
+    let d = data << 10;
     while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
       d ^= QRUtil.G15 <<
         (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15));
@@ -449,7 +449,7 @@ const QRUtil = {
     return ((data << 10) | d) ^ QRUtil.G15_MASK;
   },
   getBCHTypeNumber: function (data: number) {
-    var d = data << 12;
+    let d = data << 12;
     while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
       d ^= QRUtil.G18 <<
         (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18));
@@ -457,7 +457,7 @@ const QRUtil = {
     return (data << 12) | d;
   },
   getBCHDigit: function (data: number) {
-    var digit = 0;
+    let digit = 0;
     while (data != 0) {
       digit++;
       data >>>= 1;
@@ -490,8 +490,8 @@ const QRUtil = {
     }
   },
   getErrorCorrectPolynomial: function (errorCorrectLength: number) {
-    var a = new QRPolynomial([1], 0);
-    for (var i = 0; i < errorCorrectLength; i++) {
+    let a = new QRPolynomial([1], 0);
+    for (let i = 0; i < errorCorrectLength; i++) {
       a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0));
     }
     return a;
@@ -544,17 +544,17 @@ const QRUtil = {
       isDark: (arg0: number, arg1: number) => any;
     },
   ) {
-    var moduleCount = qrCode.getModuleCount();
-    var lostPoint = 0;
-    for (var row = 0; row < moduleCount; row++) {
-      for (var col = 0; col < moduleCount; col++) {
-        var sameCount = 0;
-        var dark = qrCode.isDark(row, col);
-        for (var r = -1; r <= 1; r++) {
+    const moduleCount = qrCode.getModuleCount();
+    let lostPoint = 0;
+    for (let row = 0; row < moduleCount; row++) {
+      for (let col = 0; col < moduleCount; col++) {
+        let sameCount = 0;
+        const dark = qrCode.isDark(row, col);
+        for (let r = -1; r <= 1; r++) {
           if (row + r < 0 || moduleCount <= row + r) {
             continue;
           }
-          for (var c = -1; c <= 1; c++) {
+          for (let c = -1; c <= 1; c++) {
             if (col + c < 0 || moduleCount <= col + c) continue;
             if (r == 0 && c == 0) continue;
             if (dark == qrCode.isDark(row + r, col + c)) sameCount++;
@@ -563,9 +563,9 @@ const QRUtil = {
         if (sameCount > 5) lostPoint += 3 + sameCount - 5;
       }
     }
-    for (var row = 0; row < moduleCount - 1; row++) {
-      for (var col = 0; col < moduleCount - 1; col++) {
-        var count = 0;
+    for (let row = 0; row < moduleCount - 1; row++) {
+      for (let col = 0; col < moduleCount - 1; col++) {
+        let count = 0;
         if (qrCode.isDark(row, col)) {
           count++;
         }
@@ -575,8 +575,8 @@ const QRUtil = {
         if (count == 0 || count == 4) lostPoint += 3;
       }
     }
-    for (var row = 0; row < moduleCount; row++) {
-      for (var col = 0; col < moduleCount - 6; col++) {
+    for (let row = 0; row < moduleCount; row++) {
+      for (let col = 0; col < moduleCount - 6; col++) {
         if (
           qrCode.isDark(row, col) && !qrCode.isDark(row, col + 1) &&
           qrCode.isDark(row, col + 2) && qrCode.isDark(row, col + 3) &&
@@ -587,8 +587,8 @@ const QRUtil = {
         }
       }
     }
-    for (var col = 0; col < moduleCount; col++) {
-      for (var row = 0; row < moduleCount - 6; row++) {
+    for (let col = 0; col < moduleCount; col++) {
+      for (let row = 0; row < moduleCount - 6; row++) {
         if (
           qrCode.isDark(row, col) && !qrCode.isDark(row + 1, col) &&
           qrCode.isDark(row + 2, col) && qrCode.isDark(row + 3, col) &&
@@ -599,13 +599,14 @@ const QRUtil = {
         }
       }
     }
-    var darkCount = 0;
-    for (var col = 0; col < moduleCount; col++) {
-      for (var row = 0; row < moduleCount; row++) {
+    let darkCount = 0;
+    for (let col = 0; col < moduleCount; col++) {
+      for (let row = 0; row < moduleCount; row++) {
         if (qrCode.isDark(row, col)) darkCount++;
       }
     }
-    var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+    const ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) /
+      5;
     lostPoint += ratio * 10;
     return lostPoint;
   },
@@ -1158,9 +1159,9 @@ class QRPolynomial {
   multiply(
     e: { getLength: () => number; get: (arg0: number) => any },
   ) {
-    var num = new Array(this.getLength() + e.getLength() - 1);
-    for (var i = 0; i < this.getLength(); i++) {
-      for (var j = 0; j < e.getLength(); j++) {
+    const num = new Array(this.getLength() + e.getLength() - 1);
+    for (let i = 0; i < this.getLength(); i++) {
+      for (let j = 0; j < e.getLength(); j++) {
         num[i + j] ^= QRMath.gexp(
           QRMath.glog(this.get(i)) + QRMath.glog(e.get(j)),
         );
@@ -1172,10 +1173,10 @@ class QRPolynomial {
     e: { getLength: () => number; get: (arg0: number) => any },
   ): QRPolynomial {
     if (this.getLength() - e.getLength() < 0) return this;
-    var ratio = QRMath.glog(this.get(0)) - QRMath.glog(e.get(0));
-    var num = new Array(this.getLength());
-    for (var i = 0; i < this.getLength(); i++) num[i] = this.get(i);
-    for (var i = 0; i < e.getLength(); i++) {
+    const ratio = QRMath.glog(this.get(0)) - QRMath.glog(e.get(0));
+    const num = new Array(this.getLength());
+    for (let i = 0; i < this.getLength(); i++) num[i] = this.get(i);
+    for (let i = 0; i < e.getLength(); i++) {
       num[i] ^= QRMath.gexp(QRMath.glog(e.get(i)) + ratio);
     }
     return new QRPolynomial(num, 0).mod(e);
@@ -1353,20 +1354,20 @@ class QRRSBlock {
     typeNumber: number,
     errorCorrectLevel: string,
   ) {
-    var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+    const rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
     if (rsBlock == undefined) {
       throw new Error(
         'bad rs block @ typeNumber:' + typeNumber + '/errorCorrectLevel:' +
           errorCorrectLevel,
       );
     }
-    var length = rsBlock.length / 3;
-    var list = [];
-    for (var i = 0; i < length; i++) {
-      var count = rsBlock[i * 3 + 0];
-      var totalCount = rsBlock[i * 3 + 1];
-      var dataCount = rsBlock[i * 3 + 2];
-      for (var j = 0; j < count; j++) {
+    const length = rsBlock.length / 3;
+    const list = [];
+    for (let i = 0; i < length; i++) {
+      const count = rsBlock[i * 3 + 0];
+      const totalCount = rsBlock[i * 3 + 1];
+      const dataCount = rsBlock[i * 3 + 2];
+      for (let j = 0; j < count; j++) {
         list.push(new QRRSBlock(totalCount, dataCount));
       }
     }
@@ -1423,7 +1424,7 @@ class QRBitBuffer {
   }
 }
 
-var QRCodeLimitLength = [
+const QRCodeLimitLength = [
   [17, 14, 11, 7],
   [32, 26, 20, 14],
   [53, 42, 32, 24],
@@ -1510,7 +1511,7 @@ class QRCode {
       ecl?: string;
     },
   ) {
-    var instance = this;
+    const instance = this;
 
     //Default options
     this.options = {
@@ -1612,7 +1613,7 @@ class QRCode {
 
     //Gets text length
     function _getUTF8Length(content: string) {
-      var result = encodeURI(content).toString().replace(
+      const result = encodeURI(content).toString().replace(
         /\%[0-9a-fA-F]{2}/g,
         'a',
       );
@@ -1620,8 +1621,7 @@ class QRCode {
     }
 
     //Generate QR Code matrix
-    var content = this.options.content;
-    var type = _getTypeNumber(content, this.options.ecl);
+    const type = _getTypeNumber(content, this.options.ecl);
     const eclID = _getErrorCorrectLevel(this.options.ecl);
     this.qrcode = new QRCodeModel(type, eclID);
     this.qrcode.addData(content);
@@ -1630,72 +1630,74 @@ class QRCode {
 
   /** Generates QR Code as SVG image */
   svg(opt?: { container: any }) {
-    var options = this.options || {};
-    var modules = this.qrcode.modules;
+    const options = this.options || {};
+    const modules = this.qrcode.modules;
 
     if (typeof opt == 'undefined') {
       opt = { container: options.container || 'svg' };
     }
 
     //Apply new lines and indents in SVG?
-    var pretty = typeof options.pretty != 'undefined' ? !!options.pretty : true;
+    const pretty = typeof options.pretty != 'undefined'
+      ? !!options.pretty
+      : true;
 
-    var indent = pretty ? '  ' : '';
-    var EOL = pretty ? '\r\n' : '';
-    var width = options.width;
-    var height = options.height;
-    var length = modules.length;
-    var xsize = width / (length + 2 * options.padding);
-    var ysize = height / (length + 2 * options.padding);
+    const indent = pretty ? '  ' : '';
+    const EOL = pretty ? '\r\n' : '';
+    const width = options.width;
+    const height = options.height;
+    const length = modules.length;
+    const xsize = width / (length + 2 * options.padding);
+    const ysize = height / (length + 2 * options.padding);
 
     //Join (union, merge) rectangles into one shape?
-    var join = typeof options.join != 'undefined' ? !!options.join : false;
+    const join = typeof options.join != 'undefined' ? !!options.join : false;
 
     //Swap the X and Y modules, pull request #2
-    var swap = typeof options.swap != 'undefined' ? !!options.swap : false;
+    const swap = typeof options.swap != 'undefined' ? !!options.swap : false;
 
     //Apply <?xml...?> declaration in SVG?
-    var xmlDeclaration = typeof options.xmlDeclaration != 'undefined'
+    const xmlDeclaration = typeof options.xmlDeclaration != 'undefined'
       ? !!options.xmlDeclaration
       : true;
 
     //Populate with predefined shape instead of "rect" elements, thanks to @kkocdko
-    var predefined = typeof options.predefined != 'undefined'
+    const predefined = typeof options.predefined != 'undefined'
       ? !!options.predefined
       : false;
-    var defs = predefined
+    const defs = predefined
       ? indent + '<defs><path id="qrmodule" d="M0 0 h' + ysize + ' v' + xsize +
         ' H0 z" style="fill:' + options.color +
         ';shape-rendering:crispEdges;" /></defs>' + EOL
       : '';
 
     //Background rectangle
-    var bgrect = indent + '<rect x="0" y="0" width="' + width + '" height="' +
+    const bgrect = indent + '<rect x="0" y="0" width="' + width + '" height="' +
       height + '" style="fill:' + options.background +
       ';shape-rendering:crispEdges;"/>' + EOL;
 
     //Rectangles representing modules
-    var modrect = '';
-    var pathdata = '';
+    let modrect = '';
+    let pathdata = '';
 
-    for (var y = 0; y < length; y++) {
-      for (var x = 0; x < length; x++) {
-        var module = modules[x][y];
+    for (let y = 0; y < length; y++) {
+      for (let x = 0; x < length; x++) {
+        const module = modules[x][y];
         if (module) {
-          var px = x * xsize + options.padding * xsize;
-          var py = y * ysize + options.padding * ysize;
+          let px = x * xsize + options.padding * xsize;
+          let py = y * ysize + options.padding * ysize;
 
           //Some users have had issues with the QR Code, thanks to @danioso for the solution
           if (swap) {
-            var t = px;
+            const t = px;
             px = py;
             py = t;
           }
 
           if (join) {
             //Module as a part of svg path data, thanks to @danioso
-            var w = xsize + px;
-            var h = ysize + py;
+            let w = xsize + px;
+            let h = ysize + py;
 
             px = (Number.isInteger(px)) ? Number(px) : Number(px.toFixed(2));
             py = (Number.isInteger(py)) ? Number(py) : Number(py.toFixed(2));
@@ -1724,7 +1726,7 @@ class QRCode {
         ';shape-rendering:crispEdges;" d="' + pathdata + '" />';
     }
 
-    var svg = '';
+    let svg = '';
     switch (opt.container) {
       //Wrapped in SVG document
       case 'svg':
