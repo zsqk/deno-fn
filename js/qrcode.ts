@@ -86,7 +86,7 @@ class QRCodeModel {
 
   static createData = function (
     typeNumber: any,
-    errorCorrectLevel: any,
+    errorCorrectLevel: QRErrorCorrectLevel,
     dataList: string | any[],
   ) {
     const rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
@@ -176,7 +176,7 @@ class QRCodeModel {
   modules: any;
   moduleCount;
   dataList: any[];
-  constructor(typeNumber: number, errorCorrectLevel: number) {
+  constructor(typeNumber: number, errorCorrectLevel: QRErrorCorrectLevel) {
     this.typeNumber = typeNumber;
     this.errorCorrectLevel = errorCorrectLevel;
     this.modules = null;
@@ -381,7 +381,13 @@ const QRMode = {
   MODE_8BIT_BYTE: 1 << 2,
   MODE_KANJI: 1 << 3,
 };
-const QRErrorCorrectLevel = { L: 1, M: 0, Q: 3, H: 2 };
+
+enum QRErrorCorrectLevel {
+  L = 1,
+  M = 0,
+  Q = 3,
+  H = 2,
+}
 const QRMaskPattern = {
   PATTERN000: 0,
   PATTERN001: 1,
@@ -1352,7 +1358,7 @@ class QRRSBlock {
 
   static getRSBlocks(
     typeNumber: number,
-    errorCorrectLevel: string,
+    errorCorrectLevel: QRErrorCorrectLevel,
   ) {
     const rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
     if (rsBlock == undefined) {
@@ -1376,7 +1382,7 @@ class QRRSBlock {
 
   static getRsBlockTable(
     typeNumber: number,
-    errorCorrectLevel: any,
+    errorCorrectLevel: QRErrorCorrectLevel,
   ) {
     switch (errorCorrectLevel) {
       case QRErrorCorrectLevel.L:
