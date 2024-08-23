@@ -1,6 +1,6 @@
 {
   "name": "@zsqk/somefn",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "exports": {
     "./js/aes": "./js/aes.ts",
     "./js/hash": "./js/hash.ts",
@@ -17,8 +17,10 @@
     "./js/lz-string": "./js/lz-string.ts",
     "./js/parse-env": "./js/parse-env.ts",
     "./js/ua": "./js/ua.ts",
+    "./js/urltest": "./js/urltest.ts",
     "./ts/binary": "./ts/binary.ts",
     "./ts/error": "./ts/error.ts",
+    "./ts/log": "./ts/log.ts",
     "./ts/number": "./ts/number.ts",
     "./ts/object": "./ts/object.ts",
     "./ts/string": "./ts/string.ts",
