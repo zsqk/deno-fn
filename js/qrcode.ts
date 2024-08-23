@@ -73,7 +73,7 @@ class QR8bitByte {
     return this.parsedData.length;
   }
 
-  write(buffer: { put: (arg0: any, arg1: number) => void }) {
+  write(buffer: { put: (arg0: number, arg1: number) => void }) {
     for (let i = 0, l = this.parsedData.length; i < l; i++) {
       buffer.put(this.parsedData[i], 8);
     }
@@ -85,9 +85,9 @@ class QRCodeModel {
   static PAD1 = 0x11;
 
   static createData = function (
-    typeNumber: any,
+    typeNumber: number,
     errorCorrectLevel: QRErrorCorrectLevel,
-    dataList: string | any[],
+    dataList: any[],
   ) {
     const rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
     const buffer = new QRBitBuffer();
@@ -173,13 +173,13 @@ class QRCodeModel {
 
   typeNumber;
   errorCorrectLevel;
-  modules: any;
+  modules: (boolean | null)[][];
   moduleCount;
   dataList: any[];
   constructor(typeNumber: number, errorCorrectLevel: QRErrorCorrectLevel) {
     this.typeNumber = typeNumber;
     this.errorCorrectLevel = errorCorrectLevel;
-    this.modules = null;
+    this.modules = [];
     this.moduleCount = 0;
     this.dataList = [];
   }
@@ -197,7 +197,7 @@ class QRCodeModel {
       Number(row) < 0 || this.moduleCount <= Number(row) || Number(col) < 0 ||
       this.moduleCount <= Number(col)
     ) throw new Error(row + ',' + col);
-    return this.modules[row][col];
+    return this.modules[Number(row)][Number(col)];
   }
   getModuleCount() {
     return this.moduleCount;
@@ -237,8 +237,8 @@ class QRCodeModel {
       for (let c = -1; c <= 7; c++) {
         if (col + c <= -1 || this.moduleCount <= col + c) continue;
         if (
-          (0 <= r && r <= 6 && (c == 0 || c == 6)) ||
-          (0 <= c && c <= 6 && (r == 0 || r == 6)) ||
+          (0 <= r && r <= 6 && (c === 0 || c === 6)) ||
+          (0 <= c && c <= 6 && (r === 0 || r === 6)) ||
           (2 <= r && r <= 4 && 2 <= c && c <= 4)
         ) this.modules[row + r][col + c] = true;
         else this.modules[row + r][col + c] = false;
@@ -258,39 +258,15 @@ class QRCodeModel {
     }
     return pattern;
   }
-  createMovieClip(
-    target_mc: { createEmptyMovieClip: (arg0: any, arg1: any) => any },
-    instance_name: any,
-    depth: any,
-  ) {
-    const qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
-    const cs = 1;
-    this.make();
-    for (let row = 0; row < this.modules.length; row++) {
-      const y = row * cs;
-      for (let col = 0; col < this.modules[row].length; col++) {
-        const x = col * cs;
-        const dark = this.modules[row][col];
-        if (dark) {
-          qr_mc.beginFill(0, 100);
-          qr_mc.moveTo(x, y);
-          qr_mc.lineTo(x + cs, y);
-          qr_mc.lineTo(x + cs, y + cs);
-          qr_mc.lineTo(x, y + cs);
-          qr_mc.endFill();
-        }
-      }
-    }
-    return qr_mc;
-  }
+
   setupTimingPattern() {
     for (let r = 8; r < this.moduleCount - 8; r++) {
-      if (this.modules[r][6] != null) continue;
-      this.modules[r][6] = r % 2 == 0;
+      if (this.modules[r][6] !== null) continue;
+      this.modules[r][6] = r % 2 === 0;
     }
     for (let c = 8; c < this.moduleCount - 8; c++) {
-      if (this.modules[6][c] != null) continue;
-      this.modules[6][c] = c % 2 == 0;
+      if (this.modules[6][c] !== null) continue;
+      this.modules[6][c] = c % 2 === 0;
     }
   }
   setupPositionAdjustPattern() {
@@ -299,11 +275,11 @@ class QRCodeModel {
       for (let j = 0; j < pos.length; j++) {
         const row = pos[i];
         const col = pos[j];
-        if (this.modules[row][col] != null) continue;
+        if (this.modules[row][col] !== null) continue;
         for (let r = -2; r <= 2; r++) {
           for (let c = -2; c <= 2; c++) {
             if (
-              r == -2 || r == 2 || c == -2 || c == 2 || (r == 0 && c == 0)
+              r === -2 || r === 2 || c === -2 || c === 2 || (r === 0 && c === 0)
             ) this.modules[row + r][col + c] = true;
             else this.modules[row + r][col + c] = false;
           }
