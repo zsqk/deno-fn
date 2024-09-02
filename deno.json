@@ -1,6 +1,6 @@
 {
   "name": "@zsqk/somefn",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "exports": {
     "./js/aes": "./js/aes.ts",
     "./js/hash": "./js/hash.ts",
@@ -29,6 +29,7 @@
     "./deno/git": "./deno/git.ts",
     "./deno/run": "./deno/run.ts",
     "./deno/ssh": "./deno/ssh.ts",
+    "./nodejs/httpsreq": "./nodejs/httpsreq.ts",
     ".": "./mod.ts"
   },
   "publish": {
