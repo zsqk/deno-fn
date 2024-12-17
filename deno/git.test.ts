@@ -1,5 +1,4 @@
-import { assert } from '@std/assert/assert';
-import { assertEquals } from '@std/assert/assert_equals';
+import { assert, assertEquals } from '@std/assert';
 
 import { gitChanges, pullGitRepo } from './git.ts';
 

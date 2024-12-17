@@ -1,4 +1,4 @@
-import { assertEquals } from '@std/assert/assert_equals';
+import { assertEquals } from '@std/assert';
 import { parseEnv } from './parse-env.ts';
 
 const testContent = `PRETTY_NAME="Debian GNU/Linux 9 (stretch)"

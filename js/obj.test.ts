@@ -1,4 +1,4 @@
-import { assertEquals } from '@std/assert/assert_equals';
+import { assertEquals } from '@std/assert';
 
 import { isEmpty, isEmptyObj } from './obj.ts';
 
