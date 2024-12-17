@@ -1,23 +1,4 @@
 /**
- * [Type] Strict safe string (only contains a-z, A-Z, 0-9)
- * [类型] 严格安全的字符串 (仅包含 a-z, A-Z, 0-9)
- *
- * @author iugo <code@iugo.dev>
- */
-export type StrictSafeString = string;
-
-/**
- * Check if a string is strictly safe (only contains a-z, A-Z, 0-9)
- * 检查字符串是否为严格安全的字符串 (仅包含 a-z, A-Z, 0-9)
- *
- * @param str String to check
- * @returns Whether the string is strictly safe
- */
-export function isStrictSafeString(str: string): str is StrictSafeString {
-  return /^[a-zA-Z0-9]+$/.test(str);
-}
-
-/**
  * not a ramdom string (but faster)
  * @param len
  * @returns
