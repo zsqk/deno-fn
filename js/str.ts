@@ -1,32 +1,9 @@
-type SafeString = string;
-/**
- * check str in [az09AZ]
- */
-export function isSafeString(str: string): str is SafeString {
-  for (let i = 0; i < str.length; i++) {
-    const u = str.codePointAt(i);
-    if (!u) {
-      return false;
-    }
-    if (u > 122 || u < 48) { // z=122, 0=48
-      return false;
-    }
-    if (u > 57 && u < 65) { // 9=57, A=65
-      return false;
-    }
-    if (u > 90 && u < 97) { // Z=90, a=97
-      return false;
-    }
-  }
-  return true;
-}
-
 /**
  * not a ramdom string (but faster)
  * @param len
  * @returns
  */
-export function genSafeString(len: number): string {
+export function genStrictSafeString(len: number): string {
   return new TextDecoder().decode(
     crypto.getRandomValues(new Uint8Array(len)).map((u) => {
       if (u > 122 || u < 48) { // z=122, 0=48
@@ -62,8 +39,9 @@ export function genRandomString(
 }
 
 /**
+ * Decode string from Unicode encoding to UTF-8
  * 编码字符串为 UTF-8
- * @param str 16 位的 Unicode 编码的 ASCII 字符串, 比如 `\u8fd9a` 表示 `这a`
+ * @param str 16-bit Unicode encoded ASCII string, e.g. `\u8fd9a` represents `这a`
  */
 export function fromUnicodeStr(str: string): string {
   let encoded = '';
@@ -92,11 +70,12 @@ export function fromUnicodeStr(str: string): string {
 }
 
 /**
+ * Add UTF-8 BOM to text (for Windows...)
  * 为文本添加 UTF-8 BOM (for Windows...)
  * - [Magic Number](https://en.wikipedia.org/wiki/Magic_number_(programming))
  * - [Byte Order Mark](https://en.wikipedia.org/wiki/Byte_order_mark)
- * @param v 需要增加 BOM 的文本
- * @returns
+ * @param v Text that needs BOM added
+ * @returns Text with BOM header
  */
 export function textWithBOM(v: Uint8Array | string): Uint8Array {
   let data: Uint8Array;

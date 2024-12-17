@@ -11,6 +11,25 @@ export type JWTString = string;
 export type PhoneNum = string;
 
 /**
+ * [Type] Strict safe string (only contains a-z, A-Z, 0-9)
+ * [类型] 严格安全的字符串 (仅包含 a-z, A-Z, 0-9)
+ *
+ * @author iugo <code@iugo.dev>
+ */
+export type StrictSafeString = string;
+
+/**
+ * Check if a string is strictly safe (only contains a-z, A-Z, 0-9)
+ * 检查字符串是否为严格安全的字符串 (仅包含 a-z, A-Z, 0-9)
+ *
+ * @param str String to check
+ * @returns Whether the string is strictly safe
+ */
+export function isStrictSafeString(str: string): str is StrictSafeString {
+  return /^[a-zA-Z0-9]+$/.test(str);
+}
+
+/**
  * [类型] 不包含英文特殊字符 (ASCII 范围内除了字母, 数字, 下划线和空格以外的字符)
  * @author iugo <code@iugo.dev>
  */
