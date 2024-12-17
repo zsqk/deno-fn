@@ -1,5 +1,4 @@
-import { assertEquals } from '@std/assert/assert_equals';
-import { assertObjectMatch } from '@std/assert/assert_object_match';
+import { assertEquals, assertObjectMatch } from '@std/assert';
 
 import { parserUA, parserUACommon } from './ua.ts';
 

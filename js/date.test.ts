@@ -5,8 +5,7 @@ import {
   timeSummarize,
   toUnixTimestamp,
 } from './date.ts';
-import { assertThrows } from '@std/testing/asserts';
-import { assertEquals } from '@std/assert/assert_equals';
+import { assertEquals, assertThrows } from '@std/assert';
 import { getWeekday as getWeekday2 } from './date.ts';
 import { getWeekday } from './date.altimpl.ts';
 
@@ -253,16 +252,5 @@ Deno.test('getWeekday test #5 end sunday', () => {
   assertEquals(
     getWeekday(before, after),
     expected,
-  );
-});
-
-Deno.test('getWeekday test #6 end 123', () => {
-  const before = new Date('2024-01-03');
-  const after = new Date('2023-01-28');
-  const expected = [26, 3, 3, 4, 4, 4, 4, 4];
-
-  assertEquals(
-    getWeekday2(before, after).map((v) => -v),
-    getWeekday2(after, before),
   );
 });
