@@ -25,7 +25,7 @@ export function loadENV(
         Deno.env.set(k, val);
       });
   } catch (err) {
-    error = err;
+    error = err as Error;
   }
   return [error, res];
 }
