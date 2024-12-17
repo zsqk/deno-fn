@@ -14,6 +14,9 @@ Deno.test('isStrictSafeString', () => {
   assert(isStrictSafeString('z'));
   assert(isStrictSafeString('A'));
   assert(isStrictSafeString('Z'));
+  assert(isStrictSafeString('1234567890'));
+  assert(!isStrictSafeString('Z_'));
+  assert(!isStrictSafeString('_Z'));
   assert(!isStrictSafeString('.'));
   assert(!isStrictSafeString('a🥳'));
   assert(
