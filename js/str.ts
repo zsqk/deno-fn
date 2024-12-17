@@ -1,6 +1,17 @@
-type StrictSafeString = string;
 /**
- * check str in [az09AZ]
+ * [Type] Strict safe string (only contains a-z, A-Z, 0-9)
+ * [类型] 严格安全的字符串 (仅包含 a-z, A-Z, 0-9)
+ *
+ * @author iugo <code@iugo.dev>
+ */
+export type StrictSafeString = string;
+
+/**
+ * Check if a string is strictly safe (only contains a-z, A-Z, 0-9)
+ * 检查字符串是否为严格安全的字符串 (仅包含 a-z, A-Z, 0-9)
+ *
+ * @param str String to check
+ * @returns Whether the string is strictly safe
  */
 export function isStrictSafeString(str: string): str is StrictSafeString {
   return /^[a-zA-Z0-9]+$/.test(str);
@@ -47,8 +58,9 @@ export function genRandomString(
 }
 
 /**
+ * Decode string from Unicode encoding to UTF-8
  * 编码字符串为 UTF-8
- * @param str 16 位的 Unicode 编码的 ASCII 字符串, 比如 `\u8fd9a` 表示 `这a`
+ * @param str 16-bit Unicode encoded ASCII string, e.g. `\u8fd9a` represents `这a`
  */
 export function fromUnicodeStr(str: string): string {
   let encoded = '';
@@ -77,11 +89,12 @@ export function fromUnicodeStr(str: string): string {
 }
 
 /**
+ * Add UTF-8 BOM to text (for Windows...)
  * 为文本添加 UTF-8 BOM (for Windows...)
  * - [Magic Number](https://en.wikipedia.org/wiki/Magic_number_(programming))
  * - [Byte Order Mark](https://en.wikipedia.org/wiki/Byte_order_mark)
- * @param v 需要增加 BOM 的文本
- * @returns
+ * @param v Text that needs BOM added
+ * @returns Text with BOM header
  */
 export function textWithBOM(v: Uint8Array | string): Uint8Array {
   let data: Uint8Array;
