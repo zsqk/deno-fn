@@ -5,8 +5,7 @@ import {
   timeSummarize,
   toUnixTimestamp,
 } from './date.ts';
-import { assertThrows } from '@std/testing/asserts';
-import { assertEquals } from '@std/assert/assert_equals';
+import { assertEquals, assertThrows } from '@std/assert';
 import { getWeekday as getWeekday2 } from './date.ts';
 import { getWeekday } from './date.altimpl.ts';
 

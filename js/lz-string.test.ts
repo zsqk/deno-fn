@@ -1,6 +1,5 @@
 import { compress, decompress, genKeyStr } from './lz-string.ts';
-import { assertEquals } from '@std/assert/assert_equals';
-import { assertNotEquals } from '@std/assert/assert_not_equals';
+import { assertEquals, assertNotEquals } from '@std/assert';
 
 Deno.test('lz-string-d', () => {
   const d1 = compress('中文');

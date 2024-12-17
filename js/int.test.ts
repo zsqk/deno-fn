@@ -1,4 +1,4 @@
-import { assertEquals } from '@std/assert/assert_equals';
+import { assertEquals } from '@std/assert';
 import { intToU8a, u8aToInt } from './int.ts';
 
 Deno.test('u8aToInt', () => {

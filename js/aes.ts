@@ -56,9 +56,9 @@ export function genIV(
   if (
     method === 'getRandomValues' ||
     (method === undefined &&
-      typeof window.crypto?.getRandomValues === 'function')
+      typeof globalThis.crypto?.getRandomValues === 'function')
   ) {
-    return window.crypto.getRandomValues(new Uint8Array(l));
+    return globalThis.crypto.getRandomValues(new Uint8Array(l));
   }
   return new Uint8Array(l).map(() => Math.trunc(256 * Math.random()));
 }

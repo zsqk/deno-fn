@@ -5,8 +5,7 @@ import {
   isSafeString,
   textWithBOM,
 } from './str.ts';
-import { assert } from '@std/assert/assert';
-import { assertEquals } from '@std/assert/assert_equals';
+import { assert, assertEquals } from '@std/assert';
 
 Deno.test('isSafeString', () => {
   assert(isSafeString('9'));

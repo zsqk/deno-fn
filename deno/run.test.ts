@@ -1,5 +1,5 @@
 import { assertRejects } from '@std/testing/asserts';
-import { assertEquals } from '@std/assert/assert_equals';
+import { assertEquals } from '@std/assert';
 
 import { onlyRun, run } from './run.ts';
 import { delay } from '@std/async/delay';

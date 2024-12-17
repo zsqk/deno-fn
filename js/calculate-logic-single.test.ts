@@ -1,6 +1,6 @@
-import { assert } from '@std/assert/assert';
+import { assert } from '@std/assert';
 import { logicCalculate, LogicOperator } from './calculate-logic.ts';
-import { assertThrows } from '@std/assert/assert_throws';
+import { assertThrows } from '@std/assert';
 
 const data: Record<string, string | number> = {
   a: 65537,

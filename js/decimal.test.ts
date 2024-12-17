@@ -1,4 +1,4 @@
-import { assertEquals } from '@std/assert/assert_equals';
+import { assertEquals } from '@std/assert';
 import { toIntFromFloat } from './decimal.ts';
 
 Deno.test('toIntFromFloat', () => {
