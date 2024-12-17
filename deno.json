@@ -1,6 +1,6 @@
 {
   "name": "@zsqk/somefn",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "exports": {
     "./js/aes": "./js/aes.ts",
     "./js/hash": "./js/hash.ts",
@@ -22,6 +22,7 @@
     "./ts/error": "./ts/error.ts",
     "./ts/log": "./ts/log.ts",
     "./ts/number": "./ts/number.ts",
+    "./ts/number-type-convert": "./ts/number-type-convert.ts",
     "./ts/object": "./ts/object.ts",
     "./ts/string": "./ts/string.ts",
     "./ts/time": "./ts/time.ts",
@@ -81,7 +82,7 @@
     "@std/encoding": "jsr:@std/encoding@^0.224.3",
     "@std/fs": "jsr:@std/fs@^0.229.1",
     "@std/testing": "jsr:@std/testing@0.217.0",
-    "@std/assert": "jsr:@std/assert@0.217.0",
+    "@std/assert": "jsr:@std/assert@^1.0.9",
     "@std/cli": "jsr:@std/cli@0.217.0"
   }
 }
