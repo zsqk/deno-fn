@@ -29,7 +29,7 @@ export function isSafeString(value: unknown): value is SafeString {
   // 2. 数字 (0-9)
   // 3. 字母 (包含大小写, A-Z, a-z)
   // 4. 下划线 (_)
-  if (!/^[\w ]*$/.test(value)) {
+  if (/[\x21-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7E]/.test(value)) {
     return false;
   }
   // 检查是否包含首尾空格
