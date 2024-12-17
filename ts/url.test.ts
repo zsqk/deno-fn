@@ -1,5 +1,5 @@
 import { assertEquals, assertThrows } from '@std/assert';
-import { parseQueryString } from './url.ts';
+import { parseQueryPositiveInt, parseQueryString } from './url.ts';
 
 Deno.test('parseQueryString', () => {
   const url = new URL(
@@ -24,4 +24,33 @@ Deno.test('parseQueryString', () => {
   assertEquals(parseQueryString(f), undefined);
   assertEquals(parseQueryString(g), undefined);
   assertThrows(() => parseQueryString(';abc'), TypeError);
+});
+
+Deno.test('parseQueryPositiveInt', () => {
+  const url = new URL('https://example.com/path');
+  url.searchParams.set('a', '1');
+  url.searchParams.set('b', '2');
+  url.searchParams.set('c', '');
+  url.searchParams.set('d', '0');
+  url.searchParams.set('e', 'null');
+  url.searchParams.set('g', '-1');
+  url.searchParams.set('h', '1.5');
+  url.searchParams.set('i', 'abc');
+  const a = url.searchParams.get('a');
+  const b = url.searchParams.get('b');
+  const c = url.searchParams.get('c');
+  const d = url.searchParams.get('d');
+  const e = url.searchParams.get('e');
+  const g = url.searchParams.get('g');
+  const h = url.searchParams.get('h');
+  const i = url.searchParams.get('i');
+
+  assertEquals(parseQueryPositiveInt(a), 1);
+  assertEquals(parseQueryPositiveInt(b), 2);
+  assertEquals(parseQueryPositiveInt(c), undefined);
+  assertThrows(() => parseQueryPositiveInt(d), TypeError); // 0 不是正整数
+  assertEquals(parseQueryPositiveInt(e), null);
+  assertThrows(() => parseQueryPositiveInt(g), TypeError); // 负数不是正整数
+  assertThrows(() => parseQueryPositiveInt(h), TypeError); // 小数不是整数
+  assertThrows(() => parseQueryPositiveInt(i), TypeError); // 非数字字符串
 });
