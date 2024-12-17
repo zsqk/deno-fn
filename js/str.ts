@@ -1,8 +1,8 @@
-type SafeString = string;
+type StrictSafeString = string;
 /**
  * check str in [az09AZ]
  */
-export function isSafeString(str: string): str is SafeString {
+export function isStrictSafeString(str: string): str is StrictSafeString {
   for (let i = 0; i < str.length; i++) {
     const u = str.codePointAt(i);
     if (!u) {
@@ -26,7 +26,7 @@ export function isSafeString(str: string): str is SafeString {
  * @param len
  * @returns
  */
-export function genSafeString(len: number): string {
+export function genStrictSafeString(len: number): string {
   return new TextDecoder().decode(
     crypto.getRandomValues(new Uint8Array(len)).map((u) => {
       if (u > 122 || u < 48) { // z=122, 0=48

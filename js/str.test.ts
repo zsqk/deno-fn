@@ -1,37 +1,37 @@
 import {
   fromUnicodeStr,
   genRandomString,
-  genSafeString,
-  isSafeString,
+  genStrictSafeString,
+  isStrictSafeString,
   textWithBOM,
 } from './str.ts';
 import { assert, assertEquals } from '@std/assert';
 
-Deno.test('isSafeString', () => {
-  assert(isSafeString('9'));
-  assert(isSafeString('0'));
-  assert(isSafeString('a'));
-  assert(isSafeString('z'));
-  assert(isSafeString('A'));
-  assert(isSafeString('Z'));
-  assert(!isSafeString('.'));
-  assert(!isSafeString('a🥳'));
+Deno.test('isStrictSafeString', () => {
+  assert(isStrictSafeString('9'));
+  assert(isStrictSafeString('0'));
+  assert(isStrictSafeString('a'));
+  assert(isStrictSafeString('z'));
+  assert(isStrictSafeString('A'));
+  assert(isStrictSafeString('Z'));
+  assert(!isStrictSafeString('.'));
+  assert(!isStrictSafeString('a🥳'));
   assert(
-    !isSafeString(`
+    !isStrictSafeString(`
 `),
   );
 });
 
-Deno.test('genSafeString', () => {
+Deno.test('genStrictSafeString', () => {
   const len = 65536;
 
-  console.time('genSafeString');
-  genSafeString(len);
-  console.timeEnd('genSafeString');
+  console.time('genStrictSafeString');
+  genStrictSafeString(len);
+  console.timeEnd('genStrictSafeString');
 
-  assertEquals(genSafeString(5).length, 5);
-  assertEquals(typeof genSafeString(5)[4], 'string');
-  console.log('genSafeString(5)', genSafeString(5));
+  assertEquals(genStrictSafeString(5).length, 5);
+  assertEquals(typeof genStrictSafeString(5)[4], 'string');
+  console.log('genStrictSafeString(5)', genStrictSafeString(5));
 });
 
 Deno.test('genRandomString', () => {
