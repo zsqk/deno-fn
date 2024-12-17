@@ -1,9 +1,16 @@
 import { isSafeString, SafeString } from './string.ts';
 
 /**
- * 将 URL query 字符串转换为字符串
- * @param query - URL query 字符串
- * @returns 对象
+ * Convert URL query parameter value to string
+ *
+ * @param query - URL query parameter value (typically from url.searchParams.get())
+ * @returns A SafeString, null, or undefined
+ *          - Returns null if input is null or "null"
+ *          - Returns undefined if input is "undefined" or empty string
+ *          - Returns trimmed SafeString for valid input
+ *          - Throws TypeError for invalid input
+ *
+ * @author iugo <code@iugo.dev>
  */
 export function parseQueryString(
   query: string | null,
