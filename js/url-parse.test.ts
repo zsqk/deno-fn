@@ -1,5 +1,5 @@
 import { assertEquals, assertThrows } from '@std/assert';
-import { parseQueryPositiveInt, parseQueryString } from './url.ts';
+import { parseQueryPositiveInt, parseQueryString } from './url-parse.ts';
 
 Deno.test('parseQueryString', () => {
   const url = new URL(

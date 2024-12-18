@@ -1,5 +1,5 @@
-import { toInt, toPositiveInt } from './number-type-convert.ts';
-import { isSafeString, SafeString } from './string.ts';
+import { toInt, toPositiveInt } from '../ts/number-type-convert.ts';
+import { isSafeString, SafeString } from '../ts/string.ts';
 
 /**
  * Convert URL query parameter value to string
