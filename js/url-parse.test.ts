@@ -3,6 +3,7 @@ import {
   parseQueryInt,
   parseQueryInts,
   parseQueryNumber,
+  parseQueryNumbers,
   parseQueryPositiveInt,
   parseQueryPositiveInts,
   parseQueryString,
@@ -164,4 +165,26 @@ Deno.test('parseQueryInts', () => {
   );
   assertThrows(() => parseQueryInts(url.searchParams.get('e')), TypeError);
   assertThrows(() => parseQueryInts(url.searchParams.get('f')), TypeError);
+});
+
+Deno.test('parseQueryNumbers', () => {
+  const url = new URL('https://example.com/path');
+  url.searchParams.set('a', '1,2,3');
+  url.searchParams.set('b', '-1.5,0,1.5');
+  url.searchParams.set('c', '');
+  url.searchParams.set('d', '1|2|3');
+  url.searchParams.set('e', '1,abc,3');
+  url.searchParams.set('f', '1,Infinity,3');
+  url.searchParams.set('g', '1,NaN,3');
+
+  assertEquals(parseQueryNumbers(url.searchParams.get('a')), [1, 2, 3]);
+  assertEquals(parseQueryNumbers(url.searchParams.get('b')), [-1.5, 0, 1.5]);
+  assertEquals(parseQueryNumbers(url.searchParams.get('c')), undefined);
+  assertEquals(
+    parseQueryNumbers(url.searchParams.get('d'), { separator: '|' }),
+    [1, 2, 3],
+  );
+  assertThrows(() => parseQueryNumbers(url.searchParams.get('e')), TypeError);
+  assertThrows(() => parseQueryNumbers(url.searchParams.get('f')), TypeError);
+  assertThrows(() => parseQueryNumbers(url.searchParams.get('g')), TypeError);
 });
