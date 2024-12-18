@@ -1,5 +1,12 @@
 import { assertEquals, assertThrows } from '@std/assert';
-import { parseQueryPositiveInt, parseQueryString } from './url-parse.ts';
+import {
+  parseQueryInt,
+  parseQueryNumber,
+  parseQueryPositiveInt,
+  parseQueryPositiveInts,
+  parseQueryString,
+  parseQueryStringArray,
+} from './url-parse.ts';
 
 Deno.test('parseQueryString', () => {
   const url = new URL(
@@ -20,7 +27,7 @@ Deno.test('parseQueryString', () => {
   assertEquals(parseQueryString(b), '中');
   assertEquals(parseQueryString(c), undefined);
   assertEquals(parseQueryString(d), 'd');
-  assertEquals(parseQueryString(e), null);
+  assertEquals(parseQueryString(e), 'null');
   assertEquals(parseQueryString(f), undefined);
   assertEquals(parseQueryString(g), undefined);
   assertThrows(() => parseQueryString(';abc'), TypeError);
@@ -49,8 +56,91 @@ Deno.test('parseQueryPositiveInt', () => {
   assertEquals(parseQueryPositiveInt(b), 2);
   assertEquals(parseQueryPositiveInt(c), undefined);
   assertThrows(() => parseQueryPositiveInt(d), TypeError); // 0 不是正整数
-  assertEquals(parseQueryPositiveInt(e), null);
+  assertThrows(() => parseQueryPositiveInt(e), TypeError);
   assertThrows(() => parseQueryPositiveInt(g), TypeError); // 负数不是正整数
   assertThrows(() => parseQueryPositiveInt(h), TypeError); // 小数不是整数
   assertThrows(() => parseQueryPositiveInt(i), TypeError); // 非数字字符串
+});
+
+Deno.test('parseQueryStringArray', () => {
+  const url = new URL('https://example.com/path');
+  url.searchParams.set('a', 'a,b,c');
+  url.searchParams.set('b', 'x|y|z');
+  url.searchParams.set('c', '');
+  url.searchParams.set('d', 'a,,c');
+  url.searchParams.set('e', '<script>,b,c');
+
+  assertEquals(parseQueryStringArray(url.searchParams.get('a')), [
+    'a',
+    'b',
+    'c',
+  ]);
+  assertEquals(
+    parseQueryStringArray(url.searchParams.get('b'), { separator: '|' }),
+    ['x', 'y', 'z'],
+  );
+  assertEquals(parseQueryStringArray(url.searchParams.get('c')), undefined);
+  assertEquals(parseQueryStringArray(url.searchParams.get('d')), ['a', 'c']);
+  assertThrows(
+    () => parseQueryStringArray(url.searchParams.get('e')),
+    TypeError,
+  );
+});
+
+Deno.test('parseQueryNumber', () => {
+  const url = new URL('https://example.com/path');
+  url.searchParams.set('a', '123');
+  url.searchParams.set('b', '12.34');
+  url.searchParams.set('c', '');
+  url.searchParams.set('d', 'abc');
+  url.searchParams.set('e', 'Infinity');
+  url.searchParams.set('f', 'NaN');
+
+  assertEquals(parseQueryNumber(url.searchParams.get('a')), 123);
+  assertEquals(parseQueryNumber(url.searchParams.get('b')), 12.34);
+  assertEquals(parseQueryNumber(url.searchParams.get('c')), undefined);
+  assertThrows(() => parseQueryNumber(url.searchParams.get('d')), TypeError);
+  assertThrows(() => parseQueryNumber(url.searchParams.get('e')), TypeError);
+  assertThrows(() => parseQueryNumber(url.searchParams.get('f')), TypeError);
+});
+
+Deno.test('parseQueryInt', () => {
+  const url = new URL('https://example.com/path');
+  url.searchParams.set('a', '123');
+  url.searchParams.set('b', '12.34');
+  url.searchParams.set('c', '');
+  url.searchParams.set('d', 'abc');
+  url.searchParams.set('e', '-123');
+  url.searchParams.set('f', '0');
+
+  assertEquals(parseQueryInt(url.searchParams.get('a')), 123);
+  assertThrows(() => parseQueryInt(url.searchParams.get('b')), TypeError);
+  assertEquals(parseQueryInt(url.searchParams.get('c')), undefined);
+  assertThrows(() => parseQueryInt(url.searchParams.get('d')), TypeError);
+  assertEquals(parseQueryInt(url.searchParams.get('e')), -123);
+  assertEquals(parseQueryInt(url.searchParams.get('f')), 0);
+});
+
+Deno.test('parseQueryPositiveInts', () => {
+  const url = new URL('https://example.com/path');
+  url.searchParams.set('a', '1,2,3');
+  url.searchParams.set('b', '');
+  url.searchParams.set('c', '1,0,3');
+  url.searchParams.set('d', '1,-2,3');
+  url.searchParams.set('e', '1,abc,3');
+
+  assertEquals(parseQueryPositiveInts(url.searchParams.get('a')), [1, 2, 3]);
+  assertEquals(parseQueryPositiveInts(url.searchParams.get('b')), undefined);
+  assertThrows(
+    () => parseQueryPositiveInts(url.searchParams.get('c')),
+    TypeError,
+  );
+  assertThrows(
+    () => parseQueryPositiveInts(url.searchParams.get('d')),
+    TypeError,
+  );
+  assertThrows(
+    () => parseQueryPositiveInts(url.searchParams.get('e')),
+    TypeError,
+  );
 });
