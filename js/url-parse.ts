@@ -227,3 +227,46 @@ export function parseQueryPositiveInts(
     throw new TypeError(`invalid query positive int array: ${query}`);
   }
 }
+
+/**
+ * Convert URL query parameter value to array of integers
+ * 将 URL 查询参数值转换为整数数组
+ *
+ * @param query - URL query parameter value (typically from url.searchParams.get())
+ *               URL 查询参数值（通常来自 url.searchParams.get()）
+ * @param options - Configuration options
+ *                 配置选项
+ * @param options.separator - Delimiter used to split the string (默认为逗号 ',')
+ *                          用于分割字符串的分隔符
+ * @returns An array of integers or undefined
+ *          返回整数数组或 undefined
+ *          - Returns undefined if input is null, "undefined" or empty string
+ *            当输入为 null、"undefined" 或空字符串时返回 undefined
+ *          - Returns array of integers for valid input
+ *            对于有效的数字输入返回整数数组
+ *          - Throws TypeError for invalid input
+ *            当输入无效时抛出 TypeError
+ *
+ * @example
+ * parseQueryInts('1,2,3') // returns [1, 2, 3]
+ * parseQueryInts('-1,0,1') // returns [-1, 0, 1]
+ * parseQueryInts('') // returns undefined
+ * parseQueryInts('1|2|3', { separator: '|' }) // returns [1, 2, 3]
+ * parseQueryInts('abc') // throws TypeError
+ *
+ * @author iugo <code@iugo.dev>
+ */
+export function parseQueryInts(
+  query: string | null,
+  { separator = ',' }: { separator?: string } = {},
+): number[] | undefined {
+  if (query === null || query === 'undefined' || query === '') {
+    return undefined;
+  }
+  try {
+    const arr = query.split(separator).map(toInt);
+    return arr.length === 0 ? undefined : arr;
+  } catch (_err) {
+    throw new TypeError(`invalid query int array: ${query}`);
+  }
+}

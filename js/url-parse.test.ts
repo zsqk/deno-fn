@@ -1,6 +1,7 @@
 import { assertEquals, assertThrows } from '@std/assert';
 import {
   parseQueryInt,
+  parseQueryInts,
   parseQueryNumber,
   parseQueryPositiveInt,
   parseQueryPositiveInts,
@@ -143,4 +144,24 @@ Deno.test('parseQueryPositiveInts', () => {
     () => parseQueryPositiveInts(url.searchParams.get('e')),
     TypeError,
   );
+});
+
+Deno.test('parseQueryInts', () => {
+  const url = new URL('https://example.com/path');
+  url.searchParams.set('a', '1,2,3');
+  url.searchParams.set('b', '-1,0,1');
+  url.searchParams.set('c', '');
+  url.searchParams.set('d', '1|2|3');
+  url.searchParams.set('e', '1,abc,3');
+  url.searchParams.set('f', '1.5,2,3');
+
+  assertEquals(parseQueryInts(url.searchParams.get('a')), [1, 2, 3]);
+  assertEquals(parseQueryInts(url.searchParams.get('b')), [-1, 0, 1]);
+  assertEquals(parseQueryInts(url.searchParams.get('c')), undefined);
+  assertEquals(
+    parseQueryInts(url.searchParams.get('d'), { separator: '|' }),
+    [1, 2, 3],
+  );
+  assertThrows(() => parseQueryInts(url.searchParams.get('e')), TypeError);
+  assertThrows(() => parseQueryInts(url.searchParams.get('f')), TypeError);
 });
