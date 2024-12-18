@@ -26,6 +26,7 @@
     "./ts/object": "./ts/object.ts",
     "./ts/string": "./ts/string.ts",
     "./ts/time": "./ts/time.ts",
+    "./ts/url": "./ts/url.ts",
     "./deno/copy": "./deno/copy.ts",
     "./deno/git": "./deno/git.ts",
     "./deno/run": "./deno/run.ts",
