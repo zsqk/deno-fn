@@ -8,6 +8,7 @@ import {
   parseQueryPositiveInts,
   parseQueryString,
   parseQueryStringArray,
+  sanitizeString,
 } from './url-parse.ts';
 
 Deno.test('parseQueryString', () => {
@@ -187,4 +188,43 @@ Deno.test('parseQueryNumbers', () => {
   assertThrows(() => parseQueryNumbers(url.searchParams.get('e')), TypeError);
   assertThrows(() => parseQueryNumbers(url.searchParams.get('f')), TypeError);
   assertThrows(() => parseQueryNumbers(url.searchParams.get('g')), TypeError);
+});
+
+Deno.test('sanitizeString', () => {
+  // 测试基本 ASCII 字符
+  assertEquals(sanitizeString('hello world'), 'hello world');
+  assertEquals(sanitizeString('abc123'), 'abc123');
+  assertEquals(sanitizeString('user_name'), 'user_name');
+
+  // 测试需要被移除的 ASCII 特殊字符
+  assertEquals(sanitizeString('hello!world'), 'helloworld');
+  assertEquals(sanitizeString('test@email.com'), 'testemailcom');
+  assertEquals(
+    sanitizeString('<script>alert(1)</script>'),
+    'scriptalert1script',
+  );
+  assertEquals(sanitizeString('[test]'), 'test');
+  assertEquals(sanitizeString('{test}'), 'test');
+  assertEquals(sanitizeString('(test)'), 'test');
+  assertEquals(sanitizeString('test!@#$%^&*'), 'test');
+
+  // 测试非 ASCII 字符（应该保留）
+  assertEquals(sanitizeString('你好世界'), '你好世界');
+  assertEquals(sanitizeString('こんにちは'), 'こんにちは');
+  assertEquals(sanitizeString('안녕하세요'), '안녕하세요');
+
+  // 测试混合字符
+  assertEquals(sanitizeString('hello@世界'), 'hello世界');
+  assertEquals(sanitizeString('test!你好#world'), 'test你好world');
+  assertEquals(sanitizeString('안녕!@#$%^&*하세요'), '안녕하세요');
+
+  // 测试空字符串
+  assertEquals(sanitizeString(''), '');
+
+  // 测试只包含特殊字符的字符串
+  assertEquals(sanitizeString('!@#$%^&*()'), '');
+
+  // 测试空格相关
+  assertEquals(sanitizeString('  hello  world  '), '  hello  world  ');
+  assertEquals(sanitizeString('\thello\nworld\r'), '\thello\nworld\r');
 });
