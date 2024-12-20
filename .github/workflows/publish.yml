@@ -10,20 +10,34 @@ name: publish
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
+    paths:
+      - 'deno.json'
 
 jobs:
-  test:
+  check-and-publish:
     runs-on: ubuntu-latest
-
     permissions:
-      contents: read
+      contents: write  # 需要写权限来创建 tag
       id-token: write
 
     steps:
       - name: Setup repo
         uses: actions/checkout@v4
+
+      - name: Get version from deno.json
+        id: version
+        run: |
+          VERSION=$(jq -r .version deno.json)
+          echo "version=v${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Create Tag
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git tag ${{ steps.version.outputs.version }}
+          git push origin ${{ steps.version.outputs.version }}
 
       - name: Run publish
         run: npx jsr publish
