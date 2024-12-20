@@ -113,14 +113,32 @@ export function sanitizeString(
  */
 export function parseQueryStringArray(
   query: string | null,
-  { separator = ',' }: { separator?: string } = {},
+  {
+    separator = ',',
+    sanitizeWithSeparator = false,
+  }: {
+    /**
+     * 用于分割字符串的分隔符
+     * 默认为逗号 ','
+     */
+    separator?: string;
+    /**
+     * 用于替换特殊字符的字符串
+     * 默认不进行特殊字符替换 (如果出现会报错)
+     */
+    sanitizeWithSeparator?: boolean;
+  } = {},
 ): string[] | undefined {
   if (query === null || query === 'undefined' || query === '') {
     return undefined;
   }
 
+  const queryString = sanitizeWithSeparator
+    ? sanitizeString(query, { replaceWith: separator })
+    : query;
+
   try {
-    const arr = query
+    const arr = queryString
       .split(separator)
       .map((v) => parseQueryString(v) ?? '')
       .filter(Boolean);

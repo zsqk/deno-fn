@@ -65,7 +65,7 @@ Deno.test('parseQueryPositiveInt', () => {
   assertThrows(() => parseQueryPositiveInt(i), TypeError); // 非数字字符串
 });
 
-Deno.test('parseQueryStringArray', () => {
+Deno.test('parseQueryStringArray #1', () => {
   const url = new URL('https://example.com/path');
   url.searchParams.set('a', 'a,b,c');
   url.searchParams.set('b', 'x|y|z');
@@ -86,6 +86,41 @@ Deno.test('parseQueryStringArray', () => {
   assertEquals(parseQueryStringArray(url.searchParams.get('d')), ['a', 'c']);
   assertThrows(
     () => parseQueryStringArray(url.searchParams.get('e')),
+    TypeError,
+  );
+});
+
+Deno.test('parseQueryStringArray with sanitization', () => {
+  const url = new URL('https://example.com/path');
+  url.searchParams.set('a', '<script>,alert(1),</script>');
+  url.searchParams.set('b', 'hello!world,test@email');
+  url.searchParams.set('c', '你好!世界,test#123');
+
+  // 测试使用 sanitizeWithSeparator
+  assertEquals(
+    parseQueryStringArray(url.searchParams.get('a'), {
+      sanitizeWithSeparator: true,
+    }),
+    ['script', 'alert', '1', 'script'],
+  );
+
+  assertEquals(
+    parseQueryStringArray(url.searchParams.get('b'), {
+      sanitizeWithSeparator: true,
+    }),
+    ['hello', 'world', 'test', 'email'],
+  );
+
+  assertEquals(
+    parseQueryStringArray(url.searchParams.get('c'), {
+      sanitizeWithSeparator: true,
+    }),
+    ['你好', '世界', 'test', '123'],
+  );
+
+  // 测试不使用 sanitizeWithSeparator（应该抛出错误）
+  assertThrows(
+    () => parseQueryStringArray(url.searchParams.get('a')),
     TypeError,
   );
 });
@@ -191,38 +226,56 @@ Deno.test('parseQueryNumbers', () => {
 });
 
 Deno.test('sanitizeString', () => {
-  // 测试基本 ASCII 字符
+  // 测试基本功能（默认替换为空字符串）
   assertEquals(sanitizeString('hello world'), 'hello world');
   assertEquals(sanitizeString('abc123'), 'abc123');
   assertEquals(sanitizeString('user_name'), 'user_name');
-
-  // 测试需要被移除的 ASCII 特殊字符
   assertEquals(sanitizeString('hello!world'), 'helloworld');
   assertEquals(sanitizeString('test@email.com'), 'testemailcom');
+
+  // 测试使用自定义替换字符
   assertEquals(
-    sanitizeString('<script>alert(1)</script>'),
-    'scriptalert1script',
+    sanitizeString('hello!world', { replaceWith: '_' }),
+    'hello_world',
   );
-  assertEquals(sanitizeString('[test]'), 'test');
-  assertEquals(sanitizeString('{test}'), 'test');
-  assertEquals(sanitizeString('(test)'), 'test');
-  assertEquals(sanitizeString('test!@#$%^&*'), 'test');
+  assertEquals(
+    sanitizeString('test@email.com', { replaceWith: '.' }),
+    'test.email.com',
+  );
+  assertEquals(
+    sanitizeString('<script>alert(1)</script>', { replaceWith: '-' }),
+    '-script-alert-1---script-',
+  );
+  assertEquals(sanitizeString('[test]', { replaceWith: '_' }), '_test_');
 
   // 测试非 ASCII 字符（应该保留）
   assertEquals(sanitizeString('你好世界'), '你好世界');
   assertEquals(sanitizeString('こんにちは'), 'こんにちは');
   assertEquals(sanitizeString('안녕하세요'), '안녕하세요');
 
-  // 测试混合字符
-  assertEquals(sanitizeString('hello@世界'), 'hello世界');
-  assertEquals(sanitizeString('test!你好#world'), 'test你好world');
-  assertEquals(sanitizeString('안녕!@#$%^&*하세요'), '안녕하세요');
+  // 测试混合字符和自定义替换
+  assertEquals(
+    sanitizeString('hello@世界', { replaceWith: '_' }),
+    'hello_世界',
+  );
+  assertEquals(
+    sanitizeString('test!你好#world', { replaceWith: '-' }),
+    'test-你好-world',
+  );
+  assertEquals(
+    sanitizeString('안녕!@#$%^&*하세요', { replaceWith: '.' }),
+    '안녕........하세요',
+  );
 
   // 测试空字符串
   assertEquals(sanitizeString(''), '');
 
   // 测试只包含特殊字符的字符串
   assertEquals(sanitizeString('!@#$%^&*()'), '');
+  assertEquals(
+    sanitizeString('!@#$%^&*()', { replaceWith: '_' }),
+    '__________',
+  );
 
   // 测试空格相关
   assertEquals(sanitizeString('  hello  world  '), '  hello  world  ');
