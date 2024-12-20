@@ -27,18 +27,61 @@ import { isSafeString, SafeString } from '../ts/string.ts';
  */
 export function parseQueryString(
   query: string | null,
+  { sanitize = false }: {
+    /**
+     * 是否移除不安全字符 (清理净化参数)
+     * 默认不移除
+     */
+    sanitize?: boolean;
+  } = {},
 ): SafeString | undefined {
   if (query === null) {
     return undefined;
   }
-  const trimmedQuery = query.trim();
+  let trimmedQuery = query.trim();
   if (trimmedQuery === 'undefined' || trimmedQuery === '') {
     return undefined;
+  }
+  if (sanitize) {
+    trimmedQuery = sanitizeString(trimmedQuery);
   }
   if (!isSafeString(trimmedQuery)) {
     throw new TypeError(`invalid query string: ${query}`);
   }
   return trimmedQuery;
+}
+
+/**
+ * 清理净化字符串
+ * @param str - 需要清理净化的字符串
+ * @param options - Configuration options
+ *                 配置选项
+ * @param options.replaceWith - 用于替换特殊字符的字符串
+ *                           默认为空字符串 ''
+ * @returns 清理净化后的字符串
+ */
+export function sanitizeString(
+  str: string,
+  {
+    /**
+     * 用于替换特殊字符的字符串
+     * 默认为空字符串 ''
+     */
+    replaceWith = '',
+  }: {
+    replaceWith?: string;
+  } = {},
+): string {
+  // 移除 ASCII 范围内的特殊字符 (除了空格、数字、字母和下划线)
+  // ASCII 范围: 0x21-0x2F (! " # $ % & ' ( ) * + , - . /)
+  //            0x3A-0x40 (: ; < = > ? @)
+  //            0x5B-0x5E ([ \ ] ^)
+  //            0x60 (`)
+  //            0x7B-0x7E ({ | } ~)
+  return str.replace(
+    /[\x21-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7E]/g,
+    replaceWith,
+  );
 }
 
 /**
@@ -70,14 +113,32 @@ export function parseQueryString(
  */
 export function parseQueryStringArray(
   query: string | null,
-  { separator = ',' }: { separator?: string } = {},
+  {
+    separator = ',',
+    sanitizeWithSeparator = false,
+  }: {
+    /**
+     * 用于分割字符串的分隔符
+     * 默认为逗号 ','
+     */
+    separator?: string;
+    /**
+     * 用于替换特殊字符的字符串
+     * 默认不进行特殊字符替换 (如果出现会报错)
+     */
+    sanitizeWithSeparator?: boolean;
+  } = {},
 ): string[] | undefined {
   if (query === null || query === 'undefined' || query === '') {
     return undefined;
   }
 
+  const queryString = sanitizeWithSeparator
+    ? sanitizeString(query, { replaceWith: separator })
+    : query;
+
   try {
-    const arr = query
+    const arr = queryString
       .split(separator)
       .map((v) => parseQueryString(v) ?? '')
       .filter(Boolean);
