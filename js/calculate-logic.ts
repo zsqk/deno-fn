@@ -41,13 +41,17 @@ export enum LogicOperator {
    */
   'endsWith',
   /**
-   * `a.includes(b)`
+   * `aString.includes(bString)`
    */
   'includes',
   /**
-   * `b.includes(a)`
+   * `bString.includes(aString)`
    */
   'beIncludes',
+  /**
+   * `arrA.some(item => arrB.includes(item))`
+   */
+  'arrIntersect',
 }
 
 type FieldItem<K> = {
@@ -116,6 +120,11 @@ function fieldItemCalculate<K extends string>(
       return `${v}`.includes(`${item.value}`);
     case LogicOperator.beIncludes:
       return `${item.value}`.includes(`${v}`);
+    case LogicOperator.arrIntersect: {
+      const a = `${v}`.split(',');
+      const b = `${item.value}`.split(',');
+      return a.some((aItem) => b.includes(aItem));
+    }
     default:
       throw new Error(`Unknown operator "${item.operator}"`);
   }

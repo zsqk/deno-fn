@@ -1,5 +1,9 @@
 import { assert } from '@std/assert/assert';
-import { logicCalculate, LogicOperator } from './calculate-logic.ts';
+import {
+  logicCalculate,
+  LogicOperator,
+  LogicRelationship,
+} from './calculate-logic.ts';
 
 const data = {
   a: '1',
@@ -67,6 +71,46 @@ Deno.test('test-equals-or', () => {
         { field: 'b', operator: LogicOperator.equals, value: '2' },
         { field: 'a', operator: LogicOperator.equals, value: '2' },
       ],
+    }),
+  );
+});
+
+Deno.test('test-arrIntersect', () => {
+  type Data = { skuWhiteList: string; skuBlackList: string };
+  const data: Data = { skuWhiteList: '12,3,4', skuBlackList: '5,6,7' };
+  // 单项相符
+  assert(
+    logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'skuWhiteList',
+        operator: LogicOperator.arrIntersect,
+        value: '12',
+      }],
+    }),
+  );
+
+  // 多项相符
+  assert(
+    logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'skuWhiteList',
+        operator: LogicOperator.arrIntersect,
+        value: '12,3',
+      }],
+    }),
+  );
+
+  // 不相符
+  assert(
+    !logicCalculate(data, {
+      condition: 'AND',
+      rules: [{
+        field: 'skuWhiteList',
+        operator: LogicOperator.arrIntersect,
+        value: '1',
+      }],
     }),
   );
 });
