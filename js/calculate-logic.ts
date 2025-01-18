@@ -33,6 +33,10 @@ export enum LogicOperator {
    */
   'isValid',
   /**
+   * `=== null || === undefined || === ''`
+   */
+  'isInvalid',
+  /**
    * `.startsWith()`
    */
   'startsWith',
@@ -41,16 +45,34 @@ export enum LogicOperator {
    */
   'endsWith',
   /**
-   * `a.includes(b)`
+   * `aString.includes(bString)`
    */
   'includes',
   /**
-   * `b.includes(a)`
+   * `bString.includes(aString)`
    */
   'beIncludes',
+  /**
+   * 转为数组有相交
+   * `arrA.some(item => arrB.includes(item))`
+   */
+  'arrIntersecting',
+  /**
+   * 转为数组不相交
+   * `arrA.every(item => !arrB.includes(item))`
+   */
+  'arrDisjoint',
+  /**
+   * 数组包含
+   * `arrA.every(item => arrB.includes(item))`
+   */
+  'arrContains',
 }
 
 type FieldItem<K> = {
+  field: K;
+  operator: LogicOperator.isValid | LogicOperator.isInvalid;
+} | {
   field: K;
   operator: LogicOperator;
   value: string | number;
@@ -76,14 +98,14 @@ function fieldItemCalculate<K extends string>(
   /**
    * 将 item.value 进行类型转换为和 v 一致
    */
-  function getContrast() {
+  function getContrast(ruleValue: string | number) {
     switch (typeof v) {
-      case typeof item.value:
-        return item.value;
+      case typeof ruleValue:
+        return ruleValue;
       case 'string':
-        return `${item.value}`;
+        return `${ruleValue}`;
       case 'number':
-        return Number(item.value);
+        return Number(ruleValue);
       default:
         // 变量 v 为不被支持的类型
         throw new Error(
@@ -95,19 +117,21 @@ function fieldItemCalculate<K extends string>(
   // 执行逻辑运算
   switch (item.operator) {
     case LogicOperator.greaterThan:
-      return v > getContrast();
+      return v > getContrast(item.value);
     case LogicOperator.lessThan:
-      return v < getContrast();
+      return v < getContrast(item.value);
     case LogicOperator.equals:
-      return v === getContrast();
+      return v === getContrast(item.value);
     case LogicOperator.notEqual:
-      return v !== getContrast();
+      return v !== getContrast(item.value);
     case LogicOperator.greaterThanOrEqual:
-      return v >= getContrast();
+      return v >= getContrast(item.value);
     case LogicOperator.lessThanOrEqual:
-      return v <= getContrast();
+      return v <= getContrast(item.value);
     case LogicOperator.isValid:
       return v !== '' && v !== null && v !== undefined;
+    case LogicOperator.isInvalid:
+      return v === '' || v === null || v === undefined;
     case LogicOperator.startsWith:
       return `${v}`.startsWith(`${item.value}`);
     case LogicOperator.endsWith:
@@ -116,9 +140,34 @@ function fieldItemCalculate<K extends string>(
       return `${v}`.includes(`${item.value}`);
     case LogicOperator.beIncludes:
       return `${item.value}`.includes(`${v}`);
+    case LogicOperator.arrIntersecting: {
+      const a = `${v}`.split(',');
+      const b = `${item.value}`.split(',');
+      return a.some((aItem) => b.includes(aItem));
+    }
+    case LogicOperator.arrDisjoint: {
+      const a = `${v}`.split(',');
+      const b = `${item.value}`.split(',');
+      return a.every((aItem) => !b.includes(aItem));
+    }
+    case LogicOperator.arrContains: {
+      const a = `${v}`.split(',');
+      const b = `${item.value}`.split(',');
+      return a.every((aItem) => b.includes(aItem));
+    }
     default:
-      throw new Error(`Unknown operator "${item.operator}"`);
+      throw new Error(`Unknown operator "${toStringForPrint(item)}"`);
   }
+}
+
+function toStringForPrint(v: unknown) {
+  if (typeof v === 'bigint') {
+    return `${v}n`;
+  }
+  if (typeof v === 'object') {
+    return JSON.stringify(v);
+  }
+  return `${v}`;
 }
 
 /**
