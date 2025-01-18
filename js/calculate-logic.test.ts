@@ -219,4 +219,55 @@ Deno.test('test-arrContains', () => {
       }],
     }),
   );
+
+  // 完全不包含
+  assert(
+    !logicCalculate({ skus: '4,5,6' }, {
+      condition: 'AND',
+      rules: [{
+        field: 'skus',
+        operator: LogicOperator.arrContains,
+        value: '1,2,3',
+      }],
+    }),
+  );
+
+  // 完全相同
+  assert(
+    logicCalculate({ skus: '1,2,3' }, {
+      condition: 'AND',
+      rules: [{
+        field: 'skus',
+        operator: LogicOperator.arrContains,
+        value: '1,2,3',
+      }],
+    }),
+  );
+
+  // 无数据 (不允许)
+  assert(
+    !logicCalculate({ skus: '' }, {
+      condition: 'AND',
+      rules: [{
+        field: 'skus',
+        operator: LogicOperator.arrContains,
+        value: '1,2,3',
+      }],
+    }),
+  );
+
+  // 组合测试: 允许无数据
+  assert(
+    logicCalculate({ skus: '' }, {
+      condition: 'OR',
+      rules: [{
+        field: 'skus',
+        operator: LogicOperator.arrContains,
+        value: '1,2,3',
+      }, {
+        field: 'skus',
+        operator: LogicOperator.isInvalid,
+      }],
+    }),
+  );
 });
