@@ -186,3 +186,37 @@ Deno.test('test-arrDisjoint', () => {
     }),
   );
 });
+
+Deno.test('test-arrContains', () => {
+  // 完全包含
+  assert(logicCalculate({ skus: '1,2' }, {
+    condition: 'AND',
+    rules: [{
+      field: 'skus',
+      operator: LogicOperator.arrContains,
+      value: '1,2,3',
+    }],
+  }));
+
+  // 完全包含 (与字符串包含不同, 可以调换顺序)
+  assert(logicCalculate({ skus: '2,1' }, {
+    condition: 'AND',
+    rules: [{
+      field: 'skus',
+      operator: LogicOperator.arrContains,
+      value: '1,2,3',
+    }],
+  }));
+
+  // 未完全包含
+  assert(
+    !logicCalculate({ skus: '2,1,4' }, {
+      condition: 'AND',
+      rules: [{
+        field: 'skus',
+        operator: LogicOperator.arrContains,
+        value: '1,2,3',
+      }],
+    }),
+  );
+});

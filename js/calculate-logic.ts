@@ -58,6 +58,11 @@ export enum LogicOperator {
    * `arrA.every(item => !arrB.includes(item))`
    */
   'arrDisjoint',
+  /**
+   * 数组包含
+   * `arrA.every(item => arrB.includes(item))`
+   */
+  'arrContains',
 }
 
 type FieldItem<K> = {
@@ -135,6 +140,11 @@ function fieldItemCalculate<K extends string>(
       const a = `${v}`.split(',');
       const b = `${item.value}`.split(',');
       return a.every((aItem) => !b.includes(aItem));
+    }
+    case LogicOperator.arrContains: {
+      const a = `${v}`.split(',');
+      const b = `${item.value}`.split(',');
+      return a.every((aItem) => b.includes(aItem));
     }
     default:
       throw new Error(`Unknown operator "${item.operator}"`);
