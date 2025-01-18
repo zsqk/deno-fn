@@ -49,9 +49,15 @@ export enum LogicOperator {
    */
   'beIncludes',
   /**
+   * 转为数组有相交
    * `arrA.some(item => arrB.includes(item))`
    */
-  'arrIntersect',
+  'arrIntersecting',
+  /**
+   * 转为数组不相交
+   * `arrA.every(item => !arrB.includes(item))`
+   */
+  'arrDisjoint',
 }
 
 type FieldItem<K> = {
@@ -120,10 +126,15 @@ function fieldItemCalculate<K extends string>(
       return `${v}`.includes(`${item.value}`);
     case LogicOperator.beIncludes:
       return `${item.value}`.includes(`${v}`);
-    case LogicOperator.arrIntersect: {
+    case LogicOperator.arrIntersecting: {
       const a = `${v}`.split(',');
       const b = `${item.value}`.split(',');
       return a.some((aItem) => b.includes(aItem));
+    }
+    case LogicOperator.arrDisjoint: {
+      const a = `${v}`.split(',');
+      const b = `${item.value}`.split(',');
+      return a.every((aItem) => !b.includes(aItem));
     }
     default:
       throw new Error(`Unknown operator "${item.operator}"`);
