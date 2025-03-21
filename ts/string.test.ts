@@ -21,6 +21,10 @@ Deno.test('isStrictSafeString', () => {
 
 Deno.test('isSafeString', () => {
   assert(isSafeString(''));
+  assert(isSafeString('-'));
+  assert(isSafeString('('));
+  assert(isSafeString(')'));
+  assert(isSafeString('/'));
   assert(isSafeString('1 2'));
   assert(isSafeString('中'));
   assert(!isSafeString(' '));
