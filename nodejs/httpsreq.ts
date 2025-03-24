@@ -1,5 +1,6 @@
 import https from 'node:https';
 import { Buffer } from 'node:buffer';
+import type { IncomingMessage } from 'node:http';
 
 export type HttpMethod =
   | 'GET'
@@ -45,22 +46,35 @@ export function httpsreq(
         method,
         headers,
       },
-      (res) => {
-        let data: Buffer = Buffer.alloc(0);
-        // 响应数据, 支持数据分块传入
-        res.on(
-          'data',
-          (chunk: Buffer) => (data = Buffer.concat([data, chunk]))
-        );
-        // 响应结束后, 再一次性返回数据给调用者
-        res.on('end', () =>
-          resolve(
-            new Response(data.length ? data.buffer : null, {
-              status: res.statusCode,
-              statusText: res.statusMessage,
-              headers: new Headers(res.headers as Record<string, string>),
-            })
-          )
+      (res: IncomingMessage) => {
+        // 创建一个流式的ReadableStream
+        const stream = new ReadableStream({
+          start(controller) {
+            // 数据到达时立即推送到流中
+            res.on('data', (chunk: Buffer) => {
+              controller.enqueue(new Uint8Array(chunk));
+            });
+
+            // 响应结束时关闭流
+            res.on('end', () => {
+              controller.close();
+            });
+
+            // 错误处理
+            res.on('error', (err) => {
+              controller.error(err);
+              reject(err);
+            });
+          }
+        });
+
+        // 立即返回包含流的Response
+        resolve(
+          new Response(stream, {
+            status: res.statusCode,
+            statusText: res.statusMessage,
+            headers: new Headers(res.headers as Record<string, string>),
+          })
         );
       }
     );
@@ -89,6 +103,8 @@ export function httpsreq(
         // 非流式 body 时, 直接写入数据
         if (typeof body === 'string') {
           req.write(body, 'utf-8');
+        } else if (body instanceof Buffer) {
+          req.write(body);
         } else {
           req.write(Buffer.from(body));
         }
