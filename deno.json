@@ -1,6 +1,6 @@
 {
   "name": "@zsqk/somefn",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "exports": {
     "./js/aes": "./js/aes.ts",
     "./js/hash": "./js/hash.ts",
@@ -12,6 +12,7 @@
     "./js/obj": "./js/obj.ts",
     "./js/str": "./js/str.ts",
     "./js/err": "./js/err.ts",
+    "./js/gbk": "./js/gbk.ts",
     "./js/iterator": "./js/iterator.ts",
     "./js/ip": "./js/ip.ts",
     "./js/lz-string": "./js/lz-string.ts",
