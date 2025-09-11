@@ -70,18 +70,22 @@ export function assertPositiveInteger(
     allow?: 'null' | 'undefined' | 'null-undefined';
   } = {},
 ): asserts v is PositiveInteger | null | undefined {
-  // 如果允许 null 且值为 null，直接返回
-  if (allow === 'null' && v === null) {
-    return;
+  // 如果值为 null，检查是否允许
+  if (v === null) {
+    if (allow === 'null' || allow === 'null-undefined') {
+      return;
+    }
+    throw genErr(v);
   }
-  // 如果允许 undefined 且值为 undefined，直接返回
-  if (allow === 'undefined' && v === undefined) {
-    return;
+
+  // 如果值为 undefined，检查是否允许
+  if (v === undefined) {
+    if (allow === 'undefined' || allow === 'null-undefined') {
+      return;
+    }
+    throw genErr(v);
   }
-  // 如果允许 null 和 undefined，且值为其中任一，直接返回
-  if (allow === 'null-undefined' && (v === null || v === undefined)) {
-    return;
-  }
+
   // 检查是否为正整数
   if (!isPositiveInteger(v)) {
     throw genErr(v);
