@@ -25,28 +25,64 @@ export function isPositiveInteger(v: unknown): v is PositiveInteger {
  * @param v 传入值
  * @param options 可选参数
  * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
- * @param options.allowNull 是否允许传入 null, 默认不允许
- * @param options.allowUndefined 是否允许传入 undefined, 默认不允许
+ * @param options.allow 额外允许的值类型
  * @returns
  */
 export function assertPositiveInteger(
   v: unknown,
+  options?: {
+    genErr?: (v: unknown) => Error;
+    allow?: never;
+  },
+): asserts v is PositiveInteger;
+
+export function assertPositiveInteger(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    allow: 'null';
+  },
+): asserts v is PositiveInteger | null;
+
+export function assertPositiveInteger(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    allow: 'undefined';
+  },
+): asserts v is PositiveInteger | undefined;
+
+export function assertPositiveInteger(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    allow: 'null-undefined';
+  },
+): asserts v is PositiveInteger | null | undefined;
+
+export function assertPositiveInteger(
+  v: unknown,
   {
     genErr = () => new TypeError(`should be positive integer but ${v}`),
-    allowNull,
-    allowUndefined,
+    allow,
   }: {
     genErr?: (v: unknown) => Error;
-    allowNull?: boolean;
-    allowUndefined?: boolean;
+    allow?: 'null' | 'undefined' | 'null-undefined';
   } = {},
-): asserts v is PositiveInteger {
-  if (allowNull && v === null) {
+): asserts v is PositiveInteger | null | undefined {
+  // 如果允许 null 且值为 null，直接返回
+  if (allow === 'null' && v === null) {
     return;
   }
-  if (allowUndefined && v === undefined) {
+  // 如果允许 undefined 且值为 undefined，直接返回
+  if (allow === 'undefined' && v === undefined) {
     return;
   }
+  // 如果允许 null 和 undefined，且值为其中任一，直接返回
+  if (allow === 'null-undefined' && (v === null || v === undefined)) {
+    return;
+  }
+  // 检查是否为正整数
   if (!isPositiveInteger(v)) {
     throw genErr(v);
   }
