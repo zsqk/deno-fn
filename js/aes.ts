@@ -81,7 +81,7 @@ export async function encrypt(
   const encrypted = await crypto.subtle.encrypt(
     { name: cryptoKey.algorithm.name, iv },
     cryptoKey,
-    typeof data === 'string' ? (textEncoder.encode(data)) : data,
+    typeof data === 'string' ? textEncoder.encode(data) : data,
   );
 
   return encodeBase64(encrypted);
