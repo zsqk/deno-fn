@@ -32,7 +32,6 @@
     "./deno/git": "./deno/git.ts",
     "./deno/run": "./deno/run.ts",
     "./deno/ssh": "./deno/ssh.ts",
-    "./nodejs/httpsreq": "./nodejs/httpsreq.ts",
     ".": "./mod.ts"
   },
   "publish": {
