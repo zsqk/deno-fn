@@ -131,10 +131,32 @@ Deno.test('isSafeString', () => {
   assert(isSafeString('abc;'));
   assert(isSafeString('a;b;c'));
 
+  // 14. 感叹号 `!` - 允许 (当用户输入感叹时要允许)
+  assert(isSafeString('!'));
+  assert(isSafeString('Hello!'));
+  assert(isSafeString('!abc'));
+  assert(isSafeString('abc!'));
+  assert(isSafeString('Hello! World!'));
+
+  // 15. 百分号 `%` - 允许 (当用户输入百分比时要允许)
+  assert(isSafeString('%'));
+  assert(isSafeString('50%'));
+  assert(isSafeString('%abc'));
+  assert(isSafeString('abc%'));
+  assert(isSafeString('Success rate: 95%'));
+
+  // 16. at 符号 `@` - 允许 (当用户输入邮箱时要允许)
+  assert(isSafeString('@'));
+  assert(isSafeString('user@example.com'));
+  assert(isSafeString('@abc'));
+  assert(isSafeString('abc@'));
+  assert(isSafeString('contact@company.org'));
+
   // 组合测试
-  assert(isSafeString('abc 123 _-/().:+=,;'));
+  assert(isSafeString('abc 123 _-/().:+=,;!%@'));
   assert(isSafeString('file.txt (v1.0) - 2023:10:30'));
   assert(isSafeString('name=value, age=25; status=active'));
+  assert(isSafeString('Hello! Success rate: 95% - contact@company.org'));
 
   // 中文字符 - 允许 (非 ASCII 范围)
   assert(isSafeString('中'));
@@ -151,18 +173,15 @@ Deno.test('isSafeString', () => {
   assert(!isSafeString('abc\n'));
 
   // 禁止的字符测试
-  assert(!isSafeString('!'));
   assert(!isSafeString('"'));
   assert(!isSafeString('#'));
   assert(!isSafeString('$'));
-  assert(!isSafeString('%'));
   assert(!isSafeString('&'));
   assert(!isSafeString("'"));
   assert(!isSafeString('*'));
   assert(!isSafeString('<'));
   assert(!isSafeString('>'));
   assert(!isSafeString('?'));
-  assert(!isSafeString('@'));
   assert(!isSafeString('['));
   assert(!isSafeString('\\'));
   assert(!isSafeString(']'));
@@ -174,11 +193,8 @@ Deno.test('isSafeString', () => {
   assert(!isSafeString('~'));
 
   // 包含禁止字符的字符串
-  assert(!isSafeString('abc!123'));
-  assert(!isSafeString('abc@123'));
   assert(!isSafeString('abc#123'));
   assert(!isSafeString('abc$123'));
-  assert(!isSafeString('abc%123'));
   assert(!isSafeString('abc&123'));
   assert(!isSafeString("abc'123"));
   assert(!isSafeString('abc*123'));
@@ -212,16 +228,6 @@ Deno.test('assertSafeString', () => {
 
   // 测试无效的字符串（只测试真正会被拒绝的字符）
   assertThrows(
-    () => assertSafeString('hello!'),
-    TypeError,
-    'should be safe string but "hello!"',
-  );
-  assertThrows(
-    () => assertSafeString('hello@world'),
-    TypeError,
-    'should be safe string but "hello@world"',
-  );
-  assertThrows(
     () => assertSafeString('hello#world'),
     TypeError,
     'should be safe string but "hello#world"',
@@ -230,11 +236,6 @@ Deno.test('assertSafeString', () => {
     () => assertSafeString('hello$world'),
     TypeError,
     'should be safe string but "hello$world"',
-  );
-  assertThrows(
-    () => assertSafeString('hello%world'),
-    TypeError,
-    'should be safe string but "hello%world"',
   );
   assertThrows(
     () => assertSafeString('hello^world'),
@@ -414,12 +415,6 @@ Deno.test('assertSafeString with custom genErr', () => {
     new Error(`Custom: should be safe string but ${JSON.stringify(v)}`);
 
   assertSafeString('hello', { genErr: customError });
-
-  assertThrows(
-    () => assertSafeString('hello!', { genErr: customError }),
-    Error,
-    'Custom: should be safe string but "hello!"',
-  );
 
   assertThrows(
     () => assertSafeString(123, { genErr: customError }),
