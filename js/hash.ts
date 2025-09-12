@@ -18,7 +18,7 @@ import { decodeBase64 } from '@std/encoding/base64';
  */
 export async function hashString(
   algorithm: 'SHA-1' | 'SHA-256' | 'SHA-512',
-  d: string | Uint8Array,
+  d: string | Uint8Array<ArrayBuffer>,
 ): Promise<string> {
   const data = typeof d === 'string' ? new TextEncoder().encode(d) : d;
   const hashRes = new Uint8Array(
@@ -37,11 +37,11 @@ export async function hmac(
   key: {
     hash: 'SHA-1' | 'SHA-256' | 'SHA-512';
     /** secret key */
-    s: string | Uint8Array;
+    s: string | Uint8Array<ArrayBuffer>;
   } | CryptoKey,
   /** data */
-  d: string | Uint8Array,
-): Promise<Uint8Array> {
+  d: string | Uint8Array<ArrayBuffer>,
+): Promise<Uint8Array<ArrayBuffer>> {
   const textEncoder = new TextEncoder();
 
   let cryptoKey: CryptoKey;
@@ -84,11 +84,11 @@ export async function rsaSign(
   key: {
     hash: 'SHA-256' | 'SHA-512';
     /** secret key */
-    s: string | Uint8Array;
+    s: string | Uint8Array<ArrayBuffer>;
   } | CryptoKey,
   /** data */
-  d: string | Uint8Array,
-): Promise<Uint8Array> {
+  d: string | Uint8Array<ArrayBuffer>,
+): Promise<Uint8Array<ArrayBuffer>> {
   let cryptoKey: CryptoKey;
   if (key instanceof CryptoKey) {
     cryptoKey = key;
