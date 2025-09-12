@@ -18,9 +18,9 @@ export async function genAesKey(
   /**
    * base64 string 或者二进制数据, 或者选择密钥长度
    */
-  k: string | Uint8Array | 128 | 192 | 256 = 192,
-): Promise<[CryptoKey, Uint8Array]> {
-  let u8aKey: Uint8Array;
+  k: string | Uint8Array<ArrayBuffer> | 128 | 192 | 256 = 192,
+): Promise<[CryptoKey, Uint8Array<ArrayBuffer>]> {
+  let u8aKey: Uint8Array<ArrayBuffer>;
   if (typeof k === 'string') {
     u8aKey = decodeBase64(k);
   } else if (typeof k === 'number') {
@@ -52,13 +52,15 @@ export async function genAesKey(
 export function genIV(
   l: number,
   method?: 'Math.random' | 'getRandomValues',
-): Uint8Array {
+): Uint8Array<ArrayBuffer> {
   if (
     method === 'getRandomValues' ||
     (method === undefined &&
       typeof globalThis.crypto?.getRandomValues === 'function')
   ) {
-    return globalThis.crypto.getRandomValues(new Uint8Array(l));
+    const array = new Uint8Array(l);
+    globalThis.crypto.getRandomValues(array);
+    return array;
   }
   return new Uint8Array(l).map(() => Math.trunc(256 * Math.random()));
 }
@@ -73,8 +75,8 @@ export function genIV(
  */
 export async function encrypt(
   cryptoKey: CryptoKey,
-  iv: Uint8Array,
-  data: Uint8Array | string,
+  iv: Uint8Array<ArrayBuffer>,
+  data: Uint8Array<ArrayBuffer> | string,
 ): Promise<string> {
   const encrypted = await crypto.subtle.encrypt(
     { name: cryptoKey.algorithm.name, iv },
@@ -163,16 +165,14 @@ export function decrypt(
  */
 export async function decrypt(
   cryptoKey: CryptoKey,
-  iv: BufferSource | { data: string; encodingType: 'base64' | 'utf8' },
-  encrypted: BufferSource | { data: string; encodingType: 'base64' },
+  iv: BinaryData,
+  encrypted: EncryptedData,
   {
     additionalData,
     decryptedEncodingType = 'utf8',
   }: {
     decryptedEncodingType?: 'arraybuffer' | 'utf8' | 'base64';
-    additionalData?:
-      | BufferSource
-      | { data: string; encodingType: 'utf8' | 'base64' };
+    additionalData?: BinaryData;
   } = {},
 ): Promise<string | ArrayBuffer> {
   let encryptedArray: BufferSource;

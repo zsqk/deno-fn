@@ -1,12 +1,12 @@
 {
-  "version": "4",
+  "version": "5",
   "specifiers": {
     "jsr:@std/assert@0.217": "0.217.0",
     "jsr:@std/assert@^1.0.9": "1.0.9",
     "jsr:@std/async@~0.224.1": "0.224.2",
     "jsr:@std/cli@0.217.0": "0.217.0",
     "jsr:@std/data-structures@0.217": "0.217.0",
-    "jsr:@std/encoding@~0.224.3": "0.224.3",
+    "jsr:@std/encoding@^1.0.10": "1.0.10",
     "jsr:@std/fmt@0.217": "0.217.0",
     "jsr:@std/fs@0.217": "0.217.0",
     "jsr:@std/fs@~0.229.1": "0.229.3",
@@ -41,8 +41,8 @@
     "@std/data-structures@0.217.0": {
       "integrity": "fa4b16ea62f58784c4f8b32ccc2f544b76d85f8a96ce5e31129832b01048e80a"
     },
-    "@std/encoding@0.224.3": {
-      "integrity": "5e861b6d81be5359fad4155e591acf17c0207b595112d1840998bb9f476dbdaf"
+    "@std/encoding@1.0.10": {
+      "integrity": "8783c6384a2d13abd5e9e87a7ae0520a30e9f56aeeaa3bdf910a3eaaf5c811a1"
     },
     "@std/fmt@0.217.0": {
       "integrity": "cb99f82500b8da20202fedfa8bb94dd0222e81f0494ed9087de20ee3d8a39a8d"
@@ -134,7 +134,7 @@
       "jsr:@std/assert@^1.0.9",
       "jsr:@std/async@~0.224.1",
       "jsr:@std/cli@0.217.0",
-      "jsr:@std/encoding@~0.224.3",
+      "jsr:@std/encoding@^1.0.10",
       "jsr:@std/fs@~0.229.1",
       "jsr:@std/testing@0.217.0"
     ]
