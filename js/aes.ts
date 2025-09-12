@@ -18,9 +18,9 @@ export async function genAesKey(
   /**
    * base64 string 或者二进制数据, 或者选择密钥长度
    */
-  k: string | Uint8Array | 128 | 192 | 256 = 192,
-): Promise<[CryptoKey, Uint8Array]> {
-  let u8aKey: Uint8Array;
+  k: string | Uint8Array<ArrayBuffer> | 128 | 192 | 256 = 192,
+): Promise<[CryptoKey, Uint8Array<ArrayBuffer>]> {
+  let u8aKey: Uint8Array<ArrayBuffer>;
   if (typeof k === 'string') {
     u8aKey = decodeBase64(k);
   } else if (typeof k === 'number') {
@@ -31,7 +31,7 @@ export async function genAesKey(
 
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    u8aKey as BufferSource,
+    u8aKey,
     {
       name: type,
     },
@@ -52,7 +52,7 @@ export async function genAesKey(
 export function genIV(
   l: number,
   method?: 'Math.random' | 'getRandomValues',
-): Uint8Array {
+): Uint8Array<ArrayBuffer> {
   if (
     method === 'getRandomValues' ||
     (method === undefined &&
@@ -75,15 +75,13 @@ export function genIV(
  */
 export async function encrypt(
   cryptoKey: CryptoKey,
-  iv: Uint8Array,
-  data: Uint8Array | string,
+  iv: Uint8Array<ArrayBuffer>,
+  data: Uint8Array<ArrayBuffer> | string,
 ): Promise<string> {
   const encrypted = await crypto.subtle.encrypt(
-    { name: cryptoKey.algorithm.name, iv: iv.buffer },
+    { name: cryptoKey.algorithm.name, iv },
     cryptoKey,
-    typeof data === 'string'
-      ? textEncoder.encode(data) as BufferSource
-      : data as BufferSource,
+    typeof data === 'string' ? (textEncoder.encode(data)) : data,
   );
 
   return encodeBase64(encrypted);
@@ -94,7 +92,6 @@ export async function encrypt(
  */
 type BinaryData =
   | BufferSource
-  | Uint8Array
   | { data: string; encodingType: 'utf8' }
   | { data: string; encodingType: 'base64' };
 
@@ -182,31 +179,31 @@ export async function decrypt(
   if (isBufferSource(encrypted)) {
     encryptedArray = encrypted;
   } else if (encrypted?.encodingType === 'base64') {
-    encryptedArray = decodeBase64(encrypted.data) as BufferSource;
+    encryptedArray = decodeBase64(encrypted.data);
   } else {
     throw new TypeError('encrypted must be BufferSource or base64 string');
   }
 
   let additionalArray: BufferSource | undefined;
   if (isBufferSource(additionalData)) {
-    additionalArray = additionalData as BufferSource;
+    additionalArray = additionalData;
   } else if (additionalData?.encodingType === 'utf8') {
     // 将 UTF-8 编码的 additionalData 转为二进制数据
-    additionalArray = textEncoder.encode(additionalData.data) as BufferSource;
+    additionalArray = textEncoder.encode(additionalData.data);
   } else if (additionalData?.encodingType === 'base64') {
     // 将 base64 编码的 additionalData 转为二进制数据
-    additionalArray = decodeBase64(additionalData.data) as BufferSource;
+    additionalArray = decodeBase64(additionalData.data);
   }
 
   let ivArray: BufferSource | undefined;
   if (isBufferSource(iv)) {
-    ivArray = iv as BufferSource;
+    ivArray = iv;
   } else if (iv?.encodingType === 'utf8') {
     // 将 UTF-8 编码的 ivData 转为二进制数据
-    ivArray = textEncoder.encode(iv.data) as BufferSource;
+    ivArray = textEncoder.encode(iv.data);
   } else if (iv?.encodingType === 'base64') {
     // 将 base64 编码的 ivData 转为二进制数据
-    ivArray = decodeBase64(iv.data) as BufferSource;
+    ivArray = decodeBase64(iv.data);
   }
 
   // 解密
