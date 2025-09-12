@@ -1,5 +1,9 @@
-import { isSafeString, isStrictSafeString } from './string.ts';
-import { assert } from '@std/assert';
+import {
+  assertSafeString,
+  isSafeString,
+  isStrictSafeString,
+} from './string.ts';
+import { assert, assertThrows } from '@std/assert';
 
 Deno.test('isStrictSafeString', () => {
   assert(isStrictSafeString('9'));
@@ -20,24 +24,406 @@ Deno.test('isStrictSafeString', () => {
 });
 
 Deno.test('isSafeString', () => {
+  // 基本类型检查
+  assert(!isSafeString(123));
+  assert(!isSafeString(null));
+  assert(!isSafeString(undefined));
+  assert(!isSafeString({}));
+  assert(!isSafeString([]));
+
+  // 空字符串
   assert(isSafeString(''));
+
+  // 1. 空格 - 允许 (但不允许首尾空格)
+  assert(!isSafeString(' ')); // 单个空格，首尾空格不允许
+  assert(!isSafeString('  ')); // 多个空格，首尾空格不允许
+  assert(isSafeString('a b')); // 中间空格允许
+  assert(isSafeString('a b c')); // 中间空格允许
+
+  // 2. 数字 (0-9) - 允许
+  assert(isSafeString('0'));
+  assert(isSafeString('9'));
+  assert(isSafeString('1234567890'));
+
+  // 3. 字母 (A-Z, a-z) - 允许
+  assert(isSafeString('a'));
+  assert(isSafeString('z'));
+  assert(isSafeString('A'));
+  assert(isSafeString('Z'));
+  assert(isSafeString('abc'));
+  assert(isSafeString('ABC'));
+  assert(isSafeString('abcABC'));
+
+  // 4. 下划线 `_` - 允许
+  assert(isSafeString('_'));
+  assert(isSafeString('a_b'));
+  assert(isSafeString('_abc'));
+  assert(isSafeString('abc_'));
+
+  // 5. 横线 `-` - 允许
   assert(isSafeString('-'));
+  assert(isSafeString('a-b'));
+  assert(isSafeString('-abc'));
+  assert(isSafeString('abc-'));
+
+  // 6. 斜线 `/` - 允许 (当用户输入网址时要允许)
+  assert(isSafeString('/'));
+  assert(isSafeString('a/b'));
+  assert(isSafeString('/abc'));
+  assert(isSafeString('abc/'));
+  assert(isSafeString('https://example.com'));
+  assert(isSafeString('path/to/file'));
+
+  // 7. 小括号 `(`, `)` - 允许 (当用户输入备注时要允许)
   assert(isSafeString('('));
   assert(isSafeString(')'));
-  assert(isSafeString('/'));
-  assert(isSafeString('1 2'));
+  assert(isSafeString('(abc)'));
+  assert(isSafeString('a(b)c'));
+  assert(isSafeString('张三 (12345)'));
+  assert(isSafeString('(备注信息)'));
+
+  // 8. 点号 `.` - 允许 (当用户输入文件名时要允许)
+  assert(isSafeString('.'));
+  assert(isSafeString('a.b'));
+  assert(isSafeString('.abc'));
+  assert(isSafeString('abc.'));
+  assert(isSafeString('file.txt'));
+  assert(isSafeString('v1.0.0'));
+  assert(isSafeString('example.com'));
+
+  // 9. 冒号 `:` - 允许 (当用户输入时间时要允许)
+  assert(isSafeString(':'));
+  assert(isSafeString('a:b'));
+  assert(isSafeString(':abc'));
+  assert(isSafeString('abc:'));
+  assert(isSafeString('10:30:00'));
+  assert(isSafeString('http:'));
+  assert(isSafeString('key:value'));
+
+  // 10. 等号 `=` - 允许 (当用户输入键值对时要允许)
+  assert(isSafeString('='));
+  assert(isSafeString('a=b'));
+  assert(isSafeString('=abc'));
+  assert(isSafeString('abc='));
+  assert(isSafeString('name=value'));
+  assert(isSafeString('width=100'));
+
+  // 11. 加号 `+` - 允许 (当用户输入数学运算时要允许)
+  assert(isSafeString('+'));
+  assert(isSafeString('a+b'));
+  assert(isSafeString('+abc'));
+  assert(isSafeString('abc+'));
+  assert(isSafeString('1+1'));
+  assert(isSafeString('v1.0+'));
+
+  // 12. 逗号 `,` - 允许 (当用户输入列表时要允许)
+  assert(isSafeString(','));
+  assert(isSafeString('a,b'));
+  assert(isSafeString(',abc'));
+  assert(isSafeString('abc,'));
+  assert(isSafeString('a,b,c'));
+  assert(isSafeString('1,2,3'));
+
+  // 13. 分号 `;` - 允许 (当用户输入分隔符时要允许)
+  assert(isSafeString(';'));
+  assert(isSafeString('a;b'));
+  assert(isSafeString(';abc'));
+  assert(isSafeString('abc;'));
+  assert(isSafeString('a;b;c'));
+
+  // 组合测试
+  assert(isSafeString('abc 123 _-/().:+=,;'));
+  assert(isSafeString('file.txt (v1.0) - 2023:10:30'));
+  assert(isSafeString('name=value, age=25; status=active'));
+
+  // 中文字符 - 允许 (非 ASCII 范围)
   assert(isSafeString('中'));
-  assert(!isSafeString(' '));
-  assert(isSafeString('123'));
-  assert(isSafeString('abc'));
-  assert(isSafeString('abc 123'));
-  assert(isSafeString('abcZXC'));
-  assert(isSafeString('abc123'));
-  assert(isSafeString('abc_123'));
+  assert(isSafeString('中文'));
+  assert(isSafeString('中文 123'));
+
+  // 首尾空格检查 - 不允许
+  assert(!isSafeString(' abc'));
+  assert(!isSafeString('abc '));
+  assert(!isSafeString(' abc '));
+  assert(!isSafeString('\tabc'));
+  assert(!isSafeString('abc\t'));
+  assert(!isSafeString('\nabc'));
+  assert(!isSafeString('abc\n'));
+
+  // 禁止的字符测试
+  assert(!isSafeString('!'));
+  assert(!isSafeString('"'));
+  assert(!isSafeString('#'));
+  assert(!isSafeString('$'));
+  assert(!isSafeString('%'));
+  assert(!isSafeString('&'));
+  assert(!isSafeString("'"));
+  assert(!isSafeString('*'));
+  assert(!isSafeString('<'));
+  assert(!isSafeString('>'));
+  assert(!isSafeString('?'));
+  assert(!isSafeString('@'));
+  assert(!isSafeString('['));
+  assert(!isSafeString('\\'));
+  assert(!isSafeString(']'));
+  assert(!isSafeString('^'));
+  assert(!isSafeString('`'));
+  assert(!isSafeString('{'));
+  assert(!isSafeString('|'));
+  assert(!isSafeString('}'));
+  assert(!isSafeString('~'));
+
+  // 包含禁止字符的字符串
   assert(!isSafeString('abc!123'));
-  assert(!isSafeString(';'));
-  assert(!isSafeString(';abc'));
-  assert(!isSafeString('abc;'));
-  assert(!isSafeString('abc;123'));
-  assert(!isSafeString('abc;123;'));
+  assert(!isSafeString('abc@123'));
+  assert(!isSafeString('abc#123'));
+  assert(!isSafeString('abc$123'));
+  assert(!isSafeString('abc%123'));
+  assert(!isSafeString('abc&123'));
+  assert(!isSafeString("abc'123"));
+  assert(!isSafeString('abc*123'));
+  assert(!isSafeString('abc<123'));
+  assert(!isSafeString('abc>123'));
+  assert(!isSafeString('abc?123'));
+  assert(!isSafeString('abc[123'));
+  assert(!isSafeString('abc\\123'));
+  assert(!isSafeString('abc]123'));
+  assert(!isSafeString('abc^123'));
+  assert(!isSafeString('abc`123'));
+  assert(!isSafeString('abc{123'));
+  assert(!isSafeString('abc|123'));
+  assert(!isSafeString('abc}123'));
+  assert(!isSafeString('abc~123'));
+});
+
+Deno.test('assertSafeString', () => {
+  // 测试有效的安全字符串
+  assertSafeString('hello');
+  assertSafeString('hello world');
+  assertSafeString('123');
+  assertSafeString('abc-123');
+  assertSafeString('file.txt');
+  assertSafeString('10:30:00');
+  assertSafeString('name=value');
+  assertSafeString('a,b,c');
+  assertSafeString('a;b;c');
+  assertSafeString('(123)');
+  assertSafeString('line1\nline2'); // 允许换行符
+
+  // 测试无效的字符串（只测试真正会被拒绝的字符）
+  assertThrows(
+    () => assertSafeString('hello!'),
+    TypeError,
+    'should be safe string but "hello!"',
+  );
+  assertThrows(
+    () => assertSafeString('hello@world'),
+    TypeError,
+    'should be safe string but "hello@world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello#world'),
+    TypeError,
+    'should be safe string but "hello#world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello$world'),
+    TypeError,
+    'should be safe string but "hello$world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello%world'),
+    TypeError,
+    'should be safe string but "hello%world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello^world'),
+    TypeError,
+    'should be safe string but "hello^world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello&world'),
+    TypeError,
+    'should be safe string but "hello&world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello*world'),
+    TypeError,
+    'should be safe string but "hello*world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello[world'),
+    TypeError,
+    'should be safe string but "hello[world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello]world'),
+    TypeError,
+    'should be safe string but "hello]world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello{world'),
+    TypeError,
+    'should be safe string but "hello{world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello}world'),
+    TypeError,
+    'should be safe string but "hello}world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello|world'),
+    TypeError,
+    'should be safe string but "hello|world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello\\world'),
+    TypeError,
+    'should be safe string but "hello\\\\world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello"world'),
+    TypeError,
+    'should be safe string but "hello\\"world"',
+  );
+  assertThrows(
+    () => assertSafeString("hello'world"),
+    TypeError,
+    'should be safe string but "hello\'world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello<world'),
+    TypeError,
+    'should be safe string but "hello<world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello>world'),
+    TypeError,
+    'should be safe string but "hello>world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello?world'),
+    TypeError,
+    'should be safe string but "hello?world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello~world'),
+    TypeError,
+    'should be safe string but "hello~world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello`world'),
+    TypeError,
+    'should be safe string but "hello`world"',
+  );
+  assertThrows(
+    () => assertSafeString('hello\tworld'),
+    TypeError,
+    'should be safe string but "hello\\tworld"',
+  );
+  assertThrows(
+    () => assertSafeString('hello\rworld'),
+    TypeError,
+    'should be safe string but "hello\\rworld"',
+  );
+  assertThrows(
+    () => assertSafeString(' hello'),
+    TypeError,
+    'should be safe string but " hello"',
+  );
+  assertThrows(
+    () => assertSafeString('hello '),
+    TypeError,
+    'should be safe string but "hello "',
+  );
+  assertThrows(
+    () => assertSafeString(' hello '),
+    TypeError,
+    'should be safe string but " hello "',
+  );
+
+  // 测试非字符串类型
+  assertThrows(
+    () => assertSafeString(123),
+    TypeError,
+    'should be safe string but 123',
+  );
+  assertThrows(
+    () => assertSafeString(true),
+    TypeError,
+    'should be safe string but true',
+  );
+  assertThrows(
+    () => assertSafeString(null),
+    TypeError,
+    'should be safe string but null',
+  );
+  assertThrows(
+    () => assertSafeString(undefined),
+    TypeError,
+    'should be safe string but undefined',
+  );
+  assertThrows(
+    () => assertSafeString([]),
+    TypeError,
+    'should be safe string but []',
+  );
+  assertThrows(
+    () => assertSafeString({}),
+    TypeError,
+    'should be safe string but {}',
+  );
+});
+
+Deno.test('assertSafeString with allow null', () => {
+  // 测试允许 null 的情况
+  assertSafeString('hello', { allow: 'null' });
+  assertSafeString(null, { allow: 'null' });
+
+  // 测试不允许 undefined 的情况
+  assertThrows(
+    () => assertSafeString(undefined, { allow: 'null' }),
+    TypeError,
+    'should be safe string but undefined',
+  );
+});
+
+Deno.test('assertSafeString with allow undefined', () => {
+  // 测试允许 undefined 的情况
+  assertSafeString('hello', { allow: 'undefined' });
+  assertSafeString(undefined, { allow: 'undefined' });
+
+  // 测试不允许 null 的情况
+  assertThrows(
+    () => assertSafeString(null, { allow: 'undefined' }),
+    TypeError,
+    'should be safe string but null',
+  );
+});
+
+Deno.test('assertSafeString with allow null-undefined', () => {
+  // 测试允许 null 和 undefined 的情况
+  assertSafeString('hello', { allow: 'null-undefined' });
+  assertSafeString(null, { allow: 'null-undefined' });
+  assertSafeString(undefined, { allow: 'null-undefined' });
+});
+
+Deno.test('assertSafeString with custom genErr', () => {
+  // 测试自定义错误生成函数
+  const customError = (v: unknown) =>
+    new Error(`Custom: should be safe string but ${JSON.stringify(v)}`);
+
+  assertSafeString('hello', { genErr: customError });
+
+  assertThrows(
+    () => assertSafeString('hello!', { genErr: customError }),
+    Error,
+    'Custom: should be safe string but "hello!"',
+  );
+
+  assertThrows(
+    () => assertSafeString(123, { genErr: customError }),
+    Error,
+    'Custom: should be safe string but 123',
+  );
 });

@@ -1,4 +1,6 @@
 import { assertNaturalNumber, assertPositiveInteger } from './number.ts';
+import { assertSafeString } from './string.ts';
+import { assertBoolean } from './boolean.ts';
 
 /** 字符串对象 */
 export type StringObject = { [key: string]: string };
@@ -53,7 +55,7 @@ export function assertNonEmptyArray(
     itemType,
   }: {
     genErr?: (v: unknown) => Error;
-    itemType?: 'naturalNumber' | 'positiveInteger' | 'string' | 'boolean';
+    itemType?: 'naturalNumber' | 'positiveInteger' | 'safeString' | 'boolean';
   } = {},
 ): asserts v is Array<unknown> {
   if (!isNonEmptyArray(v)) {
@@ -67,9 +69,9 @@ export function assertNonEmptyArray(
     for (const item of v) {
       assertNaturalNumber(item, { genErr });
     }
-  } else if (itemType === 'string') {
+  } else if (itemType === 'safeString') {
     for (const item of v) {
-      assertString(item, { genErr });
+      assertSafeString(item, { genErr });
     }
   } else if (itemType === 'boolean') {
     for (const item of v) {

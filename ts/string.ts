@@ -82,3 +82,104 @@ export type ValidString = string;
 export function isValidString(value: unknown): value is ValidString {
   return isSafeString(value) && value.length > 0;
 }
+
+/**
+ * 断言传入值是一个安全字符串
+ * 默认情况下只允许安全字符串，不允许 null 或 undefined
+ * @param v 传入值
+ * @param options 可选参数
+ * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
+ * @param options.allow 额外允许的值类型, 默认不允许
+ * @returns 断言 v 是 SafeString 类型
+ */
+export function assertSafeString(
+  v: unknown,
+  options?: {
+    genErr?: (v: unknown) => Error;
+    allow?: never;
+  },
+): asserts v is SafeString;
+
+/**
+ * 断言传入值是一个安全字符串或 null
+ * 允许传入 null 值，其他情况必须为安全字符串
+ * @param v 传入值
+ * @param options 可选参数
+ * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
+ * @param options.allow 必须为 'null'，表示允许 null 值
+ * @returns 断言 v 是 SafeString | null 类型
+ */
+export function assertSafeString(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    allow: 'null';
+  },
+): asserts v is SafeString | null;
+
+/**
+ * 断言传入值是一个安全字符串或 undefined
+ * 允许传入 undefined 值，其他情况必须为安全字符串
+ * @param v 传入值
+ * @param options 可选参数
+ * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
+ * @param options.allow 必须为 'undefined'，表示允许 undefined 值
+ * @returns 断言 v 是 SafeString | undefined 类型
+ */
+export function assertSafeString(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    allow: 'undefined';
+  },
+): asserts v is SafeString | undefined;
+
+/**
+ * 断言传入值是一个安全字符串、null 或 undefined
+ * 允许传入 null 和 undefined 值，其他情况必须为安全字符串
+ * @param v 传入值
+ * @param options 可选参数
+ * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
+ * @param options.allow 必须为 'null-undefined'，表示允许 null 和 undefined 值
+ * @returns 断言 v 是 SafeString | null | undefined 类型
+ */
+export function assertSafeString(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    allow: 'null-undefined';
+  },
+): asserts v is SafeString | null | undefined;
+
+export function assertSafeString(
+  v: unknown,
+  {
+    genErr = () =>
+      new TypeError(`should be safe string but ${JSON.stringify(v)}`),
+    allow,
+  }: {
+    genErr?: (v: unknown) => Error;
+    allow?: 'null' | 'undefined' | 'null-undefined';
+  } = {},
+): asserts v is SafeString | null | undefined {
+  // 如果值为 null，检查是否允许
+  if (v === null) {
+    if (allow === 'null' || allow === 'null-undefined') {
+      return;
+    }
+    throw genErr(v);
+  }
+
+  // 如果值为 undefined，检查是否允许
+  if (v === undefined) {
+    if (allow === 'undefined' || allow === 'null-undefined') {
+      return;
+    }
+    throw genErr(v);
+  }
+
+  // 检查是否为安全字符串
+  if (!isSafeString(v)) {
+    throw genErr(v);
+  }
+}
