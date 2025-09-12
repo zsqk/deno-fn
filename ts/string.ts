@@ -30,7 +30,7 @@ export function isStrictSafeString(str: string): str is StrictSafeString {
 }
 
 /**
- * [类型] 不包含英文特殊字符 (ASCII 范围内除了字母, 数字, 下划线和空格以外的字符)
+ * [类型] 不包含危险特殊字符的字符串 (ASCII 范围内除了危险字符以外的字符)
  * @author iugo <code@iugo.dev>
  */
 export type SafeString = string;
@@ -51,7 +51,15 @@ export function isSafeString(value: unknown): value is SafeString {
   // 5. 横线 `-`
   // 6. 斜线 `/` (当用户输入网址时要允许)
   // 7. 小括号 `(`, `)` (当用户输入备注时要允许, 比如 `张三 (12345)`)
-  if (/[\x21-\x27\x2A-\x2C\x2E\x3A-\x40\x5B-\x5E\x60\x7B-\x7E]/.test(value)) {
+  // 8. 点号 `.` (当用户输入文件名时要允许, 比如 `file.txt`)
+  // 9. 冒号 `:` (当用户输入时间时要允许, 比如 `10:30:00`)
+  // 10. 等号 `=` (当用户输入键值对时要允许, 比如 `name=value`)
+  // 11. 加号 `+` (当用户输入数学运算时要允许, 比如 `1+1`)
+  // 12. 逗号 `,` (当用户输入列表时要允许, 比如 `a,b,c`)
+  // 13. 分号 `;` (当用户输入分隔符时要允许, 比如 `a;b;c`)
+  // 14. 换行符 `\n` (允许换行，但不允许制表符和回车符)
+  // 拒绝危险字符：! " # $ % & ' * < > ? @ [ \ ] ^ ` { | } ~ 以及制表符和回车符
+  if (/[\x21-\x27\x2A\x3C\x3E\x3F\x40\x5B-\x5E\x60\x7B-\x7E\t\r]/.test(value)) {
     return false;
   }
   // 检查是否包含首尾空格
