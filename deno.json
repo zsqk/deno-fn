@@ -1,6 +1,6 @@
 {
   "name": "@zsqk/somefn",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "exports": {
     "./js/aes": "./js/aes.ts",
     "./js/hash": "./js/hash.ts",
@@ -35,7 +35,7 @@
     ".": "./mod.ts"
   },
   "publish": {
-    "include": ["js", "deno", "ts", "nodejs", "mod.ts", "README.md"],
+    "include": ["js", "deno", "ts", "mod.ts", "README.md"],
     "exclude": ["**/*.test.ts", "**/*.benchmark.ts"]
   },
   "compilerOptions": {
