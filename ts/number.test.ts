@@ -283,7 +283,7 @@ Deno.test('assertPositiveInteger - custom error generator', () => {
 // 测试边界值
 Deno.test('assertNaturalNumber - boundary values', () => {
   // 测试最大安全整数
-  let value: unknown = Number.MAX_SAFE_INTEGER;
+  const value: unknown = Number.MAX_SAFE_INTEGER;
   assertNaturalNumber(value);
   assert(value === Number.MAX_SAFE_INTEGER);
 
