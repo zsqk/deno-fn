@@ -166,16 +166,14 @@ export function decrypt(
  */
 export async function decrypt(
   cryptoKey: CryptoKey,
-  iv: BufferSource | { data: string; encodingType: 'base64' | 'utf8' },
-  encrypted: BufferSource | { data: string; encodingType: 'base64' },
+  iv: BinaryData,
+  encrypted: EncryptedData,
   {
     additionalData,
     decryptedEncodingType = 'utf8',
   }: {
     decryptedEncodingType?: 'arraybuffer' | 'utf8' | 'base64';
-    additionalData?:
-      | BufferSource
-      | { data: string; encodingType: 'utf8' | 'base64' };
+    additionalData?: BinaryData;
   } = {},
 ): Promise<string | ArrayBuffer> {
   let encryptedArray: BufferSource;
