@@ -31,7 +31,7 @@ export async function genAesKey(
 
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    u8aKey,
+    u8aKey as BufferSource,
     {
       name: type,
     },
@@ -79,9 +79,11 @@ export async function encrypt(
   data: Uint8Array | string,
 ): Promise<string> {
   const encrypted = await crypto.subtle.encrypt(
-    { name: cryptoKey.algorithm.name, iv },
+    { name: cryptoKey.algorithm.name, iv: iv.buffer },
     cryptoKey,
-    typeof data === 'string' ? textEncoder.encode(data) : data,
+    typeof data === 'string'
+      ? textEncoder.encode(data) as BufferSource
+      : data as BufferSource,
   );
 
   return encodeBase64(encrypted);
@@ -180,31 +182,31 @@ export async function decrypt(
   if (isBufferSource(encrypted)) {
     encryptedArray = encrypted;
   } else if (encrypted?.encodingType === 'base64') {
-    encryptedArray = decodeBase64(encrypted.data);
+    encryptedArray = decodeBase64(encrypted.data) as BufferSource;
   } else {
     throw new TypeError('encrypted must be BufferSource or base64 string');
   }
 
   let additionalArray: BufferSource | undefined;
   if (isBufferSource(additionalData)) {
-    additionalArray = additionalData;
+    additionalArray = additionalData as BufferSource;
   } else if (additionalData?.encodingType === 'utf8') {
     // 将 UTF-8 编码的 additionalData 转为二进制数据
-    additionalArray = textEncoder.encode(additionalData.data);
+    additionalArray = textEncoder.encode(additionalData.data) as BufferSource;
   } else if (additionalData?.encodingType === 'base64') {
     // 将 base64 编码的 additionalData 转为二进制数据
-    additionalArray = decodeBase64(additionalData.data);
+    additionalArray = decodeBase64(additionalData.data) as BufferSource;
   }
 
   let ivArray: BufferSource | undefined;
   if (isBufferSource(iv)) {
-    ivArray = iv;
+    ivArray = iv as BufferSource;
   } else if (iv?.encodingType === 'utf8') {
     // 将 UTF-8 编码的 ivData 转为二进制数据
-    ivArray = textEncoder.encode(iv.data);
+    ivArray = textEncoder.encode(iv.data) as BufferSource;
   } else if (iv?.encodingType === 'base64') {
     // 将 base64 编码的 ivData 转为二进制数据
-    ivArray = decodeBase64(iv.data);
+    ivArray = decodeBase64(iv.data) as BufferSource;
   }
 
   // 解密
