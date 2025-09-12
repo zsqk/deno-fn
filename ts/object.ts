@@ -1,3 +1,5 @@
+import { assertNaturalNumber, assertPositiveInteger } from './number.ts';
+
 /** 字符串对象 */
 export type StringObject = { [key: string]: string };
 
@@ -48,12 +50,31 @@ export function assertNonEmptyArray(
   {
     genErr = () =>
       new TypeError(`should be non-empty array but ${JSON.stringify(v)}`),
+    itemType,
   }: {
     genErr?: (v: unknown) => Error;
+    itemType?: 'naturalNumber' | 'positiveInteger' | 'string' | 'boolean';
   } = {},
 ): asserts v is Array<unknown> {
   if (!isNonEmptyArray(v)) {
     throw genErr(v);
+  }
+  if (itemType === 'positiveInteger') {
+    for (const item of v) {
+      assertPositiveInteger(item, { genErr });
+    }
+  } else if (itemType === 'naturalNumber') {
+    for (const item of v) {
+      assertNaturalNumber(item, { genErr });
+    }
+  } else if (itemType === 'string') {
+    for (const item of v) {
+      assertString(item, { genErr });
+    }
+  } else if (itemType === 'boolean') {
+    for (const item of v) {
+      assertBoolean(item, { genErr });
+    }
   }
 }
 

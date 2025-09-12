@@ -43,12 +43,14 @@ export function isSafeString(value: unknown): value is SafeString {
   if (typeof value !== 'string') {
     return false;
   }
-  // 检查每一个字符是否包含 ASCII 范围内的特殊字符, 仅允许:
+  // 在 ASCII 范围内, 仅允许下列特殊字符:
   // 1. 空格
   // 2. 数字 (0-9)
   // 3. 字母 (包含大小写, A-Z, a-z)
-  // 4. 下划线 (_)
-  // 5. “-”， “/”，“（”，“）”
+  // 4. 下划线 `_`
+  // 5. 横线 `-`
+  // 6. 斜线 `/` (当用户输入网址时要允许)
+  // 7. 小括号 `(`, `)` (当用户输入备注时要允许, 比如 `张三 (12345)`)
   if (/[\x21-\x27\x2A-\x2C\x2E\x3A-\x40\x5B-\x5E\x60\x7B-\x7E]/.test(value)) {
     return false;
   }
