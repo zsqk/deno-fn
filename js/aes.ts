@@ -92,6 +92,7 @@ export async function encrypt(
  */
 type BinaryData =
   | BufferSource
+  | Uint8Array
   | { data: string; encodingType: 'utf8' }
   | { data: string; encodingType: 'base64' };
 
