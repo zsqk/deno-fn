@@ -9,6 +9,8 @@ Deno.test('parseQueryInts', () => {
   url.searchParams.set('d', '1|2|3');
   url.searchParams.set('e', '1,abc,3');
   url.searchParams.set('f', '1.5,2,3');
+  url.searchParams.set('g', 'abc');
+  url.searchParams.set('h', '1|2|');
 
   assertEquals(parseQueryInts(url.searchParams.get('a')), [1, 2, 3]);
   assertEquals(parseQueryInts(url.searchParams.get('b')), [-1, 0, 1]);
@@ -19,6 +21,11 @@ Deno.test('parseQueryInts', () => {
   );
   assertThrows(() => parseQueryInts(url.searchParams.get('e')), TypeError);
   assertThrows(() => parseQueryInts(url.searchParams.get('f')), TypeError);
+  assertThrows(() => parseQueryInts(url.searchParams.get('g')), TypeError);
+  assertEquals(
+    parseQueryInts(url.searchParams.get('h'), { separator: '|' }),
+    [1, 2],
+  );
 });
 
 Deno.test('parseQueryInts - 边界情况', () => {

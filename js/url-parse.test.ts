@@ -9,7 +9,7 @@ import {
   sanitizeString,
 } from './url-parse.ts';
 
-// parseQueryString 函数不存在，已删除相关测试
+// parseQueryInts 函数测试放在独立的 url-parse_ints.test.ts 文件中
 
 Deno.test('parseQueryPositiveInt', () => {
   const url = new URL('https://example.com/path');
@@ -380,7 +380,7 @@ Deno.test('parseQueryStringArray - 边界情况', () => {
 
   // 测试包含空元素的数组
   assertThrows(() => parseQueryStringArray('a,,c'), TypeError);
-  assertThrows(() => parseQueryStringArray(',a,b,'), TypeError);
+  assertEquals(parseQueryStringArray(',a,b,'), ['a', 'b']); // 以分隔符开头和结尾是被允许的
   assertThrows(() => parseQueryStringArray('a, ,c'), TypeError);
 
   // 测试单个元素
