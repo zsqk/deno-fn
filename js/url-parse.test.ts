@@ -482,9 +482,9 @@ Deno.test('parseQueryPositiveInts - 边界情况', () => {
   assertThrows(() => parseQueryPositiveInts(','), TypeError);
   assertThrows(() => parseQueryPositiveInts(',,,'), TypeError);
 
-  // 测试包含空元素的数组
+  // 测试包含空元素的数组（现在与 parseQueryInts 行为一致）
   assertThrows(() => parseQueryPositiveInts('1,,3'), TypeError);
-  assertThrows(() => parseQueryPositiveInts(',1,2,'), TypeError);
+  assertEquals(parseQueryPositiveInts(',1,2,'), [1, 2]);
 
   // 测试单个正整数
   assertEquals(parseQueryPositiveInts('123'), [123]);
