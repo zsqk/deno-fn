@@ -1,3 +1,7 @@
+import { assertNaturalNumber, assertPositiveInteger } from './number.ts';
+import { assertSafeString } from './string.ts';
+import { assertBoolean } from './boolean.ts';
+
 /** 字符串对象 */
 export type StringObject = { [key: string]: string };
 
@@ -34,5 +38,112 @@ export function assertUnknownObject(v: unknown): asserts v is UnknownObject {
 export function assertArray(v: unknown): asserts v is Array<unknown> {
   if (!Array.isArray(v)) {
     throw new TypeError('Expected an array');
+  }
+}
+
+/**
+ * 断言为长度大于 0 的数组
+ * @param v 需要断言的变量
+ * @param options 可选参数
+ * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
+ */
+export function assertNonEmptyArray(
+  v: unknown,
+  options?: {
+    genErr?: (v: unknown) => Error;
+    itemType?: undefined;
+  },
+): asserts v is Array<unknown>;
+
+export function assertNonEmptyArray(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    itemType: 'naturalNumber';
+  },
+): asserts v is number[];
+
+export function assertNonEmptyArray(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    itemType: 'positiveInteger';
+  },
+): asserts v is number[];
+
+export function assertNonEmptyArray(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    itemType: 'safeString';
+  },
+): asserts v is string[];
+
+export function assertNonEmptyArray(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    itemType: 'boolean';
+  },
+): asserts v is boolean[];
+
+export function assertNonEmptyArray(
+  v: unknown,
+  {
+    genErr = () =>
+      new TypeError(`should be non-empty array but ${JSON.stringify(v)}`),
+    itemType,
+  }: {
+    genErr?: (v: unknown) => Error;
+    itemType?: 'naturalNumber' | 'positiveInteger' | 'safeString' | 'boolean';
+  } = {},
+): asserts v is Array<unknown> {
+  if (!isNonEmptyArray(v)) {
+    throw genErr(v);
+  }
+  if (itemType === 'positiveInteger') {
+    for (const item of v) {
+      assertPositiveInteger(item, { genErr });
+    }
+  } else if (itemType === 'naturalNumber') {
+    for (const item of v) {
+      assertNaturalNumber(item, { genErr });
+    }
+  } else if (itemType === 'safeString') {
+    for (const item of v) {
+      assertSafeString(item, { genErr });
+    }
+  } else if (itemType === 'boolean') {
+    for (const item of v) {
+      assertBoolean(item, { genErr });
+    }
+  }
+}
+
+/** 判断是否为非空数组 */
+export function isNonEmptyArray(v: unknown): v is Array<unknown> {
+  return Array.isArray(v) && v.length > 0;
+}
+
+/** 判断是否为普通对象（非数组、非函数等） */
+export function isPlainObject(v: unknown): v is Record<string, unknown> {
+  if (typeof v !== 'object' || v === null) {
+    return false;
+  }
+  // 检查原型链
+  const proto = Object.getPrototypeOf(v);
+  return proto === null || proto === Object.prototype;
+}
+
+/** 断言为普通对象 */
+export function assertPlainObject(
+  v: unknown,
+): asserts v is Record<string, unknown> {
+  if (typeof v !== 'object' || v === null) {
+    throw new TypeError('Expected an object');
+  }
+  const proto = Object.getPrototypeOf(v);
+  if (proto !== null && proto !== Object.prototype) {
+    throw new TypeError('Expected a plain object');
   }
 }

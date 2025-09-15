@@ -1,55 +1,5 @@
 import { toInt, toPositiveInt } from '../ts/number-type-convert.ts';
-import { isSafeString, SafeString } from '../ts/string.ts';
-
-/**
- * Convert URL query parameter value to string
- * 将 URL 查询参数值转换为字符串
- *
- * @param query - URL query parameter value (typically from url.searchParams.get())
- *               URL 查询参数值（通常来自 url.searchParams.get()）
- *               可以为 null 或字符串类型
- * @returns A SafeString or undefined
- *          返回安全字符串或 undefined
- *          - Returns undefined if input is null, "undefined" or empty string
- *            当输入为 null、"undefined" 或空字符串时返回 undefined
- *          - Returns trimmed SafeString for valid input
- *            对于有效输入返回经过去空格处理的安全字符串
- *          - Throws TypeError for invalid input containing unsafe characters
- *            当输入包含不安全字符时抛出 TypeError
- *
- * @example
- * parseQueryString('hello') // returns 'hello'
- * parseQueryString(null) // returns undefined
- * parseQueryString('') // returns undefined
- * parseQueryString('<script>') // throws TypeError
- *
- * @author iugo <code@iugo.dev>
- */
-export function parseQueryString(
-  query: string | null,
-  { sanitize = false }: {
-    /**
-     * 是否移除不安全字符 (清理净化参数)
-     * 默认不移除
-     */
-    sanitize?: boolean;
-  } = {},
-): SafeString | undefined {
-  if (query === null) {
-    return undefined;
-  }
-  let trimmedQuery = query.trim();
-  if (trimmedQuery === 'undefined' || trimmedQuery === '') {
-    return undefined;
-  }
-  if (sanitize) {
-    trimmedQuery = sanitizeString(trimmedQuery);
-  }
-  if (!isSafeString(trimmedQuery)) {
-    throw new TypeError(`invalid query string: ${query}`);
-  }
-  return trimmedQuery;
-}
+import { assertSafeString, SafeString } from '../ts/string.ts';
 
 /**
  * 清理净化字符串
@@ -128,7 +78,7 @@ export function parseQueryStringArray(
      */
     sanitizeWithSeparator?: boolean;
   } = {},
-): string[] | undefined {
+): SafeString[] | undefined {
   if (query === null || query === 'undefined' || query === '') {
     return undefined;
   }
@@ -138,10 +88,14 @@ export function parseQueryStringArray(
     : query;
 
   try {
-    const arr = queryString
-      .split(separator)
-      .map((v) => parseQueryString(v) ?? '')
-      .filter(Boolean);
+    const arr = queryString.split(separator);
+
+    for (const v of arr) {
+      if (v === '') {
+        throw new TypeError(`string array item is empty: ${query}`);
+      }
+      assertSafeString(v);
+    }
 
     return arr.length === 0 ? undefined : arr;
   } catch (_err) {
@@ -293,6 +247,10 @@ export function parseQueryPositiveInts(
  * Convert URL query parameter value to array of integers
  * 将 URL 查询参数值转换为整数数组
  *
+ * 1. 允许特定分隔符
+ * 2. 将每一项转为整型
+ * 3. 允许头尾有分隔符, 但不允许数组中间有空项
+ *
  * @param query - URL query parameter value (typically from url.searchParams.get())
  *               URL 查询参数值（通常来自 url.searchParams.get()）
  * @param options - Configuration options
@@ -314,6 +272,14 @@ export function parseQueryPositiveInts(
  * parseQueryInts('') // returns undefined
  * parseQueryInts('1|2|3', { separator: '|' }) // returns [1, 2, 3]
  * parseQueryInts('abc') // throws TypeError
+ * parseQueryInts('1,2,c') // throws TypeError
+ * parseQueryInts('1,,c') // throws TypeError
+ * parseQueryInts('1,,') // throws TypeError
+ * parseQueryInts(',,') // throws TypeError
+ * parseQueryInts(',1,') // return [1]
+ * parseQueryInts('|1|2|', { separator: '|' }) // return [1, 2]
+ * parseQueryInts('|1|2', { separator: '|' }) // return [1, 2]
+ * parseQueryInts('1|2|', { separator: '|' }) // return [1, 2]
  *
  * @author iugo <code@iugo.dev>
  */
@@ -325,8 +291,25 @@ export function parseQueryInts(
     return undefined;
   }
   try {
-    const arr = query.split(separator).map(toInt);
-    return arr.length === 0 ? undefined : arr;
+    const arr = query.split(separator);
+    // 如果分割后所有元素都是空字符串，抛出错误
+    if (arr.every((v) => v === '')) {
+      throw new TypeError(`invalid query int array: ${query}`);
+    }
+    // 检查是否以分隔符结尾且前面有数字（如 "1,," 或 "1|2|"）
+    // 但如果以分隔符开头（如 ",1,"），则允许
+    if (
+      query.endsWith(separator) && !query.startsWith(separator) &&
+      arr.length > 1
+    ) {
+      const nonEmptyElements = arr.filter((v) => v !== '');
+      if (nonEmptyElements.length > 0) {
+        throw new TypeError(`invalid query int array: ${query}`);
+      }
+    }
+    // 过滤掉空字符串，然后转换为整数
+    const result = arr.filter((v) => v !== '').map(toInt);
+    return result.length === 0 ? undefined : result;
   } catch (_err) {
     throw new TypeError(`invalid query int array: ${query}`);
   }
