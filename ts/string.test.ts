@@ -444,3 +444,189 @@ Deno.test('assertSafeString with custom genErr', () => {
     'Custom: should be safe string but 123',
   );
 });
+
+Deno.test('assertSafeString with allowNewlines option', () => {
+  // 测试默认允许换行符
+  assertSafeString('line1\nline2');
+  assertSafeString('line1\nline2\nline3');
+
+  // 测试明确允许换行符
+  assertSafeString('line1\nline2', { allowNewlines: true });
+
+  // 测试不允许换行符
+  assertThrows(
+    () => assertSafeString('line1\nline2', { allowNewlines: false }),
+    TypeError,
+    'should be safe string but "line1\\nline2"',
+  );
+
+  // 测试空字符串（没有换行符）
+  assertSafeString('', { allowNewlines: false });
+  assertSafeString('hello', { allowNewlines: false });
+
+  // 测试与其他选项组合
+  assertSafeString(null, { allow: 'null', allowNewlines: false });
+  assertSafeString(undefined, { allow: 'undefined', allowNewlines: false });
+});
+
+Deno.test('assertSafeString with trimLines option', () => {
+  // 测试默认不允许行首尾空格
+  assertThrows(
+    () => assertSafeString(' line1\nline2'),
+    TypeError,
+    'should be safe string but " line1\\nline2"',
+  );
+  assertThrows(
+    () => assertSafeString('line1 \nline2'),
+    TypeError,
+    'should be safe string but "line1 \\nline2"',
+  );
+  assertThrows(
+    () => assertSafeString(' line1 \n line2 '),
+    TypeError,
+    'should be safe string but " line1 \\n line2 "',
+  );
+
+  // 测试明确不允许行首尾空格
+  assertThrows(
+    () => assertSafeString(' line1\nline2', { trimLines: false }),
+    TypeError,
+    'should be safe string but " line1\\nline2"',
+  );
+
+  // 测试允许行首尾空格（但整个字符串的首尾空格仍然不允许）
+  assertSafeString('line1 \nline2', { trimLines: true });
+  assertSafeString('line1 \n line2', { trimLines: true });
+
+  // 测试空字符串
+  assertSafeString('', { trimLines: true });
+  assertSafeString('', { trimLines: false });
+
+  // 测试没有换行符的字符串
+  assertSafeString('hello', { trimLines: true });
+  assertSafeString('hello', { trimLines: false });
+
+  // 测试与其他选项组合
+  assertSafeString(null, { allow: 'null', trimLines: true });
+  assertSafeString(undefined, { allow: 'undefined', trimLines: true });
+});
+
+Deno.test('assertSafeString with both allowNewlines and trimLines options', () => {
+  // 测试默认行为（允许换行，不允许行首尾空格）
+  assertSafeString('line1\nline2');
+  assertThrows(
+    () => assertSafeString(' line1\nline2'),
+    TypeError,
+    'should be safe string but " line1\\nline2"',
+  );
+
+  // 测试允许换行和行首尾空格
+  assertSafeString('line1\nline2', { allowNewlines: true, trimLines: true });
+  assertSafeString('line1 \n line2', { allowNewlines: true, trimLines: true });
+
+  // 测试不允许换行但允许行首尾空格
+  assertSafeString('line1 ', { allowNewlines: false, trimLines: true });
+  assertThrows(
+    () =>
+      assertSafeString(' line1 \n line2 ', {
+        allowNewlines: false,
+        trimLines: true,
+      }),
+    TypeError,
+    'should be safe string but " line1 \\n line2 "',
+  );
+
+  // 测试不允许换行也不允许行首尾空格
+  assertSafeString('line1', { allowNewlines: false, trimLines: false });
+  assertThrows(
+    () =>
+      assertSafeString(' line1', { allowNewlines: false, trimLines: false }),
+    TypeError,
+    'should be safe string but " line1"',
+  );
+  assertThrows(
+    () =>
+      assertSafeString('line1\nline2', {
+        allowNewlines: false,
+        trimLines: false,
+      }),
+    TypeError,
+    'should be safe string but "line1\\nline2"',
+  );
+
+  // 测试与 allow 选项组合
+  assertSafeString(null, {
+    allow: 'null',
+    allowNewlines: true,
+    trimLines: true,
+  });
+  assertSafeString(undefined, {
+    allow: 'undefined',
+    allowNewlines: false,
+    trimLines: false,
+  });
+});
+
+Deno.test('assertSafeString multiline whitespace logic', () => {
+  // 测试多行字符串的空格检查逻辑
+
+  // 多行字符串，第一行有首尾空格，第二行没有 - 默认不允许行首尾空格
+  assertThrows(
+    () => assertSafeString(' line1\nline2'),
+    TypeError,
+    'should be safe string but " line1\\nline2"',
+  );
+
+  // 多行字符串，第一行没有首尾空格，第二行有 - 默认不允许行首尾空格
+  assertThrows(
+    () => assertSafeString('line1\n line2 '),
+    TypeError,
+    'should be safe string but "line1\\n line2 "',
+  );
+
+  // 多行字符串，两行都有首尾空格 - 默认不允许行首尾空格
+  assertThrows(
+    () => assertSafeString(' line1 \n line2 '),
+    TypeError,
+    'should be safe string but " line1 \\n line2 "',
+  );
+
+  // 多行字符串，允许行首尾空格 - 应该通过
+  assertSafeString(' line1 \n line2 ', { trimLines: true });
+
+  // 多行字符串，第一行有首尾空格，第二行没有 - 允许行首尾空格
+  assertSafeString(' line1 \nline2', { trimLines: true });
+
+  // 多行字符串，第一行没有首尾空格，第二行有 - 允许行首尾空格
+  assertSafeString('line1\n line2 ', { trimLines: true });
+
+  // 单行字符串有首尾空格 - 默认不允许
+  assertThrows(
+    () => assertSafeString(' hello '),
+    TypeError,
+    'should be safe string but " hello "',
+  );
+
+  // 单行字符串有首尾空格 - 允许行首尾空格
+  assertSafeString(' hello ', { trimLines: true });
+
+  // 单行字符串有尾随空格 - 默认不允许
+  assertThrows(
+    () => assertSafeString('hello '),
+    TypeError,
+    'should be safe string but "hello "',
+  );
+
+  // 单行字符串有尾随空格 - 允许行首尾空格
+  assertSafeString('hello ', { trimLines: true });
+
+  // 单行字符串有前导空格 - 默认不允许
+  assertThrows(
+    () => assertSafeString(' hello'),
+    TypeError,
+    'should be safe string but " hello"',
+  );
+
+  // 单行字符串有前导空格 - 允许行首尾空格
+  assertSafeString(' hello', { trimLines: true });
+});

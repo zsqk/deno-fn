@@ -39,7 +39,10 @@ export type SafeString = string;
  * [参数检查函数] 检查参数是否为安全的字符串
  * @author iugo <code@iugo.dev>
  */
-export function isSafeString(value: unknown): value is SafeString {
+/**
+ * 基础的安全字符串检查（不检查首尾空格）
+ */
+function isSafeStringBasic(value: unknown): value is SafeString {
   if (typeof value !== 'string') {
     return false;
   }
@@ -81,10 +84,53 @@ export function isSafeString(value: unknown): value is SafeString {
   ) {
     return false;
   }
-  // 检查是否包含首尾空格
+  return true;
+}
+
+export function isSafeString(value: unknown): value is SafeString {
+  if (!isSafeStringBasic(value)) {
+    return false;
+  }
+  // 检查是否包含首尾空格（整个字符串的首尾空格）
   if (value !== value.trim()) {
     return false;
   }
+  return true;
+}
+
+/**
+ * 检查字符串是否满足指定的格式要求
+ * @param str 要检查的字符串
+ * @param options 检查选项
+ * @param options.allowNewlines 是否允许换行符，默认为 true
+ * @param options.trimLines 是否允许每行首尾有空格，默认为 false (不允许)
+ * @returns 是否满足要求
+ */
+function isValidStringWithOptions(
+  str: string,
+  {
+    allowNewlines = true,
+    trimLines = false,
+  }: {
+    allowNewlines?: boolean;
+    trimLines?: boolean;
+  } = {},
+): boolean {
+  // 如果不允许换行符，检查是否包含换行符
+  if (!allowNewlines && str.includes('\n')) {
+    return false;
+  }
+
+  // 如果不允许行首尾空格，检查每行是否有首尾空格
+  if (!trimLines) {
+    const lines = str.split('\n');
+    for (const line of lines) {
+      if (line !== line.trim()) {
+        return false;
+      }
+    }
+  }
+
   return true;
 }
 
@@ -109,6 +155,8 @@ export function isValidString(value: unknown): value is ValidString {
  * @param options 可选参数
  * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
  * @param options.allow 额外允许的值类型, 默认不允许
+ * @param options.allowNewlines 是否允许换行符, 默认为 true
+ * @param options.trimLines 是否允许每行首尾有空格, 默认为 false (不允许)
  * @returns 断言 v 是 SafeString 类型
  */
 export function assertSafeString(
@@ -116,6 +164,8 @@ export function assertSafeString(
   options?: {
     genErr?: (v: unknown) => Error;
     allow?: never;
+    allowNewlines?: boolean;
+    trimLines?: boolean;
   },
 ): asserts v is SafeString;
 
@@ -126,6 +176,8 @@ export function assertSafeString(
  * @param options 可选参数
  * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
  * @param options.allow 必须为 'null'，表示允许 null 值
+ * @param options.allowNewlines 是否允许换行符, 默认为 true
+ * @param options.trimLines 是否允许每行首尾有空格, 默认为 false (不允许)
  * @returns 断言 v 是 SafeString | null 类型
  */
 export function assertSafeString(
@@ -133,6 +185,8 @@ export function assertSafeString(
   options: {
     genErr?: (v: unknown) => Error;
     allow: 'null';
+    allowNewlines?: boolean;
+    trimLines?: boolean;
   },
 ): asserts v is SafeString | null;
 
@@ -143,6 +197,8 @@ export function assertSafeString(
  * @param options 可选参数
  * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
  * @param options.allow 必须为 'undefined'，表示允许 undefined 值
+ * @param options.allowNewlines 是否允许换行符, 默认为 true
+ * @param options.trimLines 是否允许每行首尾有空格, 默认为 false (不允许)
  * @returns 断言 v 是 SafeString | undefined 类型
  */
 export function assertSafeString(
@@ -150,6 +206,8 @@ export function assertSafeString(
   options: {
     genErr?: (v: unknown) => Error;
     allow: 'undefined';
+    allowNewlines?: boolean;
+    trimLines?: boolean;
   },
 ): asserts v is SafeString | undefined;
 
@@ -160,6 +218,8 @@ export function assertSafeString(
  * @param options 可选参数
  * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
  * @param options.allow 必须为 'null-undefined'，表示允许 null 和 undefined 值
+ * @param options.allowNewlines 是否允许换行符, 默认为 true
+ * @param options.trimLines 是否允许每行首尾有空格, 默认为 false (不允许)
  * @returns 断言 v 是 SafeString | null | undefined 类型
  */
 export function assertSafeString(
@@ -167,6 +227,8 @@ export function assertSafeString(
   options: {
     genErr?: (v: unknown) => Error;
     allow: 'null-undefined';
+    allowNewlines?: boolean;
+    trimLines?: boolean;
   },
 ): asserts v is SafeString | null | undefined;
 
@@ -176,9 +238,13 @@ export function assertSafeString(
     genErr = () =>
       new TypeError(`should be safe string but ${JSON.stringify(v)}`),
     allow,
+    allowNewlines = true,
+    trimLines = false,
   }: {
     genErr?: (v: unknown) => Error;
     allow?: 'null' | 'undefined' | 'null-undefined';
+    allowNewlines?: boolean;
+    trimLines?: boolean;
   } = {},
 ): asserts v is SafeString | null | undefined {
   // 如果值为 null，检查是否允许
@@ -197,8 +263,13 @@ export function assertSafeString(
     throw genErr(v);
   }
 
-  // 检查是否为安全字符串
-  if (!isSafeString(v)) {
+  // 检查是否为安全字符串（不检查首尾空格，因为我们有专门的逻辑处理）
+  if (!isSafeStringBasic(v)) {
+    throw genErr(v);
+  }
+
+  // 检查换行符和行首尾空格
+  if (!isValidStringWithOptions(v, { allowNewlines, trimLines })) {
     throw genErr(v);
   }
 }
