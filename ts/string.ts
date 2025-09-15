@@ -103,17 +103,17 @@ export function isSafeString(value: unknown): value is SafeString {
  * @param str 要检查的字符串
  * @param options 检查选项
  * @param options.allowNewlines 是否允许换行符，默认为 true
- * @param options.trimLines 是否允许每行首尾有空格，默认为 false (不允许)
+ * @param options.allowLineWhitespace 是否允许每行首尾有空格，默认为 false (不允许)
  * @returns 是否满足要求
  */
 function isValidStringWithOptions(
   str: string,
   {
     allowNewlines = true,
-    trimLines = false,
+    allowLineWhitespace = false,
   }: {
     allowNewlines?: boolean;
-    trimLines?: boolean;
+    allowLineWhitespace?: boolean;
   } = {},
 ): boolean {
   // 如果不允许换行符，检查是否包含换行符
@@ -122,7 +122,7 @@ function isValidStringWithOptions(
   }
 
   // 如果不允许行首尾空格，检查每行是否有首尾空格
-  if (!trimLines) {
+  if (!allowLineWhitespace) {
     const lines = str.split('\n');
     for (const line of lines) {
       if (line !== line.trim()) {
@@ -156,7 +156,7 @@ export function isValidString(value: unknown): value is ValidString {
  * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
  * @param options.allow 额外允许的值类型, 默认不允许
  * @param options.allowNewlines 是否允许换行符, 默认为 true
- * @param options.trimLines 是否允许每行首尾有空格, 默认为 false (不允许)
+ * @param options.allowLineWhitespace 是否允许每行首尾有空格, 默认为 false (不允许)
  * @returns 断言 v 是 SafeString 类型
  */
 export function assertSafeString(
@@ -165,7 +165,7 @@ export function assertSafeString(
     genErr?: (v: unknown) => Error;
     allow?: never;
     allowNewlines?: boolean;
-    trimLines?: boolean;
+    allowLineWhitespace?: boolean;
   },
 ): asserts v is SafeString;
 
@@ -177,7 +177,7 @@ export function assertSafeString(
  * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
  * @param options.allow 必须为 'null'，表示允许 null 值
  * @param options.allowNewlines 是否允许换行符, 默认为 true
- * @param options.trimLines 是否允许每行首尾有空格, 默认为 false (不允许)
+ * @param options.allowLineWhitespace 是否允许每行首尾有空格, 默认为 false (不允许)
  * @returns 断言 v 是 SafeString | null 类型
  */
 export function assertSafeString(
@@ -186,7 +186,7 @@ export function assertSafeString(
     genErr?: (v: unknown) => Error;
     allow: 'null';
     allowNewlines?: boolean;
-    trimLines?: boolean;
+    allowLineWhitespace?: boolean;
   },
 ): asserts v is SafeString | null;
 
@@ -198,7 +198,7 @@ export function assertSafeString(
  * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
  * @param options.allow 必须为 'undefined'，表示允许 undefined 值
  * @param options.allowNewlines 是否允许换行符, 默认为 true
- * @param options.trimLines 是否允许每行首尾有空格, 默认为 false (不允许)
+ * @param options.allowLineWhitespace 是否允许每行首尾有空格, 默认为 false (不允许)
  * @returns 断言 v 是 SafeString | undefined 类型
  */
 export function assertSafeString(
@@ -207,7 +207,7 @@ export function assertSafeString(
     genErr?: (v: unknown) => Error;
     allow: 'undefined';
     allowNewlines?: boolean;
-    trimLines?: boolean;
+    allowLineWhitespace?: boolean;
   },
 ): asserts v is SafeString | undefined;
 
@@ -219,7 +219,7 @@ export function assertSafeString(
  * @param options.genErr 生成错误的方法, 默认是返回一个 TypeError
  * @param options.allow 必须为 'null-undefined'，表示允许 null 和 undefined 值
  * @param options.allowNewlines 是否允许换行符, 默认为 true
- * @param options.trimLines 是否允许每行首尾有空格, 默认为 false (不允许)
+ * @param options.allowLineWhitespace 是否允许每行首尾有空格, 默认为 false (不允许)
  * @returns 断言 v 是 SafeString | null | undefined 类型
  */
 export function assertSafeString(
@@ -228,7 +228,7 @@ export function assertSafeString(
     genErr?: (v: unknown) => Error;
     allow: 'null-undefined';
     allowNewlines?: boolean;
-    trimLines?: boolean;
+    allowLineWhitespace?: boolean;
   },
 ): asserts v is SafeString | null | undefined;
 
@@ -239,12 +239,12 @@ export function assertSafeString(
       new TypeError(`should be safe string but ${JSON.stringify(v)}`),
     allow,
     allowNewlines = true,
-    trimLines = false,
+    allowLineWhitespace = false,
   }: {
     genErr?: (v: unknown) => Error;
     allow?: 'null' | 'undefined' | 'null-undefined';
     allowNewlines?: boolean;
-    trimLines?: boolean;
+    allowLineWhitespace?: boolean;
   } = {},
 ): asserts v is SafeString | null | undefined {
   // 如果值为 null，检查是否允许
@@ -269,7 +269,7 @@ export function assertSafeString(
   }
 
   // 检查换行符和行首尾空格
-  if (!isValidStringWithOptions(v, { allowNewlines, trimLines })) {
+  if (!isValidStringWithOptions(v, { allowNewlines, allowLineWhitespace })) {
     throw genErr(v);
   }
 }
