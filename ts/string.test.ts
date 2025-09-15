@@ -237,6 +237,22 @@ Deno.test('isSafeString', () => {
   assert(!isSafeString('`'));
   assert(!isSafeString('|'));
 
+  // 禁止的 ASCII 控制字符测试
+  assert(!isSafeString('\x00')); // NULL
+  assert(!isSafeString('\x01')); // SOH
+  assert(!isSafeString('\x02')); // STX
+  assert(!isSafeString('\x03')); // ETX
+  assert(!isSafeString('\x04')); // EOT
+  assert(!isSafeString('\x05')); // ENQ
+  assert(!isSafeString('\x06')); // ACK
+  assert(!isSafeString('\x07')); // BEL
+  assert(!isSafeString('\x08')); // BS
+  assert(!isSafeString('\x0B')); // VT (垂直制表符)
+  assert(!isSafeString('\x0C')); // FF (换页符)
+  assert(!isSafeString('\x0E')); // SO
+  assert(!isSafeString('\x0F')); // SI
+  assert(!isSafeString('\x1F')); // US
+
   // 包含禁止字符的字符串
   assert(!isSafeString('abc&123'));
   assert(!isSafeString("abc'123"));
@@ -245,6 +261,13 @@ Deno.test('isSafeString', () => {
   assert(!isSafeString('abc^123'));
   assert(!isSafeString('abc`123'));
   assert(!isSafeString('abc|123'));
+
+  // 包含控制字符的字符串
+  assert(!isSafeString('abc\x00def')); // 包含 NULL
+  assert(!isSafeString('abc\x01def')); // 包含 SOH
+  assert(!isSafeString('abc\x0Bdef')); // 包含 VT
+  assert(!isSafeString('abc\x0Cdef')); // 包含 FF
+  assert(!isSafeString('abc\x1Fdef')); // 包含 US
 });
 
 Deno.test('assertSafeString', () => {
