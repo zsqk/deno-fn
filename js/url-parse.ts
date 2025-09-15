@@ -2,56 +2,6 @@ import { toInt, toPositiveInt } from '../ts/number-type-convert.ts';
 import { isSafeString, SafeString } from '../ts/string.ts';
 
 /**
- * Convert URL query parameter value to string
- * 将 URL 查询参数值转换为字符串
- *
- * @param query - URL query parameter value (typically from url.searchParams.get())
- *               URL 查询参数值（通常来自 url.searchParams.get()）
- *               可以为 null 或字符串类型
- * @returns A SafeString or undefined
- *          返回安全字符串或 undefined
- *          - Returns undefined if input is null, "undefined" or empty string
- *            当输入为 null、"undefined" 或空字符串时返回 undefined
- *          - Returns trimmed SafeString for valid input
- *            对于有效输入返回经过去空格处理的安全字符串
- *          - Throws TypeError for invalid input containing unsafe characters
- *            当输入包含不安全字符时抛出 TypeError
- *
- * @example
- * parseQueryString('hello') // returns 'hello'
- * parseQueryString(null) // returns undefined
- * parseQueryString('') // returns undefined
- * parseQueryString('<script>') // throws TypeError
- *
- * @author iugo <code@iugo.dev>
- */
-export function parseQueryString(
-  query: string | null,
-  { sanitize = false }: {
-    /**
-     * 是否移除不安全字符 (清理净化参数)
-     * 默认不移除
-     */
-    sanitize?: boolean;
-  } = {},
-): SafeString | undefined {
-  if (query === null) {
-    return undefined;
-  }
-  let trimmedQuery = query.trim();
-  if (trimmedQuery === 'undefined' || trimmedQuery === '') {
-    return undefined;
-  }
-  if (sanitize) {
-    trimmedQuery = sanitizeString(trimmedQuery);
-  }
-  if (!isSafeString(trimmedQuery)) {
-    throw new TypeError(`invalid query string: ${query}`);
-  }
-  return trimmedQuery;
-}
-
-/**
  * 清理净化字符串
  * @param str - 需要清理净化的字符串
  * @param options - Configuration options
@@ -128,7 +78,7 @@ export function parseQueryStringArray(
      */
     sanitizeWithSeparator?: boolean;
   } = {},
-): string[] | undefined {
+): SafeString[] | undefined {
   if (query === null || query === 'undefined' || query === '') {
     return undefined;
   }
@@ -139,9 +89,13 @@ export function parseQueryStringArray(
 
   try {
     const arr = queryString
-      .split(separator)
-      .map((v) => parseQueryString(v) ?? '')
-      .filter(Boolean);
+      .split(separator);
+
+    for (const v of arr) {
+      if (!isSafeString(v)) {
+        throw new TypeError(`invalid query string: ${v}`);
+      }
+    }
 
     return arr.length === 0 ? undefined : arr;
   } catch (_err) {
