@@ -68,13 +68,14 @@ export function isSafeString(value: unknown): value is SafeString {
   // 22. 花括号 `{`, `}` (当用户输入对象时要允许, 比如 `{name: "value"}`)
   // 23. 波浪号 `~` (当用户输入路径时要允许, 比如 `~/home`)
   // 24. 尖括号 `<`, `>` (当用户输入比较或泛型时要允许, 比如 `x < y` 或 `List<T>`)
+  // 25. 星号 `*` (当用户输入通配符或强调时要允许, 比如 `*.txt` 或 `重要*`)
   // 拒绝危险字符和控制字符：
-  // 1. 危险字符：" & ' * \ ^ ` |
+  // 1. 危险字符：" & ' \ ^ ` |
   // 2. 制表符和回车符：\t \r
   // 3. 其他 ASCII 控制字符：\x00-\x08, \x0B, \x0C, \x0E-\x1F
   if (
     // deno-lint-ignore no-control-regex
-    /[\x00-\x08\x0B\x0C\x0E-\x1F\x22\x26-\x27\x2A\x5C\x5E\x60\x7C\t\r]/.test(
+    /[\x00-\x08\x0B\x0C\x0E-\x1F\x22\x26-\x27\x5C\x5E\x60\x7C\t\r]/.test(
       value,
     )
   ) {
