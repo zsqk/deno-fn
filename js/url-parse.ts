@@ -212,34 +212,73 @@ export function parseQueryPositiveInt(
  * Convert URL query parameter value to array of positive integers
  * 将 URL 查询参数值转换为正整数数组
  *
+ * 1. 允许特定分隔符, 默认为 `,`
+ * 2. 将每一项转为整型
+ * 3. 允许头尾有分隔符, 但不允许数组中间有空项
+ * 4. 验证所有整数都为正整数
+ *
  * @param query - URL query parameter value (typically from url.searchParams.get())
  *               URL 查询参数值（通常来自 url.searchParams.get()）
+ * @param options - Configuration options
+ *                 配置选项
+ * @param options.separator - Delimiter used to split the string (默认为逗号 ',')
+ *                          用于分割字符串的分隔符
  * @returns An array of positive integers or undefined
  *          返回正整数数组或 undefined
  *          - Returns undefined if input is null, "undefined" or empty string
  *            当输入为 null、"undefined" 或空字符串时返回 undefined
  *          - Returns array of positive integers for valid input
  *            对于有效的数字输入返回正整数数组
- *          - Throws TypeError for invalid input
- *            当输入无效时抛出 TypeError
+ *          - Throws TypeError for invalid input or non-positive integers
+ *            当输入无效或包含非正整数时抛出 TypeError
  *
  * @example
  * parseQueryPositiveInts('1,2,3') // returns [1, 2, 3]
+ * parseQueryPositiveInts('-1,0,1') // throws TypeError
+ * parseQueryPositiveInts('0,1') // throws TypeError
+ * parseQueryPositiveInts('-1,1') // throws TypeError
  * parseQueryPositiveInts('') // returns undefined
  * parseQueryPositiveInts('1|2|3', { separator: '|' }) // returns [1, 2, 3]
+ * parseQueryPositiveInts('abc') // throws TypeError
+ * parseQueryPositiveInts('1,2,c') // throws TypeError
+ * parseQueryPositiveInts('1,,c') // throws TypeError
+ * parseQueryPositiveInts('1,,') // throws TypeError
+ * parseQueryPositiveInts(',,') // throws TypeError
+ * parseQueryPositiveInts(',1,') // return [1]
+ * parseQueryPositiveInts('|1|2|', { separator: '|' }) // return [1, 2]
+ * parseQueryPositiveInts('|1|2', { separator: '|' }) // return [1, 2]
+ * parseQueryPositiveInts('1|2|', { separator: '|' }) // return [1, 2]
  *
  * @author iugo <code@iugo.dev>
  */
 export function parseQueryPositiveInts(
   query: string | null,
+  { separator = ',' }: { separator?: string } = {},
 ): number[] | undefined {
-  if (query === null || query === 'undefined' || query === '') {
-    return undefined;
-  }
   try {
-    return query.split(',').map(toPositiveInt);
-  } catch (_err) {
-    throw new TypeError(`invalid query positive int array: ${query}`);
+    // 完全依赖 parseQueryInts 进行解析
+    const ints = parseQueryInts(query, { separator });
+    if (ints === undefined) {
+      return undefined;
+    }
+
+    // 只添加正整数验证：检查是否有负数或 0
+    for (const num of ints) {
+      if (num <= 0) {
+        throw new TypeError(`invalid query positive int array: ${query}`);
+      }
+    }
+
+    return ints;
+  } catch (error) {
+    // 如果 parseQueryInts 抛出错误，重新抛出正确的错误消息
+    if (
+      error instanceof TypeError &&
+      error.message.includes('invalid query int array')
+    ) {
+      throw new TypeError(`invalid query positive int array: ${query}`);
+    }
+    throw error;
   }
 }
 
@@ -247,7 +286,7 @@ export function parseQueryPositiveInts(
  * Convert URL query parameter value to array of integers
  * 将 URL 查询参数值转换为整数数组
  *
- * 1. 允许特定分隔符
+ * 1. 允许特定分隔符, 默认为 `,`
  * 2. 将每一项转为整型
  * 3. 允许头尾有分隔符, 但不允许数组中间有空项
  *
@@ -274,6 +313,7 @@ export function parseQueryPositiveInts(
  * parseQueryInts('abc') // throws TypeError
  * parseQueryInts('1,2,c') // throws TypeError
  * parseQueryInts('1,,c') // throws TypeError
+ * parseQueryInts('1,,3') // throws TypeError
  * parseQueryInts('1,,') // throws TypeError
  * parseQueryInts(',,') // throws TypeError
  * parseQueryInts(',1,') // return [1]
@@ -296,6 +336,16 @@ export function parseQueryInts(
     if (arr.every((v) => v === '')) {
       throw new TypeError(`invalid query int array: ${query}`);
     }
+
+    // 检查是否包含连续的分隔符（中间有空字符串）
+    // 例如: "1,,3" 或 "1,2,," 或 ",,1"
+    const hasConsecutiveSeparators = arr.some((v, i) =>
+      v === '' && i > 0 && i < arr.length - 1
+    );
+    if (hasConsecutiveSeparators) {
+      throw new TypeError(`invalid query int array: ${query}`);
+    }
+
     // 检查是否以分隔符结尾且前面有数字（如 "1,," 或 "1|2|"）
     // 但如果以分隔符开头（如 ",1,"），则允许
     if (
@@ -307,6 +357,7 @@ export function parseQueryInts(
         throw new TypeError(`invalid query int array: ${query}`);
       }
     }
+
     // 过滤掉空字符串，然后转换为整数
     const result = arr.filter((v) => v !== '').map(toInt);
     return result.length === 0 ? undefined : result;
