@@ -292,9 +292,20 @@ export function parseQueryInts(
   }
   try {
     const arr = query.split(separator);
-    // 如果分割后所有元素都是空字符串，返回 undefined
+    // 如果分割后所有元素都是空字符串，抛出错误
     if (arr.every((v) => v === '')) {
-      return undefined;
+      throw new TypeError(`invalid query int array: ${query}`);
+    }
+    // 检查是否以分隔符结尾且前面有数字（如 "1,," 或 "1|2|"）
+    // 但如果以分隔符开头（如 ",1,"），则允许
+    if (
+      query.endsWith(separator) && !query.startsWith(separator) &&
+      arr.length > 1
+    ) {
+      const nonEmptyElements = arr.filter((v) => v !== '');
+      if (nonEmptyElements.length > 0) {
+        throw new TypeError(`invalid query int array: ${query}`);
+      }
     }
     // 过滤掉空字符串，然后转换为整数
     const result = arr.filter((v) => v !== '').map(toInt);

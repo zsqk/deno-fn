@@ -28,12 +28,14 @@ Deno.test('parseQueryInts - 边界情况', () => {
   assertEquals(parseQueryInts(''), undefined);
 
   // 测试只包含分隔符的字符串
-  assertEquals(parseQueryInts(','), undefined);
-  assertEquals(parseQueryInts(',,,'), undefined);
+  assertThrows(() => parseQueryInts(','), TypeError);
+  assertThrows(() => parseQueryInts(',,,'), TypeError);
 
   // 测试包含空元素的数组
   assertEquals(parseQueryInts('1,,3'), [1, 3]);
   assertEquals(parseQueryInts(',1,2,'), [1, 2]);
+  assertThrows(() => parseQueryInts('1,,'), TypeError);
+  assertEquals(parseQueryInts(',1,'), [1]);
 
   // 测试单个整数
   assertEquals(parseQueryInts('123'), [123]);
@@ -42,6 +44,8 @@ Deno.test('parseQueryInts - 边界情况', () => {
   // 测试特殊分隔符
   assertEquals(parseQueryInts('1;2;3', { separator: ';' }), [1, 2, 3]);
   assertEquals(parseQueryInts('1 2 3', { separator: ' ' }), [1, 2, 3]);
+  assertEquals(parseQueryInts('|1|2|', { separator: '|' }), [1, 2]);
+  assertEquals(parseQueryInts('|1|2', { separator: '|' }), [1, 2]);
 
   // 测试小数（应该抛出错误）
   assertThrows(
@@ -71,6 +75,21 @@ Deno.test('parseQueryInts - 复杂场景错误处理', () => {
       input: '1,2.5,3',
       func: () => parseQueryInts('1,2.5,3'),
       expectedError: 'invalid query int array: 1,2.5,3',
+    },
+    {
+      input: '1,,c',
+      func: () => parseQueryInts('1,,c'),
+      expectedError: 'invalid query int array: 1,,c',
+    },
+    {
+      input: '1,,',
+      func: () => parseQueryInts('1,,'),
+      expectedError: 'invalid query int array: 1,,',
+    },
+    {
+      input: ',,',
+      func: () => parseQueryInts(',,'),
+      expectedError: 'invalid query int array: ,,',
     },
   ];
 
