@@ -32,7 +32,7 @@ Deno.test('parseQueryInts - 边界情况', () => {
   assertThrows(() => parseQueryInts(',,,'), TypeError);
 
   // 测试包含空元素的数组
-  assertEquals(parseQueryInts('1,,3'), [1, 3]);
+  assertThrows(() => parseQueryInts('1,,3'), TypeError);
   assertEquals(parseQueryInts(',1,2,'), [1, 2]);
   assertThrows(() => parseQueryInts('1,,'), TypeError);
   assertEquals(parseQueryInts(',1,'), [1]);

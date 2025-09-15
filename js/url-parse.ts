@@ -247,7 +247,7 @@ export function parseQueryPositiveInts(
  * Convert URL query parameter value to array of integers
  * 将 URL 查询参数值转换为整数数组
  *
- * 1. 允许特定分隔符
+ * 1. 允许特定分隔符, 默认为 `,`
  * 2. 将每一项转为整型
  * 3. 允许头尾有分隔符, 但不允许数组中间有空项
  *
@@ -274,6 +274,7 @@ export function parseQueryPositiveInts(
  * parseQueryInts('abc') // throws TypeError
  * parseQueryInts('1,2,c') // throws TypeError
  * parseQueryInts('1,,c') // throws TypeError
+ * parseQueryInts('1,,3') // throws TypeError
  * parseQueryInts('1,,') // throws TypeError
  * parseQueryInts(',,') // throws TypeError
  * parseQueryInts(',1,') // return [1]
@@ -296,6 +297,16 @@ export function parseQueryInts(
     if (arr.every((v) => v === '')) {
       throw new TypeError(`invalid query int array: ${query}`);
     }
+
+    // 检查是否包含连续的分隔符（中间有空字符串）
+    // 例如: "1,,3" 或 "1,2,," 或 ",,1"
+    const hasConsecutiveSeparators = arr.some((v, i) =>
+      v === '' && i > 0 && i < arr.length - 1
+    );
+    if (hasConsecutiveSeparators) {
+      throw new TypeError(`invalid query int array: ${query}`);
+    }
+
     // 检查是否以分隔符结尾且前面有数字（如 "1,," 或 "1|2|"）
     // 但如果以分隔符开头（如 ",1,"），则允许
     if (
@@ -307,6 +318,7 @@ export function parseQueryInts(
         throw new TypeError(`invalid query int array: ${query}`);
       }
     }
+
     // 过滤掉空字符串，然后转换为整数
     const result = arr.filter((v) => v !== '').map(toInt);
     return result.length === 0 ? undefined : result;
