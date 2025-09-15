@@ -272,6 +272,7 @@ export function parseQueryPositiveInts(
  * parseQueryInts('1,2,c') // throws TypeError
  * parseQueryInts('1,,c') // throws TypeError
  * parseQueryInts('1,,') // throws TypeError
+ * parseQueryInts(',,') // throws TypeError
  *
  * @author iugo <code@iugo.dev>
  */
