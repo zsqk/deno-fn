@@ -49,6 +49,46 @@ export function assertArray(v: unknown): asserts v is Array<unknown> {
  */
 export function assertNonEmptyArray(
   v: unknown,
+  options?: {
+    genErr?: (v: unknown) => Error;
+    itemType?: undefined;
+  },
+): asserts v is Array<unknown>;
+
+export function assertNonEmptyArray(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    itemType: 'naturalNumber';
+  },
+): asserts v is number[];
+
+export function assertNonEmptyArray(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    itemType: 'positiveInteger';
+  },
+): asserts v is number[];
+
+export function assertNonEmptyArray(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    itemType: 'safeString';
+  },
+): asserts v is string[];
+
+export function assertNonEmptyArray(
+  v: unknown,
+  options: {
+    genErr?: (v: unknown) => Error;
+    itemType: 'boolean';
+  },
+): asserts v is boolean[];
+
+export function assertNonEmptyArray(
+  v: unknown,
   {
     genErr = () =>
       new TypeError(`should be non-empty array but ${JSON.stringify(v)}`),
