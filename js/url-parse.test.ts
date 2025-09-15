@@ -380,7 +380,7 @@ Deno.test('parseQueryStringArray - 边界情况', () => {
 
   // 测试包含空元素的数组
   assertThrows(() => parseQueryStringArray('a,,c'), TypeError);
-  assertThrows(() => parseQueryStringArray(',a,b,'), TypeError);
+  assertEquals(parseQueryStringArray(',a,b,'), ['a', 'b']); // 以分隔符开头和结尾是被允许的
   assertThrows(() => parseQueryStringArray('a, ,c'), TypeError);
 
   // 测试单个元素
