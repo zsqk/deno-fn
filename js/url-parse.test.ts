@@ -9,7 +9,7 @@ import {
   sanitizeString,
 } from './url-parse.ts';
 
-// parseQueryString 函数不存在，已删除相关测试
+// parseQueryInts 函数测试放在独立的 url-parse_ints.test.ts 文件中
 
 Deno.test('parseQueryPositiveInt', () => {
   const url = new URL('https://example.com/path');
