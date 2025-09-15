@@ -152,11 +152,56 @@ Deno.test('isSafeString', () => {
   assert(isSafeString('abc@'));
   assert(isSafeString('contact@company.org'));
 
+  // 17. 井号 `#` - 允许 (当用户输入标签时要允许)
+  assert(isSafeString('#'));
+  assert(isSafeString('#tag'));
+  assert(isSafeString('#abc'));
+  assert(isSafeString('abc#'));
+  assert(isSafeString('project #123'));
+
+  // 18. 美元符号 `$` - 允许 (当用户输入变量时要允许)
+  assert(isSafeString('$'));
+  assert(isSafeString('$var'));
+  assert(isSafeString('$abc'));
+  assert(isSafeString('abc$'));
+  assert(isSafeString('price: $100'));
+
+  // 19. 问号 `?` - 允许 (当用户输入查询时要允许)
+  assert(isSafeString('?'));
+  assert(isSafeString('name?'));
+  assert(isSafeString('?abc'));
+  assert(isSafeString('abc?'));
+  assert(isSafeString('What is your name?'));
+
+  // 20. 方括号 `[`, `]` - 允许 (当用户输入数组或范围时要允许)
+  assert(isSafeString('['));
+  assert(isSafeString(']'));
+  assert(isSafeString('[1,2,3]'));
+  assert(isSafeString('[abc]'));
+  assert(isSafeString('item[0]'));
+  assert(isSafeString('range[1-10]'));
+
+  // 21. 花括号 `{`, `}` - 允许 (当用户输入对象时要允许)
+  assert(isSafeString('{'));
+  assert(isSafeString('}'));
+  assert(isSafeString('{name: value}'));
+  assert(isSafeString('{abc}'));
+  assert(isSafeString('config{debug: true}'));
+
+  // 22. 波浪号 `~` - 允许 (当用户输入路径时要允许)
+  assert(isSafeString('~'));
+  assert(isSafeString('~/home'));
+  assert(isSafeString('~abc'));
+  assert(isSafeString('abc~'));
+  assert(isSafeString('path: ~/documents'));
+
   // 组合测试
-  assert(isSafeString('abc 123 _-/().:+=,;!%@'));
+  assert(isSafeString('abc 123 _-/().:+=,;!%@#$?[]{}~'));
   assert(isSafeString('file.txt (v1.0) - 2023:10:30'));
   assert(isSafeString('name=value, age=25; status=active'));
   assert(isSafeString('Hello! Success rate: 95% - contact@company.org'));
+  assert(isSafeString('config{debug: true} - path: ~/home'));
+  assert(isSafeString('tags: #important, price: $100, items: [1,2,3]'));
 
   // 中文字符 - 允许 (非 ASCII 范围)
   assert(isSafeString('中'));
@@ -174,42 +219,26 @@ Deno.test('isSafeString', () => {
 
   // 禁止的字符测试
   assert(!isSafeString('"'));
-  assert(!isSafeString('#'));
-  assert(!isSafeString('$'));
   assert(!isSafeString('&'));
   assert(!isSafeString("'"));
   assert(!isSafeString('*'));
   assert(!isSafeString('<'));
   assert(!isSafeString('>'));
-  assert(!isSafeString('?'));
-  assert(!isSafeString('['));
   assert(!isSafeString('\\'));
-  assert(!isSafeString(']'));
   assert(!isSafeString('^'));
   assert(!isSafeString('`'));
-  assert(!isSafeString('{'));
   assert(!isSafeString('|'));
-  assert(!isSafeString('}'));
-  assert(!isSafeString('~'));
 
   // 包含禁止字符的字符串
-  assert(!isSafeString('abc#123'));
-  assert(!isSafeString('abc$123'));
   assert(!isSafeString('abc&123'));
   assert(!isSafeString("abc'123"));
   assert(!isSafeString('abc*123'));
   assert(!isSafeString('abc<123'));
   assert(!isSafeString('abc>123'));
-  assert(!isSafeString('abc?123'));
-  assert(!isSafeString('abc[123'));
   assert(!isSafeString('abc\\123'));
-  assert(!isSafeString('abc]123'));
   assert(!isSafeString('abc^123'));
   assert(!isSafeString('abc`123'));
-  assert(!isSafeString('abc{123'));
   assert(!isSafeString('abc|123'));
-  assert(!isSafeString('abc}123'));
-  assert(!isSafeString('abc~123'));
 });
 
 Deno.test('assertSafeString', () => {
@@ -226,17 +255,15 @@ Deno.test('assertSafeString', () => {
   assertSafeString('(123)');
   assertSafeString('line1\nline2'); // 允许换行符
 
+  // 测试新允许的字符
+  assertSafeString('#tag');
+  assertSafeString('$var');
+  assertSafeString('name?');
+  assertSafeString('[1,2,3]');
+  assertSafeString('{key: value}');
+  assertSafeString('~/home');
+
   // 测试无效的字符串（只测试真正会被拒绝的字符）
-  assertThrows(
-    () => assertSafeString('hello#world'),
-    TypeError,
-    'should be safe string but "hello#world"',
-  );
-  assertThrows(
-    () => assertSafeString('hello$world'),
-    TypeError,
-    'should be safe string but "hello$world"',
-  );
   assertThrows(
     () => assertSafeString('hello^world'),
     TypeError,
@@ -251,26 +278,6 @@ Deno.test('assertSafeString', () => {
     () => assertSafeString('hello*world'),
     TypeError,
     'should be safe string but "hello*world"',
-  );
-  assertThrows(
-    () => assertSafeString('hello[world'),
-    TypeError,
-    'should be safe string but "hello[world"',
-  );
-  assertThrows(
-    () => assertSafeString('hello]world'),
-    TypeError,
-    'should be safe string but "hello]world"',
-  );
-  assertThrows(
-    () => assertSafeString('hello{world'),
-    TypeError,
-    'should be safe string but "hello{world"',
-  );
-  assertThrows(
-    () => assertSafeString('hello}world'),
-    TypeError,
-    'should be safe string but "hello}world"',
   );
   assertThrows(
     () => assertSafeString('hello|world'),
@@ -301,16 +308,6 @@ Deno.test('assertSafeString', () => {
     () => assertSafeString('hello>world'),
     TypeError,
     'should be safe string but "hello>world"',
-  );
-  assertThrows(
-    () => assertSafeString('hello?world'),
-    TypeError,
-    'should be safe string but "hello?world"',
-  );
-  assertThrows(
-    () => assertSafeString('hello~world'),
-    TypeError,
-    'should be safe string but "hello~world"',
   );
   assertThrows(
     () => assertSafeString('hello`world'),
