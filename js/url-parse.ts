@@ -88,8 +88,7 @@ export function parseQueryStringArray(
     : query;
 
   try {
-    const arr = queryString
-      .split(separator);
+    const arr = queryString.split(separator);
 
     for (const v of arr) {
       if (v === '') {
@@ -287,8 +286,14 @@ export function parseQueryInts(
     return undefined;
   }
   try {
-    const arr = query.split(separator).map(toInt);
-    return arr.length === 0 ? undefined : arr;
+    const arr = query.split(separator);
+    // 如果分割后所有元素都是空字符串，返回 undefined
+    if (arr.every((v) => v === '')) {
+      return undefined;
+    }
+    // 过滤掉空字符串，然后转换为整数
+    const result = arr.filter((v) => v !== '').map(toInt);
+    return result.length === 0 ? undefined : result;
   } catch (_err) {
     throw new TypeError(`invalid query int array: ${query}`);
   }
