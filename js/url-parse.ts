@@ -57,6 +57,15 @@ export function sanitizeString(
  * @example
  * parseQueryStringArray('a,b,c') // returns ['a', 'b', 'c']
  * parseQueryStringArray('a|b|c', { separator: '|' }) // returns ['a', 'b', 'c']
+ * parseQueryStringArray('|a|b|c', { separator: '|' }) // returns ['a', 'b', 'c']
+ * parseQueryStringArray('a|b|c|', { separator: '|' }) // returns ['a', 'b', 'c']
+ * parseQueryStringArray('|a|b|c|', { separator: '|' }) // returns ['a', 'b', 'c']
+ * parseQueryStringArray(',a,b,c,') // returns ['a', 'b', 'c']
+ * parseQueryStringArray('a,,b') // throws TypeError
+ * parseQueryStringArray('a,,') // throws TypeError
+ * parseQueryStringArray(',,a') // throws TypeError
+ * parseQueryStringArray('a,') // returns ['a']
+ * parseQueryStringArray(',a') // returns ['a']
  * parseQueryStringArray('') // returns undefined
  *
  * @author iugo <code@iugo.dev>
