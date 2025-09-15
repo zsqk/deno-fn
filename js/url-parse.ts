@@ -1,5 +1,5 @@
 import { toInt, toPositiveInt } from '../ts/number-type-convert.ts';
-import { isSafeString, SafeString } from '../ts/string.ts';
+import { assertSafeString, SafeString } from '../ts/string.ts';
 
 /**
  * 清理净化字符串
@@ -92,9 +92,10 @@ export function parseQueryStringArray(
       .split(separator);
 
     for (const v of arr) {
-      if (!isSafeString(v)) {
-        throw new TypeError(`invalid query string: ${v}`);
+      if (v === '') {
+        throw new TypeError(`string array item is empty: ${query}`);
       }
+      assertSafeString(v);
     }
 
     return arr.length === 0 ? undefined : arr;
