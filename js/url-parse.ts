@@ -247,6 +247,10 @@ export function parseQueryPositiveInts(
  * Convert URL query parameter value to array of integers
  * 将 URL 查询参数值转换为整数数组
  *
+ * 1. 允许特定分隔符
+ * 2. 将每一项转为整型
+ * 3. 允许头尾有分隔符, 但不允许数组中间有空项
+ *
  * @param query - URL query parameter value (typically from url.searchParams.get())
  *               URL 查询参数值（通常来自 url.searchParams.get()）
  * @param options - Configuration options
@@ -275,6 +279,7 @@ export function parseQueryPositiveInts(
  * parseQueryInts(',1,') // return [1]
  * parseQueryInts('|1|2|', { separator: '|' }) // return [1, 2]
  * parseQueryInts('|1|2', { separator: '|' }) // return [1, 2]
+ * parseQueryInts('1|2|', { separator: '|' }) // return [1, 2]
  *
  * @author iugo <code@iugo.dev>
  */
