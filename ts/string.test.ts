@@ -195,13 +195,23 @@ Deno.test('isSafeString', () => {
   assert(isSafeString('abc~'));
   assert(isSafeString('path: ~/documents'));
 
+  // 23. 尖括号 `<`, `>` - 允许 (当用户输入比较或泛型时要允许)
+  assert(isSafeString('<'));
+  assert(isSafeString('>'));
+  assert(isSafeString('x < y'));
+  assert(isSafeString('a > b'));
+  assert(isSafeString('List<T>'));
+  assert(isSafeString('age < 18'));
+  assert(isSafeString('score > 90'));
+
   // 组合测试
-  assert(isSafeString('abc 123 _-/().:+=,;!%@#$?[]{}~'));
+  assert(isSafeString('abc 123 _-/().:+=,;!%@#$?[]{}~<>'));
   assert(isSafeString('file.txt (v1.0) - 2023:10:30'));
   assert(isSafeString('name=value, age=25; status=active'));
   assert(isSafeString('Hello! Success rate: 95% - contact@company.org'));
   assert(isSafeString('config{debug: true} - path: ~/home'));
   assert(isSafeString('tags: #important, price: $100, items: [1,2,3]'));
+  assert(isSafeString('condition: age < 18 and score > 90'));
 
   // 中文字符 - 允许 (非 ASCII 范围)
   assert(isSafeString('中'));
@@ -222,8 +232,6 @@ Deno.test('isSafeString', () => {
   assert(!isSafeString('&'));
   assert(!isSafeString("'"));
   assert(!isSafeString('*'));
-  assert(!isSafeString('<'));
-  assert(!isSafeString('>'));
   assert(!isSafeString('\\'));
   assert(!isSafeString('^'));
   assert(!isSafeString('`'));
@@ -233,8 +241,6 @@ Deno.test('isSafeString', () => {
   assert(!isSafeString('abc&123'));
   assert(!isSafeString("abc'123"));
   assert(!isSafeString('abc*123'));
-  assert(!isSafeString('abc<123'));
-  assert(!isSafeString('abc>123'));
   assert(!isSafeString('abc\\123'));
   assert(!isSafeString('abc^123'));
   assert(!isSafeString('abc`123'));
@@ -262,6 +268,8 @@ Deno.test('assertSafeString', () => {
   assertSafeString('[1,2,3]');
   assertSafeString('{key: value}');
   assertSafeString('~/home');
+  assertSafeString('x < y');
+  assertSafeString('List<T>');
 
   // 测试无效的字符串（只测试真正会被拒绝的字符）
   assertThrows(
@@ -298,16 +306,6 @@ Deno.test('assertSafeString', () => {
     () => assertSafeString("hello'world"),
     TypeError,
     'should be safe string but "hello\'world"',
-  );
-  assertThrows(
-    () => assertSafeString('hello<world'),
-    TypeError,
-    'should be safe string but "hello<world"',
-  );
-  assertThrows(
-    () => assertSafeString('hello>world'),
-    TypeError,
-    'should be safe string but "hello>world"',
   );
   assertThrows(
     () => assertSafeString('hello`world'),

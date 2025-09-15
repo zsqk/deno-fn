@@ -67,9 +67,10 @@ export function isSafeString(value: unknown): value is SafeString {
   // 21. 方括号 `[`, `]` (当用户输入数组或范围时要允许, 比如 `[1,2,3]`)
   // 22. 花括号 `{`, `}` (当用户输入对象时要允许, 比如 `{name: "value"}`)
   // 23. 波浪号 `~` (当用户输入路径时要允许, 比如 `~/home`)
-  // 拒绝危险字符：" & ' * < > \ ^ ` | 以及制表符和回车符
+  // 24. 尖括号 `<`, `>` (当用户输入比较或泛型时要允许, 比如 `x < y` 或 `List<T>`)
+  // 拒绝危险字符：" & ' * \ ^ ` | 以及制表符和回车符
   if (
-    /[\x22\x26-\x27\x2A\x3C\x3E\x5C\x5E\x60\x7C\t\r]/.test(value)
+    /[\x22\x26-\x27\x2A\x5C\x5E\x60\x7C\t\r]/.test(value)
   ) {
     return false;
   }
