@@ -106,7 +106,7 @@ console.log(weekdays); // Outputs weekday statistics
 ## Testing
 
 ```sh
-deno test --allow-run --coverage=./.coverage
+deno test --allow-run --allow-env --allow-write --allow-read --allow-net --coverage=./.coverage
 
 deno coverage ./.coverage --lcov --output=cov.lcov # Generates lcov report
 deno coverage ./.coverage --html # Generates HTML report
