@@ -5,6 +5,9 @@ import { RMBFen } from '@zsqk/somefn/ts/number';
  * (Also supports RMB, USD, EUR, GBP and other currencies that use 1 main unit = 100 minor units)
  */
 export function yuanToRMBFen(v: string | number): RMBFen {
+  if (v === '') {
+    throw new Error(`Empty input is not a valid number`);
+  }
   const yuan = Number(v);
   if (Number.isNaN(yuan)) {
     throw new Error(`Not a valid number, please check the input: ${v}`);
