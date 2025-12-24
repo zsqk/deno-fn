@@ -1,2 +1,5 @@
 temp
 .DS_Store
+
+# Test Coverage
+.coverage

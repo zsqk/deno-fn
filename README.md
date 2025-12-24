@@ -91,8 +91,8 @@ const result = logicCalculate(logicData, {
   condition: "AND",
   rules: [
     { field: "age", operator: LogicOperator.greaterThan, value: 18 },
-    { field: "name", operator: LogicOperator.equals, value: "John" }
-  ]
+    { field: "name", operator: LogicOperator.equals, value: "John" },
+  ],
 });
 console.log(result); // Output: true
 
@@ -101,6 +101,15 @@ const before = new Date("2024-01-01");
 const after = new Date("2024-01-31");
 const weekdays = getWeekday(before, after);
 console.log(weekdays); // Outputs weekday statistics
+```
+
+## Testing
+
+```sh
+deno test --allow-run --coverage=./.coverage
+
+deno coverage ./.coverage --lcov --output=cov.lcov # Generates lcov report
+deno coverage ./.coverage --html # Generates HTML report
 ```
 
 ## License
