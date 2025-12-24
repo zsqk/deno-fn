@@ -57,6 +57,15 @@ export function sanitizeString(
  * @example
  * parseQueryStringArray('a,b,c') // returns ['a', 'b', 'c']
  * parseQueryStringArray('a|b|c', { separator: '|' }) // returns ['a', 'b', 'c']
+ * parseQueryStringArray('|a|b|c', { separator: '|' }) // returns ['a', 'b', 'c']
+ * parseQueryStringArray('a|b|c|', { separator: '|' }) // returns ['a', 'b', 'c']
+ * parseQueryStringArray('|a|b|c|', { separator: '|' }) // returns ['a', 'b', 'c']
+ * parseQueryStringArray(',a,b,c,') // returns ['a', 'b', 'c']
+ * parseQueryStringArray('a,,b') // throws TypeError
+ * parseQueryStringArray('a,,') // throws TypeError
+ * parseQueryStringArray(',,a') // throws TypeError
+ * parseQueryStringArray('a,') // returns ['a']
+ * parseQueryStringArray(',a') // returns ['a']
  * parseQueryStringArray('') // returns undefined
  *
  * @author iugo <code@iugo.dev>
@@ -90,14 +99,32 @@ export function parseQueryStringArray(
   try {
     const arr = queryString.split(separator);
 
-    for (const v of arr) {
-      if (v === '') {
-        throw new TypeError(`string array item is empty: ${query}`);
-      }
+    // 如果分割后所有元素都是空字符串，抛出错误
+    if (arr.every((v) => v === '')) {
+      throw new TypeError(`invalid query string array: ${query}`);
+    }
+
+    // 检查是否包含连续的分隔符（中间有空字符串）
+    // 例如: "a,,c" 或 "a,b,," 或 ",,a"
+    const hasConsecutiveSeparators = arr.some((v, i) =>
+      v === '' && i > 0 && i < arr.length - 1
+    );
+    if (hasConsecutiveSeparators) {
+      throw new TypeError(`invalid query string array: ${query}`);
+    }
+
+    // 检查是否以分隔符结尾且前面有字符串（如 "a,," 或 "a|b|"）
+    // 但如果以分隔符开头（如 ",a,"），则允许
+    // 注释中的示例表明以分隔符结尾是被允许的，所以移除这个检查
+
+    // 过滤掉空字符串，然后验证每个元素
+    const filteredArr = arr.filter((v) => v !== '');
+
+    for (const v of filteredArr) {
       assertSafeString(v);
     }
 
-    return arr.length === 0 ? undefined : arr;
+    return filteredArr.length === 0 ? undefined : filteredArr;
   } catch (_err) {
     throw new TypeError(`invalid query string array: ${query}`);
   }
@@ -348,15 +375,7 @@ export function parseQueryInts(
 
     // 检查是否以分隔符结尾且前面有数字（如 "1,," 或 "1|2|"）
     // 但如果以分隔符开头（如 ",1,"），则允许
-    if (
-      query.endsWith(separator) && !query.startsWith(separator) &&
-      arr.length > 1
-    ) {
-      const nonEmptyElements = arr.filter((v) => v !== '');
-      if (nonEmptyElements.length > 0) {
-        throw new TypeError(`invalid query int array: ${query}`);
-      }
-    }
+    // 注释中的示例表明以分隔符结尾是被允许的，所以移除这个检查
 
     // 过滤掉空字符串，然后转换为整数
     const result = arr.filter((v) => v !== '').map(toInt);
